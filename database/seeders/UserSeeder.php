@@ -18,5 +18,6 @@ class UserSeeder extends Seeder
         foreach ($users as $user) {
             $user = \App\Models\User::create($user);
             $user->assignRole('admin');
+        }
     }
 }
