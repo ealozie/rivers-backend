@@ -20,7 +20,6 @@ class LoginController extends Controller
     public function __invoke(Request $request)
     {
         $credentials = $request->validate([
-            //'email' => ['required', 'email'],
             'phone_number' => ['required'],
             'password' => ['required'],
         ]);
