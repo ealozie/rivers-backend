@@ -31,7 +31,6 @@ class ForgotPasswordController extends Controller
     public function store(Request $request)
     {
         $validated_data = $request->validate([
-            //'email' => 'required|email|exists:users,email',
             'phone_number' => 'required|exists:users,phone_number',
         ]);
 
