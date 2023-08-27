@@ -9,10 +9,15 @@ use App\Models\TicketEnforcement;
 use App\Models\TicketVending;
 use Illuminate\Http\Request;
 
+/**
+ * @tags Ticket Enforcement Service
+ */
 class TicketEnforcementController extends Controller
 {
     /**
-     * Handle the incoming request.
+     * Initiate the enforcement request.
+     *
+     * Authorization header is required to be set to Bearer `<token>` <br>
      */
     public function __invoke(Request $request)
     {

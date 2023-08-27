@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class TicketBulkVending extends Model
 {
     use HasFactory;
+
+    public function ticket_category()
+    {
+        return $this->belongsTo(TicketCategory::class, 'ticket_category_id');
+    }
 }

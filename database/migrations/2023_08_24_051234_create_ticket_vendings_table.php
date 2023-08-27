@@ -16,9 +16,11 @@ return new class extends Migration
             $table->string('plate_number');
             $table->foreignId('ticket_category_id');
             $table->double('amount', 8, 2);
+            $table->double('ticket_amount', 8, 2);
+            $table->double('agent_discount', 8, 2)->nullable();
             $table->foreignId('ticket_agent_id');
             $table->foreignId('user_id');
-            $table->dateTime('expired_at');
+            $table->time('expired_at');
             $table->string('ticket_reference_number');
             $table->string('ticket_status');
             $table->timestamps();

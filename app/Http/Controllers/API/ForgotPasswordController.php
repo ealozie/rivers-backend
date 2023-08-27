@@ -8,6 +8,9 @@ use App\Models\User;
 use App\Notifications\PasswordResetNotification;
 use Illuminate\Http\Request;
 
+/**
+ * @tags Authentication Service
+ */
 class ForgotPasswordController extends Controller
 {
     /**
@@ -19,7 +22,9 @@ class ForgotPasswordController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Initiate Password Reset Request.
+     *
+     * Allow user reset password in the application.
      */
     public function store(Request $request)
     {
@@ -44,7 +49,9 @@ class ForgotPasswordController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update Password.
+     *
+     * Allow user update password in the application.
      */
     public function update(Request $request, string $id)
     {

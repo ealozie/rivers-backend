@@ -5,6 +5,9 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+/**
+ * @tags Ticket Bulk Vending Service
+ */
 class TicketAgentController extends Controller
 {
     /**

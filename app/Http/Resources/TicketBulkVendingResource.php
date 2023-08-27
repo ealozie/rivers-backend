@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Carbon;
 
-class TicketVendingResource extends JsonResource
+class TicketBulkVendingResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,13 +16,13 @@ class TicketVendingResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
             'plate_number' => $this->plate_number,
             'ticket_category' => $this->ticket_category->category_name,
+            'ticket_amount' => number_format($this->ticket_amount, 2),
+            'discount' => $this->agent_discount . '%',
             'amount' => number_format($this->amount, 2),
-            'agent' => $this->user->name,
-            'ticket_reference_number' => $this->ticket_reference_number,
-            'ticket_status' => $this->ticket_status,
+            'number_of_tickets' => $this->total_tickets,
+            'ticket_status' => $this->status,
             'expire_at' => date('h:ia', strtotime($this->expired_at)),
             'expire_at_time' => Carbon::parse($this->expired_at)->diffForHumans(),
             'created_at' => $this->created_at,

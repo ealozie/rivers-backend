@@ -17,7 +17,7 @@ class TicketCategorySeeder extends Seeder
         // $table->string('category_status');
         // $table->foreignId('added_by');
         // $table->boolean('allow_multiple_ticket_purchase');
-        // $table->integer('duration');
+        // $table->time('expired_at');
         $ticket_categories_for_vehicles = [
             [
                 'category_name' => 'Loading',
@@ -25,7 +25,15 @@ class TicketCategorySeeder extends Seeder
                 'category_status' => 'active',
                 'added_by' => 1,
                 'allow_multiple_ticket_purchase' => true,
-                'duration' => 1,
+                'expired_at' => date('H:i:s'),
+            ],
+            [
+                'category_name' => 'Daily Standard Ticket',
+                'amount' => 1500,
+                'category_status' => 'active',
+                'added_by' => 1,
+                'allow_multiple_ticket_purchase' => false,
+                'expired_at' => date('H:i:s', strtotime('+5 hour'))
             ],
             [
                 'category_name' => 'Offloading',
@@ -33,7 +41,7 @@ class TicketCategorySeeder extends Seeder
                 'category_status' => 'active',
                 'added_by' => 1,
                 'allow_multiple_ticket_purchase' => true,
-                'duration' => 1,
+                'expired_at' => date('H:i:s', strtotime('+5 hour'))
             ],
             [
                 'category_name' => 'Parking',
@@ -41,7 +49,7 @@ class TicketCategorySeeder extends Seeder
                 'category_status' => 'active',
                 'added_by' => 1,
                 'allow_multiple_ticket_purchase' => true,
-                'duration' => 1,
+                'expired_at' => date('H:i:s', strtotime('+12 hour')),
             ],
             [
                 'category_name' => 'Entrance',
@@ -49,7 +57,7 @@ class TicketCategorySeeder extends Seeder
                 'category_status' => 'active',
                 'added_by' => 1,
                 'allow_multiple_ticket_purchase' => true,
-                'duration' => 1,
+                'expired_at' => date('H:i:s', strtotime('+7 hour')),
             ],
             [
                 'category_name' => 'Overloading',
@@ -57,7 +65,7 @@ class TicketCategorySeeder extends Seeder
                 'category_status' => 'active',
                 'added_by' => 1,
                 'allow_multiple_ticket_purchase' => true,
-                'duration' => 1,
+                'expired_at' => date('H:i:s', strtotime('+3 hour')),
             ],
             [
                 'category_name' => 'Wrong Parking',
@@ -65,7 +73,7 @@ class TicketCategorySeeder extends Seeder
                 'category_status' => 'active',
                 'added_by' => 1,
                 'allow_multiple_ticket_purchase' => true,
-                'duration' => 1,
+                'expired_at' => date('H:i:s', strtotime('+2 hour')),
             ],
             [
                 'category_name' => 'Exit',
@@ -73,7 +81,7 @@ class TicketCategorySeeder extends Seeder
                 'category_status' => 'active',
                 'added_by' => 1,
                 'allow_multiple_ticket_purchase' => true,
-                'duration' => 1,
+                'expired_at' => date('H:i:s', strtotime('+1 hour'))
             ],
         ];
         \App\Models\TicketCategory::truncate();
