@@ -8,4 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class PasswordResetCode extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'email',
+        'phone_number',
+        'confirmation_code',
+    ];
 }

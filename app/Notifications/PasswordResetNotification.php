@@ -41,7 +41,7 @@ class PasswordResetNotification extends Notification
             ->subject('Password Reset Request - Confirmation Code Required')
             ->greeting('Dear ' . $this->user->name)
             ->line("We have received a request to reset the password for your account at " . config('app.name') . "To ensure the security of your account, please enter the confirmation code below.")
-            ->line('Confirmation Code: ' . $this->password_reset_code->code)
+            ->line('Confirmation Code: ' . $this->password_reset_code->confirmation_code)
             ->line('Please note that this code will expire after 30 minutes for security reasons. If you do not use it within this timeframe, you will need to initiate the password reset process again.')
             ->line('Thank you for your attention to this matter.
             ');

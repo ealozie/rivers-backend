@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\PasswordResetCode;
 use App\Models\User;
 use App\Notifications\PasswordResetNotification;
+use App\Traits\SendSMS;
 use Illuminate\Http\Request;
 
 /**
@@ -13,6 +14,7 @@ use Illuminate\Http\Request;
  */
 class ForgotPasswordController extends Controller
 {
+    use SendSMS;
     /**
      * Display a listing of the resource.
      */
@@ -29,15 +31,39 @@ class ForgotPasswordController extends Controller
     public function store(Request $request)
     {
         $validated_data = $request->validate([
-            'email' => 'required|email|exists:users,email',
+            //'email' => 'required|email|exists:users,email',
+            'phone_number' => 'required|exists:users,phone_number',
         ]);
 
-        $validated_data['confirmation_code'] = mt_rand(100000, 999999);
-        $password_reset_code = PasswordResetCode::create($validated_data);
+        try {
+            $user = User::where('phone_number', $request->phone_number)->first();
+            $validated_data['email'] = $user->email;
+            $validated_data['confirmation_code'] = mt_rand(100000, 999999);
+            $password_reset_code = PasswordResetCode::create($validated_data);
 
-        $user = User::where('email', $request->email)->first();
-        $user->notify(new PasswordResetNotification($password_reset_code, $user));
-        return response(['message' => trans('passwords.sent'), 'user_id' => $user->id], 200);
+            //Send SMS
+            $message = "Hi {$user->name},\nYour password reset code is {$password_reset_code->confirmation_code}.";
+            $mobile_number = ltrim($user->phone_number, "0");
+            $this->send_sms_process_message("+234" . $mobile_number, $message);
+
+            $user->notify(new PasswordResetNotification($password_reset_code, $user));
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Password reset code has been sent to your phone number and email address.',
+                'data' => [
+                    'user_id' => $user->id,
+                ]
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Password reset code could not be sent, please try again.',
+                'data' => [
+                    'error' => $e->getMessage(),
+                ]
+            ], 500);
+        }
     }
 
     /**
@@ -68,7 +94,7 @@ class ForgotPasswordController extends Controller
         }
         $password_code->is_active = false;
         $password_code->save();
-        $user = User::where('email', $password_code->email)->first();
+        $user = User::where('phone_number', $password_code->phone_number)->first();
         $user->update(bcrypt($request_data['password']));
         return response()->json([
             'status' => 'success',
