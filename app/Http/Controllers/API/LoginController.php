@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -37,7 +38,7 @@ class LoginController extends Controller
                 'data' => [
                     'token' => $token,
                     'token_type' => 'Bearer',
-                    'user' => $user,
+                    'user' => new UserResource($user),
                 ]
             ], 200);
         } else {
