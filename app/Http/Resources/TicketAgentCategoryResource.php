@@ -19,7 +19,7 @@ class TicketAgentCategoryResource extends JsonResource
             'ticket_category' => $this->ticket_category->category_name,
             'discount' => (int) $this->discount,
             'status' => $this->status,
-            'created_at' => $this->created_at,
+            'created_at' => (string) $this->created_at,
         ];
     }
 }
