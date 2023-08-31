@@ -8,6 +8,7 @@ use App\Http\Controllers\API\TicketBulkVendingController;
 use App\Http\Controllers\API\TicketCategoryController;
 use App\Http\Controllers\API\TicketEnforcementController;
 use App\Http\Controllers\API\TicketVendingController;
+use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\WalletFundTransferController;
 use Illuminate\Support\Facades\Route;
 
@@ -27,6 +28,7 @@ Route::prefix('v1')->group(function () {
     Route::post('login', LoginController::class);
     Route::post('logout', LogoutController::class)->middleware('auth:sanctum');
     Route::apiResource('forgot-password', ForgotPasswordController::class)->only(['store', 'update']);
+    Route::apiResource('users', UserController::class)->middleware('auth:sanctum')->only(['index']);
     Route::apiResource('ticket-vending', TicketVendingController::class)->middleware('auth:sanctum')->only(['index', 'store', 'show']);
     Route::apiResource('ticket-bulk-vending', TicketBulkVendingController::class)->middleware('auth:sanctum')->only(['store', 'show', 'index']);
     Route::post('ticket-enforcement', TicketEnforcementController::class)->middleware('auth:sanctum');
