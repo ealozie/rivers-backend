@@ -8,10 +8,14 @@ use App\Models\TicketAgent;
 use App\Models\TicketAgentCategory;
 use Illuminate\Http\Request;
 
+/**
+ * @tags Ticket Agent Categories Service
+ */
+
 class TicketAgentCategoryController extends Controller
 {
     /**
-     * Handle the incoming request.
+     * Get all Ticket Agent Categories.
      */
     public function __invoke(Request $request)
     {

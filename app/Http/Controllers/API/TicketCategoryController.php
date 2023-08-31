@@ -7,10 +7,14 @@ use App\Http\Resources\TicketCategoryResource;
 use App\Models\TicketCategory;
 use Illuminate\Http\Request;
 
+/**
+ * @tags Ticket Categories Service
+ */
+
 class TicketCategoryController extends Controller
 {
     /**
-     * Handle the incoming request.
+     * Get all Ticket Categories.
      */
     public function __invoke(Request $request)
     {
