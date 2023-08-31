@@ -3,12 +3,12 @@
 use App\Http\Controllers\API\ForgotPasswordController;
 use App\Http\Controllers\API\LoginController;
 use App\Http\Controllers\API\LogoutController;
+use App\Http\Controllers\API\TicketAgentCategoryController;
 use App\Http\Controllers\API\TicketBulkVendingController;
+use App\Http\Controllers\API\TicketCategoryController;
 use App\Http\Controllers\API\TicketEnforcementController;
 use App\Http\Controllers\API\TicketVendingController;
 use App\Http\Controllers\API\WalletFundTransferController;
-use App\Http\Controllers\TicketAgentCategoryController;
-use App\Http\Controllers\TicketCategoryController;
 use Illuminate\Support\Facades\Route;
 
 /*

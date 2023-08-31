@@ -1,22 +1,17 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\Controller;
 use App\Http\Resources\TicketAgentCategoryResource;
 use App\Models\TicketAgent;
 use App\Models\TicketAgentCategory;
 use Illuminate\Http\Request;
 
-/**
- * @tags Ticket Agent Category Service
- */
 class TicketAgentCategoryController extends Controller
 {
     /**
-     * Display listing of all resource.
-     *
-     * Authorization header is required to be set to Bearer `<token>` <br>
-     * Return all list of ticket categories that been assigned to current authenticated agent.
+     * Handle the incoming request.
      */
     public function __invoke(Request $request)
     {
