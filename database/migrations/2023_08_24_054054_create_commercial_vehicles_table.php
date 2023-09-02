@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id');
             $table->string('plate_number');
-            $table->string('vehicle_category_id')->nullable();
-            $table->string('vehicle_manufacturer_id')->nullable();
-            $table->string('vehicle_model_id')->nullable();
+            $table->foreignId('vehicle_category_id');
+            $table->foreignId('vehicle_manufacturer_id');
+            $table->foreignId('vehicle_model_id');
             $table->string('chassis_number')->nullable();
             $table->string('engine_number')->nullable();
             $table->foreignId('ticket_category_id')->nullable();
