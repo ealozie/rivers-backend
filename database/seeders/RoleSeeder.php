@@ -16,10 +16,14 @@ class RoleSeeder extends Seeder
             'admin',
             'agent',
             'owner',
+            'individual',
+            'cooperate'
         ];
-        $roles = \Spatie\Permission\Models\Role::count();
-        if (!$roles) {
-            foreach ($user_roles as $role) {
+
+
+        foreach ($user_roles as $role) {
+            $user_role = \Spatie\Permission\Models\Role::where('name', $role)->first();
+            if (!$user_role) {
                 \Spatie\Permission\Models\Role::create(['name' => $role]);
             }
         }

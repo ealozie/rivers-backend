@@ -30,14 +30,18 @@ class IndividualController extends Controller
     {
         $validatedData = $request->validated();
         $user = new User();
-        $user->name = $validatedData['name'];
+        $user->name = $validatedData['first_name'] . ' ' . $validatedData['surname'];
         $user->email = $validatedData['email'];
         //Generate a random password
         $password = Str::Password(8);
         $user->phone_number = $validatedData['phone_number'];
+        $user->role = 'individual';
         $user->password = Hash::make($password);
         $user->save();
+        $validatedData['user_id'] = $user->id;
         $individual = Individual::create($validatedData);
+        $user->assignRole('individual');
+        return response()->json(['status' => 'success', 'data' => ['user' => $user, 'individual' => $individual, 'password' => $password]]);
     }
 
     /**
