@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 class MarketNameController extends Controller
 {
     /**
-     * Handle the incoming request.
+     * Return all markets in state.
      */
     public function __invoke(Request $request)
     {

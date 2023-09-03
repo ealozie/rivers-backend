@@ -14,7 +14,7 @@ use Illuminate\Http\Request;
 class SettlementTypeController extends Controller
 {
     /**
-     * Handle the incoming request.
+     * Return all settlement types.
      */
     public function __invoke(Request $request)
     {

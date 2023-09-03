@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 class NationalityController extends Controller
 {
     /**
-     * Handle the incoming request.
+     * Return all nationalities.
      */
     public function __invoke(Request $request)
     {

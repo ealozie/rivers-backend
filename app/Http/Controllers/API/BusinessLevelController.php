@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 class BusinessLevelController extends Controller
 {
     /**
-     * Handle the incoming request.
+     * Return all business levels.
      */
     public function __invoke(Request $request)
     {

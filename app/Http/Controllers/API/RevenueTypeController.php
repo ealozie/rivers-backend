@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 class RevenueTypeController extends Controller
 {
     /**
-     * Handle the incoming request.
+     * Return all revenue types.
      */
     public function __invoke(Request $request)
     {

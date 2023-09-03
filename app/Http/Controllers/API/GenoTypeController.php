@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 class GenoTypeController extends Controller
 {
     /**
-     * Handle the incoming request.
+     * Return all geno types.
      */
     public function __invoke(Request $request)
     {

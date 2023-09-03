@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 class StateController extends Controller
 {
     /**
-     * Handle the incoming request.
+     * Return all states.
      */
     public function __invoke(Request $request)
     {

@@ -59,7 +59,7 @@ Route::prefix('v1')->group(function () {
     Route::get('business-sub-categories/{business_category_id}', BusinessSubCategoryController::class);
     Route::get('classifications', ClassificationController::class);
     Route::get('states', StateController::class);
-    Route::get('demand-notice-categories', DemandNoticeCategoryController::class);
+    //Route::get('demand-notice-categories', DemandNoticeCategoryController::class);
     Route::get('local-government-areas/{state_id}', LocalGovernmentAreaController::class);
     Route::get('market-names', MarketNameController::class);
     Route::get('nationalities', NationalityController::class);

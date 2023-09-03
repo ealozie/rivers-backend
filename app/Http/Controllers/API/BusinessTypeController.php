@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 class BusinessTypeController extends Controller
 {
     /**
-     * Handle the incoming request.
+     * Return all businesses type.
      */
     public function __invoke(Request $request)
     {

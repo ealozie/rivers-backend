@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 class BloodGroupController extends Controller
 {
     /**
-     * Handle the incoming request.
+     * Return all blood groups.
      */
     public function __invoke(Request $request)
     {

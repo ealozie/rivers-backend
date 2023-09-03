@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 class LocalGovernmentAreaController extends Controller
 {
     /**
-     * Handle the incoming request.
+     * Return all Government Areas by its state ID.
      */
     public function __invoke(Request $request, $state_id)
     {

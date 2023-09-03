@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 class PropertyCategoryController extends Controller
 {
     /**
-     * Handle the incoming request.
+     * Return all property categories.
      */
     public function __invoke(Request $request)
     {

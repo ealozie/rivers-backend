@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 class TitleController extends Controller
 {
     /**
-     * Handle the incoming request.
+     * Return all titles.
      */
     public function __invoke(Request $request)
     {

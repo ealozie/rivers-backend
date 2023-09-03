@@ -11,7 +11,7 @@ use Hash;
 use Illuminate\Support\Str;
 
 /**
- * @tags Individual Resource Service
+ * @tags Individual Registration Service
  */
 class IndividualController extends Controller
 {

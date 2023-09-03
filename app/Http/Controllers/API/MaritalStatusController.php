@@ -14,7 +14,7 @@ use Illuminate\Http\Request;
 class MaritalStatusController extends Controller
 {
     /**
-     * Handle the incoming request.
+     * Return all marital status.
      */
     public function __invoke(Request $request)
     {

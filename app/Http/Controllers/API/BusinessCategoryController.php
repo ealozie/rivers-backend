@@ -7,10 +7,13 @@ use App\Http\Resources\BusinessCategoryResource;
 use App\Models\BusinessCategory;
 use Illuminate\Http\Request;
 
+/**
+ * @tags Business Category Service
+ */
 class BusinessCategoryController extends Controller
 {
     /**
-     * Handle the incoming request.
+     * Return all business category.
      */
     public function __invoke(Request $request)
     {

@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 class ClassificationController extends Controller
 {
     /**
-     * Handle the incoming request.
+     * Return all Shop Classification.
      */
     public function __invoke(Request $request)
     {
