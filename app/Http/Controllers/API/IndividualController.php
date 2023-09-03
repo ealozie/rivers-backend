@@ -43,7 +43,11 @@ class IndividualController extends Controller
         $validatedData['user_id'] = $user->id;
         $individual = Individual::create($validatedData);
         $user->assignRole('individual');
-        return response()->json(['status' => 'success', 'data' => ['user' => new UserResource($user), 'individual' => new IndividualResource($individual), 'password' => $password]]);
+        return response()->json(['status' => 'success', 'data' => [
+            'user' => new UserResource($user),
+            'individual' => new IndividualResource($individual),
+            'password' => $password
+        ]]);
     }
 
     /**
