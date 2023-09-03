@@ -21,6 +21,7 @@ use App\Http\Controllers\API\MarketNameController;
 use App\Http\Controllers\API\NationalityController;
 use App\Http\Controllers\API\OccupationController;
 use App\Http\Controllers\API\PropertyCategoryController;
+use App\Http\Controllers\API\RegistrationOptionController;
 use App\Http\Controllers\API\ResidentialController;
 use App\Http\Controllers\API\RevenueTypeController;
 use App\Http\Controllers\API\SettlementTypeController;
@@ -33,6 +34,7 @@ use App\Http\Controllers\API\TicketEnforcementController;
 use App\Http\Controllers\API\TicketVendingController;
 use App\Http\Controllers\API\TitleController;
 use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\API\UserVerificationController;
 use App\Http\Controllers\API\WalletFundTransferController;
 use Illuminate\Support\Facades\Route;
 
@@ -59,6 +61,8 @@ Route::prefix('v1')->group(function () {
     Route::get('business-sub-categories/{business_category_id}', BusinessSubCategoryController::class);
     Route::get('classifications', ClassificationController::class);
     Route::get('states', StateController::class);
+    Route::get('registration-options', RegistrationOptionController::class);
+    Route::post('user-verification', UserVerificationController::class);
     //Route::get('demand-notice-categories', DemandNoticeCategoryController::class);
     Route::get('local-government-areas/{state_id}', LocalGovernmentAreaController::class);
     Route::get('market-names', MarketNameController::class);

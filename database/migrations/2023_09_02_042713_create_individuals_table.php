@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('bvn')->nullable();
             $table->string('nin')->nullable();
             $table->string('tin')->nullable();
+            $table->string('registration_option');
             $table->foreignId('nationality_id');
             $table->foreignId('title_id');
             $table->string('surname');
