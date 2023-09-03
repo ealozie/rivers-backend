@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('agency_id');
             $table->string('revenue_name');
             $table->string('revenue_code');
-            $table->double('fixed_fee');
+            $table->double('fixed_fee', 8, 2);
             $table->string('unique_code')->unique();
             $table->foreignId('revenue_type_id');
             $table->foreignId('added_by');

@@ -11,6 +11,7 @@ use App\Http\Controllers\API\ClassificationController;
 use App\Http\Controllers\API\DemandNoticeCategoryController;
 use App\Http\Controllers\API\ForgotPasswordController;
 use App\Http\Controllers\API\GenoTypeController;
+use App\Http\Controllers\API\IncomeRangeController;
 use App\Http\Controllers\API\IndividualController;
 use App\Http\Controllers\API\LocalGovernmentAreaController;
 use App\Http\Controllers\API\LoginController;
@@ -67,6 +68,7 @@ Route::prefix('v1')->group(function () {
     Route::get('revenue-types', RevenueTypeController::class);
     Route::get('settlement-types', SettlementTypeController::class);
     Route::get('blood-groups', BloodGroupController::class);
+    Route::get('income-ranges', IncomeRangeController::class);
     Route::get('geno-types', GenoTypeController::class);
     Route::get('marital-status', MaritalStatusController::class);
     Route::get('titles', TitleController::class);

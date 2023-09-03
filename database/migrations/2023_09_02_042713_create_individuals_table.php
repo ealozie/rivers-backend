@@ -32,7 +32,7 @@ return new class extends Migration
             $table->foreignId('local_government_area_id');
             $table->foreignId('occupation_id');
             $table->double('income_range')->nullable();
-            $table->foreignId('demand_notice_category_id');
+            $table->foreignId('demand_notice_category_id')->nullable();
             $table->string('property_abssin')->nullable();
             $table->timestamps();
         });

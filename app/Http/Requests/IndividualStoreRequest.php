@@ -42,7 +42,7 @@ class IndividualStoreRequest extends FormRequest
             'local_government_area_id' => 'required|exists:local_government_areas,id',
             'occupation_id' => 'required|exists:occupations,id',
             'income_range' => 'required',
-            'demand_notice_category_id' => 'required|exists:demand_notice_categories,id',
+            //'demand_notice_category_id' => 'required|exists:demand_notice_categories,id',
             'property_abssin' => 'required|string',
         ];
     }
