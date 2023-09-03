@@ -34,6 +34,7 @@ use App\Http\Controllers\API\TicketEnforcementController;
 use App\Http\Controllers\API\TicketVendingController;
 use App\Http\Controllers\API\TitleController;
 use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\API\UserFacialBiometricController;
 use App\Http\Controllers\API\UserVerificationController;
 use App\Http\Controllers\API\WalletFundTransferController;
 use Illuminate\Support\Facades\Route;
@@ -62,7 +63,8 @@ Route::prefix('v1')->group(function () {
     Route::get('classifications', ClassificationController::class);
     Route::get('states', StateController::class);
     Route::get('registration-options', RegistrationOptionController::class);
-    Route::post('user-verification', UserVerificationController::class);
+    Route::post('user-registration-verification', UserVerificationController::class);
+    Route::patch('user-facial-biometric', UserFacialBiometricController::class);
     //Route::get('demand-notice-categories', DemandNoticeCategoryController::class);
     Route::get('local-government-areas/{state_id}', LocalGovernmentAreaController::class);
     Route::get('market-names', MarketNameController::class);
@@ -77,7 +79,7 @@ Route::prefix('v1')->group(function () {
     Route::get('marital-status', MaritalStatusController::class);
     Route::get('titles', TitleController::class);
     Route::apiResource('forgot-password', ForgotPasswordController::class)->only(['store', 'update']);
-    Route::apiResource('individual', IndividualController::class);
+    Route::apiResource('individuals', IndividualController::class);
     Route::apiResource('residential-address', ResidentialController::class);
     Route::apiResource('spouse', SpouseController::class);
     Route::apiResource('users', UserController::class)->middleware('auth:sanctum')->only(['index']);

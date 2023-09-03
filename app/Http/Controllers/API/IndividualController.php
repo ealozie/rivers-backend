@@ -9,7 +9,9 @@ use App\Http\Resources\IndividualResource;
 use App\Http\Resources\UserResource;
 use App\Models\Individual;
 use App\Models\User;
+use App\Traits\SendSMS;
 use Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
 /**
@@ -17,6 +19,7 @@ use Illuminate\Support\Str;
  */
 class IndividualController extends Controller
 {
+    use SendSMS;
     /**
      * Display a listing of the resource.
      */
@@ -31,16 +34,45 @@ class IndividualController extends Controller
     public function store(IndividualStoreRequest $request)
     {
         $validatedData = $request->validated();
+
+        //Validate the user Email address
+        $api_key = "j7uIbrpMCgLbmiMSHBDNu";
+        $email = $validatedData['email'];
+        $url = "https://apps.emaillistverify.com/api/verifyEmail?secret=" . $api_key . "&email=" . $email;
+        $response = Http::get($url);
+        if ($response->failed()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Connection to email verification service failed',
+            ], 500);
+        }
+        if ($response->body() != 'ok') {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Invalid email address',
+                'data' => $response->body(),
+            ], 422);
+        }
         $user = new User();
         $user->name = $validatedData['first_name'] . ' ' . $validatedData['surname'];
         $user->email = $validatedData['email'];
+        $user->email_verified_at = now();
         //Generate a random password
         $password = Str::Password(8);
         $user->phone_number = $validatedData['phone_number'];
         $user->role = 'individual';
         $user->password = Hash::make($password);
+        $user->phone_number_verification_code =
+            mt_rand(111111, 999999);
         $user->save();
+        //Send Phone Number Verification Code
+        $phone_number = $user->phone_number;
+        $mobile_number = ltrim($phone_number, "0");
+        $name = $validatedData['first_name'];
+        $message = "Hello {$name},\nYour phone number verification code is " . $user->phone_number_verification_code;
+        $this->send_sms_process_message("+234" . $mobile_number, $message);;
         $validatedData['user_id'] = $user->id;
+        $validatedData['demand_notice_category_id'] = 0;
         $individual = Individual::create($validatedData);
         $user->assignRole('individual');
         return response()->json([
