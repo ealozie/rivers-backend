@@ -5,6 +5,8 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\IndividualStoreRequest;
 use App\Http\Requests\IndividualUpdateRequest;
+use App\Http\Resources\IndividualResource;
+use App\Http\Resources\UserResource;
 use App\Models\Individual;
 use App\Models\User;
 use Hash;
@@ -41,7 +43,7 @@ class IndividualController extends Controller
         $validatedData['user_id'] = $user->id;
         $individual = Individual::create($validatedData);
         $user->assignRole('individual');
-        return response()->json(['status' => 'success', 'data' => ['user' => $user, 'individual' => $individual, 'password' => $password]]);
+        return response()->json(['status' => 'success', 'data' => ['user' => new UserResource($user), 'individual' => new IndividualResource($individual), 'password' => $password]]);
     }
 
     /**
