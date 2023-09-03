@@ -11,17 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('revenue_items', function (Blueprint $table) {
+        Schema::create('demand_notice_category_items', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('agency_id');
-            $table->string('revenue_name');
+            $table->foreignId('demand_notice_category_id');
             $table->string('revenue_code');
-            $table->double('fixed_fee');
-            $table->string('unique_code')->unique();
-            $table->foreignId('revenue_type_id');
+            $table->string('agency_code');
+            $table->double('amount', 8, 2);
+            $table->string('status')->default('active');
             $table->foreignId('added_by');
-            //notes
-            $table->text('notes')->nullable();
             $table->timestamps();
         });
     }
@@ -31,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('revenue_items');
+        Schema::dropIfExists('demand_notice_category_items');
     }
 };

@@ -5,9 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Spouse extends Model
+class Agency extends Model
 {
     use HasFactory;
-
-    protected $fillable = ['individual_id', 'first_name', 'surname', 'middle_name', 'occupation_id', 'phone_number'];
 }
