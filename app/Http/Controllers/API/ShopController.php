@@ -9,6 +9,9 @@ use App\Http\Resources\ShopResource;
 use App\Models\Shop;
 use Illuminate\Http\Request;
 
+/**
+ * @tags Shop Service
+ */
 class ShopController extends Controller
 {
     /**
