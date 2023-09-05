@@ -25,6 +25,7 @@ use App\Http\Controllers\API\RegistrationOptionController;
 use App\Http\Controllers\API\ResidentialController;
 use App\Http\Controllers\API\RevenueTypeController;
 use App\Http\Controllers\API\SettlementTypeController;
+use App\Http\Controllers\API\ShopController;
 use App\Http\Controllers\API\SpouseController;
 use App\Http\Controllers\API\StateController;
 use App\Http\Controllers\API\TicketAgentCategoryController;
@@ -82,6 +83,7 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('individuals', IndividualController::class);
     Route::apiResource('residential-address', ResidentialController::class);
     Route::apiResource('spouse', SpouseController::class);
+    Route::apiResource('shops', ShopController::class);
     Route::apiResource('users', UserController::class)->middleware('auth:sanctum')->only(['index']);
     Route::apiResource('ticket-vending', TicketVendingController::class)->middleware('auth:sanctum')->only(['index', 'store', 'show']);
     Route::apiResource('ticket-bulk-vending', TicketBulkVendingController::class)->middleware('auth:sanctum')->only(['store', 'show', 'index']);
