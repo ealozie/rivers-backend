@@ -3,6 +3,10 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ShopStoreRequest;
+use App\Http\Requests\ShopUpdateRequest;
+use App\Http\Resources\ShopResource;
+use App\Models\Shop;
 use Illuminate\Http\Request;
 
 class ShopController extends Controller
@@ -12,15 +16,22 @@ class ShopController extends Controller
      */
     public function index()
     {
-        //
+    
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(ShopStoreRequest $request)
     {
-        //
+        $validatedData = $request->validated();
+        $shop = Shop::firstOrCreate($validatedData);
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Shop added successfully.',
+            'data' => new ShopResource($shop)
+        ]);
+
     }
 
     /**
@@ -28,15 +39,27 @@ class ShopController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $shop = Shop::find($id);
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Shop added successfully.',
+            'data' => new ShopResource($shop)
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(ShopUpdateRequest $request, string $id)
     {
-        //
+        $validatedData = $request->validated();
+        $shop = Shop::find($id);
+        $shop->update($validatedData);
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Shop added successfully.',
+            'data' => new ShopResource($shop)
+        ]);
     }
 
     /**

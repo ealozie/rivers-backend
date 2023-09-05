@@ -11,7 +11,7 @@ class ShopStoreRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,20 @@ class ShopStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => 'required',
+            'zone' => 'sometimes|string',
+            'shop_number' => 'sometimes|string',
+            'location' => 'sometimes|string',
+            'market_name_id' => 'required',
+            'street_name' => 'sometimes|string',
+            'street_number' => 'sometimes|string',
+            'city' => 'sometimes|string',
+            'local_government_area_id' => 'required',
+            'business_category_id' => 'required',
+            'business_sub_category_id' => 'required',
+            'classification_id' => 'required',
+            'user_id' => 'required',
+            'notes' => 'sometimes|string',
         ];
     }
 }
