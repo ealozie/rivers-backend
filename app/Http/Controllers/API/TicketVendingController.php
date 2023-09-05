@@ -27,7 +27,7 @@ class TicketVendingController extends Controller
      */
     public function index(Request $request)
     {
-        $ticket_vending = TicketVending::where('user_id', $request->user()->id)->latest()->get();
+        $ticket_vending = TicketVending::where('user_id', $request->user()->id)->latest()->paginate(10);
         if (!count($ticket_vending)) {
             return response()->json([
                 'status' => 'error',
