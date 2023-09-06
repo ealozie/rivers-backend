@@ -17,6 +17,7 @@ class TicketAgentCategoryResource extends JsonResource
         return [
             'id' => $this->id,
             'ticket_category' => $this->ticket_category->category_name,
+            'ticket_amount' => $this->ticket_category->amount,
             'discount' => (int) $this->discount,
             'status' => $this->status,
             'created_at' => (string) $this->created_at,
