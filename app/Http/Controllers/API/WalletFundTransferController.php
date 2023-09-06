@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\TicketAgent;
 use App\Models\TicketAgentWallet;
 use App\Models\User;
+use App\Traits\SendSMS;
 use Illuminate\Http\Request;
 
 /**
@@ -13,6 +14,7 @@ use Illuminate\Http\Request;
  */
 class WalletFundTransferController extends Controller
 {
+    use SendSMS;
     /**
      * Initiate the transfer request.
      *
@@ -32,6 +34,13 @@ class WalletFundTransferController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'You are not allowed to process tickets. Contact the administrator for assistance.',
+            ], 403);
+        }
+
+        if ($user->phone_number == $validatedData['phone_number']) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'You are not allowed to transfer fund to yourself.',
             ], 403);
         }
 
