@@ -9,7 +9,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 
 /**
- * @tags Wallet Fund Transfer Service
+ * @tags Ticket Wallet Fund Transfer Service
  */
 class WalletFundTransferController extends Controller
 {
