@@ -149,6 +149,7 @@ class TicketVendingController extends Controller
             $ticket_vending->agent_discount = $ticket_agent->discount;
             $ticket_vending->ticket_agent_id = $ticket_agent->id;
             $ticket_vending->user_id = $user->id;
+            $ticket_vending->phone_number = $requestData['phone_number'];
             $ticket_vending->expired_at = $ticket_category->expired_at;
             $ticket_vending->ticket_status = 'active';
             $ticket_vending->ticket_reference_number = strtoupper(uniqid('AKSIGR')) . date('YmdHis');
