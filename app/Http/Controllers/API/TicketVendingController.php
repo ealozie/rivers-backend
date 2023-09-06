@@ -28,15 +28,29 @@ class TicketVendingController extends Controller
      */
     public function index(Request $request)
     {
-        $ticket_vending = TicketVending::where('user_id', $request->user()->id)->latest()->paginate(10);
+        $limit = 10;
+        $offset = 0;
+        if ($request->has('limit')) {
+            $limit = $request->get('limit');
+        }
+        if ($request->has('offset')) {
+            $offset = $request->get('offset');
+        }
+        $ticket_vending = TicketVending::where('user_id', $request->user()->id)->latest()->offset($offset)->limit($limit)->get();
+        $total_number_of_records = TicketVending::where('user_id', $request->user()->id)->count();
         if (!count($ticket_vending)) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'No ticket vending found.',
             ], 404);
         }
-        $ticket_collection = new TicketVendingCollection($ticket_vending);
-        return $ticket_collection;
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'ticket_vending_data' => TicketVendingResource::collection($ticket_vending),
+                'total_number_of_records' => $total_number_of_records
+            ]
+        ]);
     }
 
     /**
