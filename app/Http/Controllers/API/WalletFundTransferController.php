@@ -47,6 +47,13 @@ class WalletFundTransferController extends Controller
         //Check if wallet value is enough to transfer
         $wallet_balance = $ticket_agent->wallet_balance;
         $amount = $validatedData['amount'];
+        if (!$ticket_agent->can_transfer_wallet_fund) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'You do not have the ability to transfer wallet funds.',
+            ], 403);
+        }
+
         if ($wallet_balance < $amount) {
             return response()->json([
                 'status' => 'error',
