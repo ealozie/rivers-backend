@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\TicketBulkVendingCollection;
 use App\Http\Resources\TicketBulkVendingResource;
 use App\Models\CommercialVehicle;
 use App\Models\TicketAgent;
@@ -33,11 +34,8 @@ class TicketBulkVendingController extends Controller
                 'message' => 'No ticket vending found.',
             ], 404);
         }
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Ticket vending list retrieved successfully.',
-            'data' => TicketBulkVendingResource::collection($ticket_bulk_vending),
-        ], 200);
+        $ticket_bulk_collection = new TicketBulkVendingCollection($ticket_bulk_vending);
+        return $ticket_bulk_collection;
     }
 
     /**

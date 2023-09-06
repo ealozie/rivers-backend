@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Resources\TicketVendingCollection;
 use App\Http\Resources\TicketVendingResource;
 use App\Models\CommercialVehicle;
 use App\Models\TicketAgent;
@@ -12,6 +12,7 @@ use App\Models\TicketAgentWallet;
 use App\Models\TicketCategory;
 use App\Models\TicketVending;
 use App\Traits\SendSMS;
+use Illuminate\Http\Request;
 
 /**
  * @tags Ticket Vending Service
@@ -34,11 +35,8 @@ class TicketVendingController extends Controller
                 'message' => 'No ticket vending found.',
             ], 404);
         }
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Ticket vending list retrieved successfully.',
-            'data' => TicketVendingResource::collection($ticket_vending),
-        ], 200);
+        $ticket_collection = new TicketVendingCollection($ticket_vending);
+        return $ticket_collection;
     }
 
     /**
