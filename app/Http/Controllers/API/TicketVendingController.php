@@ -24,7 +24,8 @@ class TicketVendingController extends Controller
      * Get all resource.
      *
      * Authorization header is required to be set to Bearer `<token>` <br>
-     * Return list of all ticket categories that been vended by current authenticated agent.
+     * Return list of all ticket categories that been vended by current authenticated agent. <br>
+     * Additional Query parameter are `limit` and `offset`
      */
     public function index(Request $request)
     {
@@ -48,7 +49,7 @@ class TicketVendingController extends Controller
             'status' => 'success',
             'data' => [
                 'ticket_vending_data' => TicketVendingResource::collection($ticket_vending),
-                'total_number_of_records' => $total_number_of_records
+                'total_number_of_records' => (int) $total_number_of_records
             ]
         ]);
     }
