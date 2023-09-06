@@ -25,7 +25,7 @@ class TicketBulkVendingResource extends JsonResource
             'ticket_status' => $this->status,
             'expire_at' => date('h:ia', strtotime($this->expired_at)),
             'expire_at_time' => Carbon::parse($this->expired_at)->diffForHumans(),
-            'created_at' => $this->created_at,
+            'created_at' => (string) $this->created_at,
             'time_created' => $this->created_at->diffForHumans(),
         ];
     }
