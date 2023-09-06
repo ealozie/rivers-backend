@@ -94,7 +94,7 @@ class ForgotPasswordController extends Controller
         $password_code->is_active = false;
         $password_code->save();
         $user = User::where('phone_number', $password_code->phone_number)->first();
-        $user->update(bcrypt($request_data['password']));
+        $user->update(['password' => bcrypt($request_data['password'])]);
         return response()->json([
             'status' => 'success',
             'message' => 'Password has been successfully reset.'
