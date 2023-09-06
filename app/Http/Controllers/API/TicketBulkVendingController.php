@@ -91,7 +91,7 @@ class TicketBulkVendingController extends Controller
 
         //Check if category accept multiple and if agent has purchased for that day.
         $ticket_category = TicketCategory::find($response_data['category_id']);
-        if ($ticket_category->allow_multiple_ticket_purchase) {
+        if ((int)$ticket_category->allow_multiple_ticket_purchase) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'You are not allowed to vend a ticket category that support multiple purchase.',
