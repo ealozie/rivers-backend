@@ -16,7 +16,8 @@ use Illuminate\Http\Request;
 class TicketEnforcementController extends Controller
 {
     /**
-     * Return all enforcements.<br>
+     * Return all enforcements.
+     * 
      * Query paramters `plate_number` or `ticket_category_id`
      */
     public function index(Request $request)
