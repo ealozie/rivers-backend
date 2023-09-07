@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -24,8 +25,6 @@ class LoginController extends Controller
             'phone_number' => ['required'],
             'password' => ['required'],
         ]);
-        $credentials['status'] = 1;
-
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
             $token = $user->createToken('igr_system_auth_token')->plainTextToken;

@@ -65,26 +65,11 @@ class TicketVendingController extends Controller
         $requestData = $request->validate([
             'plate_number' => 'required|string',
             'phone_number' => 'required|string',
-            'ticket_category_id' => 'sometimes|required|integer'
+            'ticket_category_id' => 'required|string'
         ]);
-        $plate_number = strtoupper($requestData['plate_number']);
         $phone_number = $requestData['phone_number'];
-
-        $commercial_vehicle = CommercialVehicle::where('plate_number', $plate_number)->first();
-        if (!$commercial_vehicle && !$request->has('ticket_category_id')) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Plate number not found. Select a ticket category to continue.',
-            ], 404);
-        }
-        $response_data = [];
         $ticket_category_id = $requestData['ticket_category_id'];
-        $response_data['category_id'] = $ticket_category_id;
-        $is_enumerated = false;
-        if ($commercial_vehicle) {
-            $response_data['category_id'] = $commercial_vehicle->category_id;
-            $is_enumerated = true;
-        }
+        
         //Check if user is an agent
         $user = $request->user();
         $ticket_agent = TicketAgent::where('user_id', $user->id)->first();
@@ -95,7 +80,7 @@ class TicketVendingController extends Controller
             ], 403);
         }
         //Check if agent is allowed to vend ticket
-        $ticket_agent_category = TicketAgentCategory::where('ticket_agent_id', $ticket_agent->id)->where('ticket_category_id', $response_data['category_id'])->first();
+        $ticket_agent_category = TicketAgentCategory::where('ticket_agent_id', $ticket_agent->id)->where('ticket_category_id', $ticket_category_id)->first();
         if (!$ticket_agent_category) {
             return response()->json([
                 'status' => 'error',

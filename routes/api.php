@@ -37,6 +37,7 @@ use App\Http\Controllers\API\TitleController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\UserFacialBiometricController;
 use App\Http\Controllers\API\UserVerificationController;
+use App\Http\Controllers\API\VehicleEnumerationVerificationController;
 use App\Http\Controllers\API\WalletFundTransferController;
 use Illuminate\Support\Facades\Route;
 
@@ -87,8 +88,9 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('users', UserController::class)->middleware('auth:sanctum')->only(['index']);
     Route::apiResource('ticket-vending', TicketVendingController::class)->middleware('auth:sanctum')->only(['index', 'store', 'show']);
     Route::apiResource('ticket-bulk-vending', TicketBulkVendingController::class)->middleware('auth:sanctum')->only(['store', 'show', 'index']);
-    Route::post('ticket-enforcement', TicketEnforcementController::class)->middleware('auth:sanctum');
+    Route::apiResource('ticket-enforcements', TicketEnforcementController::class)->middleware('auth:sanctum');
     Route::get('ticket-categories', TicketCategoryController::class);
+    Route::post('vehicle-enumeration-verifications', VehicleEnumerationVerificationController::class)->middleware('auth:sanctum');
     Route::get('ticket-agent-categories', TicketAgentCategoryController::class)->middleware('auth:sanctum');
     Route::post('wallet-fund-transfer', WalletFundTransferController::class)->middleware('auth:sanctum');
     //Route::apiResource('users', UserController::class);
