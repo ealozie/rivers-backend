@@ -19,11 +19,21 @@ class TicketEnforcementController extends Controller
      * Return all enforcements.
      * 
      * Query paramters `plate_number` or `ticket_category_id`
+     * Additonal Query paramters `limit` and `offset`
      */
     public function index(Request $request)
     {
     
         $user = $request->user();
+
+        $limit = 10;
+        $offset = 0;
+        if ($request->has('limit')) {
+            $limit = (int) $request->get('limit');
+        }
+        if ($request->has('offset')) {
+            $offset = (int) $request->get('offset');
+        }
 
         $ticket_agent = TicketAgent::where('user_id', $user->id)->first();
 
@@ -34,26 +44,35 @@ class TicketEnforcementController extends Controller
             ], 403);
         }
 
-        $ticket_enforcements = TicketEnforcement::where('ticket_agent_id', $ticket_agent->id)->get();
+        $ticket_enforcements = TicketEnforcement::where('ticket_agent_id', $ticket_agent->id)->latest()->offset($offset)->limit($limit)->get();
+        $total_number_of_records = TicketEnforcement::where('ticket_agent_id', $ticket_agent->id)->count();
 
         if ($request->has('plate_number')) {
             $plate_number = $request->get('plate_number');
-            $ticket_enforcements = TicketEnforcement::where('ticket_agent_id', $ticket_agent->id)->where('plate_number', $plate_number)->get();
+            $ticket_enforcements = TicketEnforcement::where('ticket_agent_id', $ticket_agent->id)->where('plate_number', $plate_number)->latest()->offset($offset)->limit($limit)->get();
+            $total_number_of_records = TicketEnforcement::where('ticket_agent_id', $ticket_agent->id)->where('plate_number', $plate_number)->count();
         }
 
         if ($request->has('ticket_category_id')) {
             $ticket_category_id = $request->get('ticket_category_id');
-            $ticket_enforcements = TicketEnforcement::where('ticket_agent_id', $ticket_agent->id)->where('ticket_category_id', $ticket_category_id)->get();
+            $ticket_enforcements = TicketEnforcement::where('ticket_agent_id', $ticket_agent->id)->where('ticket_category_id', $ticket_category_id)->latest()->offset($offset)->limit($limit)->get();
+            $total_number_of_records = TicketEnforcement::where('ticket_agent_id', $ticket_agent->id)->where('ticket_category_id', $ticket_category_id)->count();
         }
 
         if ($request->has('plate_number') && $request->has('ticket_category_id')) {
             $plate_number = $request->get('plate_number');
             $ticket_category_id = $request->get('ticket_category_id');
-            $ticket_enforcements = TicketEnforcement::where('ticket_agent_id', $ticket_agent->id)->where('plate_number', $plate_number)->where('ticket_category_id', $ticket_category_id)->get();
+            $ticket_enforcements = TicketEnforcement::where('ticket_agent_id', $ticket_agent->id)->where('plate_number', $plate_number)->where('ticket_category_id', $ticket_category_id)->latest()->offset($offset)->limit($limit)->get();
+            $total_number_of_records = TicketEnforcement::where('ticket_agent_id', $ticket_agent->id)->where('plate_number', $plate_number)->where('ticket_category_id', $ticket_category_id)->count();
         }
-
-        return TicketEnforcementResource::collection($ticket_enforcements);
-
+        
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'ticket_enforcement_data' => TicketEnforcementResource::collection($ticket_enforcements),
+                'total_number_of_records' => (int) $total_number_of_records
+            ]
+        ]);
     }
 
     /**
