@@ -18,7 +18,7 @@ class TicketEnforcementResource extends JsonResource
             'plate_number' => $this->plate_number,
             'ticket_category' => $this->ticket_category->category_name ?? '', 
             'response' => json_decode($this->response),
-            'created_at' => $this->created_at,
+            'created_at' => (string) $this->created_at,
             'status' => $this->status
         ];
     }
