@@ -18,7 +18,7 @@ class TicketEnforcementController extends Controller
     /**
      * Return all enforcements.
      * 
-     * Query paramters `plate_number` or `ticket_category_id`
+     * Query paramters `plate_number` or `ticket_category_id`.<br>
      * Additonal Query paramters `limit` and `offset`
      */
     public function index(Request $request)
