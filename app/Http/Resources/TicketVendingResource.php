@@ -18,15 +18,14 @@ class TicketVendingResource extends JsonResource
         return [
             'id' => $this->id,
             'plate_number' => $this->plate_number,
-            'ticket_category' => $this->ticket_category->category_name,
+            'ticket_category' => $this->ticket_category->category_name ?? '',
             'amount' => number_format($this->amount, 2),
-            'agent' => $this->user->name,
+            'agent' => $this->user->name ?? '',
             'ticket_reference_number' => $this->ticket_reference_number,
             'ticket_status' => $this->ticket_status,
             'expire_at' => date('h:ia', strtotime($this->expired_at)),
             'expire_at_time' => Carbon::parse($this->expired_at)->diffForHumans(),
             'created_at' => (string) $this->created_at,
-            'time_created' => $this->created_at->diffForHumans(),
         ];
     }
 }
