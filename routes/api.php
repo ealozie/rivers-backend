@@ -36,6 +36,7 @@ use App\Http\Controllers\API\TicketVendingController;
 use App\Http\Controllers\API\TitleController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\UserFacialBiometricController;
+use App\Http\Controllers\API\UserUpdatePasswordController;
 use App\Http\Controllers\API\UserVerificationController;
 use App\Http\Controllers\API\VehicleEnumerationVerificationController;
 use App\Http\Controllers\API\WalletFundTransferController;
@@ -56,6 +57,7 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('v1')->group(function () {
     Route::post('login', LoginController::class);
     Route::post('logout', LogoutController::class)->middleware('auth:sanctum');
+    Route::post('update-password', UserUpdatePasswordController::class)->middleware('auth:sanctum');
     Route::get('app-settings', AppSettingController::class)->middleware('auth:sanctum');
     Route::get('assessment-years', AssessmentYearController::class);
     Route::get('business-levels', BusinessLevelController::class);
