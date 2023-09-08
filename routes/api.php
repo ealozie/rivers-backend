@@ -67,7 +67,7 @@ Route::prefix('v1')->group(function () {
     Route::get('classifications', ClassificationController::class);
     Route::get('states', StateController::class);
     Route::get('registration-options', RegistrationOptionController::class);
-    Route::post('user-registration-verification', UserVerificationController::class);
+    Route::post('user-registration-verification', UserVerificationController::class)->middleware('auth:sanctum');
     Route::patch('user-facial-biometric', UserFacialBiometricController::class);
     //Route::get('demand-notice-categories', DemandNoticeCategoryController::class);
     Route::get('local-government-areas/{state_id}', LocalGovernmentAreaController::class);
