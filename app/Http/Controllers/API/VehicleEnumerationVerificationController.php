@@ -54,9 +54,9 @@ class VehicleEnumerationVerificationController extends Controller
         $ticket_agent_category = TicketAgentCategory::where('ticket_agent_id', $ticket_agent->id)->where('ticket_category_id', $commercial_vehicle->ticket_category_id)->first();
         (bool) $status = false;
         if ($ticket_agent_category) {
-            return true;
+            $status = true;
         } else {
-            return false;
+            $status = false;
         }
         return response()->json([
                 'status' => 'success',
