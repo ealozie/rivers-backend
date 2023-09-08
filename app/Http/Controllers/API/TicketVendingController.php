@@ -69,6 +69,7 @@ class TicketVendingController extends Controller
         ]);
         $phone_number = $requestData['phone_number'];
         $ticket_category_id = $requestData['ticket_category_id'];
+        $plate_number = $requestData['plate_number'];
         
         //Check if user is an agent
         $user = $request->user();
@@ -89,10 +90,10 @@ class TicketVendingController extends Controller
         }
 
         //Check if category accept multiple and if agent has purchased for that day.
-        $ticket_category = TicketCategory::find($response_data['category_id']);
+        $ticket_category = TicketCategory::find($ticket_category_id);
 
         if (!$ticket_category->allow_multiple_ticket_purchase) {
-            $ticket_vending = TicketVending::where('plate_number', $plate_number)->where('ticket_category_id', $response_data['category_id'])->whereDate('created_at', date('Y-m-d'))->first();
+            $ticket_vending = TicketVending::where('plate_number', $plate_number)->where('ticket_category_id', $ticket_category_id)->whereDate('created_at', date('Y-m-d'))->first();
             if ($ticket_vending) {
                 return response()->json([
                     'status' => 'error',
@@ -128,13 +129,13 @@ class TicketVendingController extends Controller
         try {
             $ticket_vending = new TicketVending();
             $ticket_vending->plate_number = $plate_number;
-            $ticket_vending->ticket_category_id = $response_data['category_id'];
+            $ticket_vending->ticket_category_id = $ticket_category_id;
             $ticket_vending->amount = $ticket_price;
             $ticket_vending->ticket_amount = $ticket_actual_price;
             $ticket_vending->agent_discount = $ticket_agent->discount;
             $ticket_vending->ticket_agent_id = $ticket_agent->id;
             $ticket_vending->user_id = $user->id;
-            $ticket_vending->phone_number = $requestData['phone_number'];
+            $ticket_vending->phone_number = $phone_number;
             $ticket_vending->expired_at = $ticket_category->expired_at;
             $ticket_vending->ticket_status = 'active';
             $ticket_vending->ticket_reference_number = strtoupper(uniqid('AKSIGR')) . date('YmdHis');
@@ -167,7 +168,6 @@ class TicketVendingController extends Controller
             'status' => 'success',
             'message' => 'Ticket purchased successfully.',
             'data' => [
-                'is_enumerated' => $is_enumerated,
                 'ticket' => new TicketVendingResource($ticket_vending),
             ]
         ], 200);
