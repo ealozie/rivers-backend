@@ -80,17 +80,20 @@ class TicketVendingController extends Controller
                 'message' => 'You are not allowed to process tickets. Contact the administrator for assistance.',
             ], 403);
         }
+
+        //Check if category accept multiple and if agent has purchased for that day.
+        $ticket_category = TicketCategory::find($ticket_category_id);
+        $category_name = $ticket_category->category_name;
         //Check if agent is allowed to vend ticket
         $ticket_agent_category = TicketAgentCategory::where('ticket_agent_id', $ticket_agent->id)->where('ticket_category_id', $ticket_category_id)->first();
         if (!$ticket_agent_category) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'You are not allowed to vend this ticket  category.',
+                'message' => "You cannot vend for {$category_name} ticket  category.",
             ], 403);
         }
 
-        //Check if category accept multiple and if agent has purchased for that day.
-        $ticket_category = TicketCategory::find($ticket_category_id);
+        
 
         if (!$ticket_category->allow_multiple_ticket_purchase) {
             $ticket_vending = TicketVending::where('plate_number', $plate_number)->where('ticket_category_id', $ticket_category_id)->whereDate('created_at', date('Y-m-d'))->first();

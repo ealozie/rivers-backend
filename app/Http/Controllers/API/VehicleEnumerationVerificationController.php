@@ -39,7 +39,7 @@ class VehicleEnumerationVerificationController extends Controller
         if (!$commercial_vehicle) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Plate number not found.',
+                'message' => 'Plate Number not enumerated, select category',
                 'data' => [
                     'phone_number' => null,
                     'plate_number' => $plate_number,
