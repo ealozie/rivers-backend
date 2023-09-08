@@ -52,15 +52,20 @@ class VehicleEnumerationVerificationController extends Controller
         $user = User::find($commercial_vehicle->user_id);
         //Check if agent is allowed to vend ticket
         $ticket_agent_category = TicketAgentCategory::where('ticket_agent_id', $ticket_agent->id)->where('ticket_category_id', $commercial_vehicle->ticket_category_id)->first();
-
+        (bool) $status = false;
+        if ($ticket_agent_category) {
+            return true;
+        } else {
+            return false;
+        }
         return response()->json([
                 'status' => 'success',
                 'message' => 'Plate number found.',
                 'data' => [
                     'phone_number' => $user->phone_number,
                     'plate_number' => $plate_number,
-                    'ticket_category_id' => $commercial_vehicle->ticket_category_id,
-                    'is_agent_allowed_to_vend_this_ticket_category' => $ticket_agent_category ? true : false
+                    'ticket_category_id' => (int) $commercial_vehicle->ticket_category_id,
+                    'is_agent_allowed_to_vend_this_ticket_category' => $status
                 ],
             ], 200);
     }
