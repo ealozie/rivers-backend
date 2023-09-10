@@ -5,6 +5,9 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+/**
+ * @tags Individual & Cooperate User Enumeration Verification Service
+ */
 class UserVerificationController extends Controller
 {
     /**
