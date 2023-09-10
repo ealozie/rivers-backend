@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class DemandNoticeCategory extends Model
 {
     use HasFactory;
+
+
 }

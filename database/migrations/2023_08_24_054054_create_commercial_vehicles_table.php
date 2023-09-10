@@ -23,13 +23,13 @@ return new class extends Migration
             $table->foreignId('ticket_category_id')->nullable();
             $table->string('capacity')->nullable();
             $table->string('routes')->nullable();
-            $table->string('driver_id')->nullable();
+            $table->foreignId('driver_id')->nullable(); //User ID
             $table->string('driver_license_number')->nullable();
-            $table->string('driver_license_expiry_date')->nullable();
+            $table->date('driver_license_expiry_date')->nullable();
             $table->string('driver_license_image')->nullable();
             $table->integer('permit_renewal_count')->nullable();
             $table->string('permit_number')->nullable();
-            $table->string('permit_expiry_date')->nullable();
+            $table->date('permit_expiry_date')->nullable();
             $table->string('permit_image')->nullable();
             $table->text('note')->nullable();
             $table->string('status')->nullable();
