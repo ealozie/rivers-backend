@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 /**
- * @tags Individual & Cooperate User Enumeration Verification Service
+ * @tags User Enumeration (Individual & Cooperate) Verification Service
  */
 class UserVerificationController extends Controller
 {
