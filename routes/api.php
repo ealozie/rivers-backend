@@ -9,6 +9,7 @@ use App\Http\Controllers\API\BusinessSubCategoryController;
 use App\Http\Controllers\API\BusinessTypeController;
 use App\Http\Controllers\API\ClassificationController;
 use App\Http\Controllers\API\CommercialVehicleController;
+use App\Http\Controllers\API\CooperateController;
 use App\Http\Controllers\API\DemandNoticeCategoryController;
 use App\Http\Controllers\API\ForgotPasswordController;
 use App\Http\Controllers\API\GenoTypeController;
@@ -91,6 +92,7 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('residential-address', ResidentialController::class);
     Route::apiResource('spouse', SpouseController::class);
     Route::apiResource('shops', ShopController::class);
+    Route::apiResource('cooperates', CooperateController::class);
     Route::apiResource('commercial-vehicles', CommercialVehicleController::class);
     Route::apiResource('properties', PropertyController::class);
     Route::apiResource('property-types', PropertyTypeController::class);
