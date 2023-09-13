@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\AppSettingController;
+use App\Http\Controllers\API\AssessmentController;
 use App\Http\Controllers\API\AssessmentYearController;
 use App\Http\Controllers\API\BloodGroupController;
 use App\Http\Controllers\API\BusinessCategoryController;
@@ -31,6 +32,7 @@ use App\Http\Controllers\API\ResidentialController;
 use App\Http\Controllers\API\RevenueTypeController;
 use App\Http\Controllers\API\SettlementTypeController;
 use App\Http\Controllers\API\ShopController;
+use App\Http\Controllers\API\SignageController;
 use App\Http\Controllers\API\SpouseController;
 use App\Http\Controllers\API\StateController;
 use App\Http\Controllers\API\TicketAgentCategoryController;
@@ -92,12 +94,15 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('residential-address', ResidentialController::class);
     Route::apiResource('spouse', SpouseController::class);
     Route::apiResource('shops', ShopController::class);
+    Route::apiResource('signage', SignageController::class);
+    Route::apiResource('assessments', AssessmentController::class);
     Route::apiResource('cooperates', CooperateController::class);
     Route::apiResource('commercial-vehicles', CommercialVehicleController::class);
     Route::apiResource('properties', PropertyController::class);
     Route::apiResource('property-types', PropertyTypeController::class);
     Route::apiResource('property-uses', PropertyUseController::class);
     Route::apiResource('users', UserController::class)->middleware('auth:sanctum')->only(['index']);
+    Route::post('user-verification', [UserController::class, 'user_verification']);
     Route::apiResource('ticket-vending', TicketVendingController::class)->middleware('auth:sanctum')->only(['index', 'store', 'show']);
     Route::apiResource('ticket-bulk-vending', TicketBulkVendingController::class)->middleware('auth:sanctum')->only(['store', 'show', 'index']);
     Route::apiResource('ticket-enforcements', TicketEnforcementController::class)->middleware('auth:sanctum');

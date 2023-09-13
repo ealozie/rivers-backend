@@ -11,7 +11,7 @@ class SignageStoreRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,16 @@ class SignageStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'height_in_meters' => 'required|numeric',
+            'width_in_meters' => 'required|numeric',
+            'longitude' => 'required|numeric',
+            'latitude' => 'required|numeric',
+            'street_name' => 'required|string',
+            'street_number' => 'required|string',
+            'city' => 'required|string',
+            'local_government_area_id' => 'required|exists:local_government_areas,id',
+            'user_id' => 'required|exists:users,id',
+            'notes' => 'nullable|string',
         ];
     }
 }

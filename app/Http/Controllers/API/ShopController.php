@@ -7,7 +7,6 @@ use App\Http\Requests\ShopStoreRequest;
 use App\Http\Requests\ShopUpdateRequest;
 use App\Http\Resources\ShopResource;
 use App\Models\Shop;
-use Illuminate\Http\Request;
 
 /**
  * @tags Shop Service
@@ -19,7 +18,6 @@ class ShopController extends Controller
      */
     public function index()
     {
-    
     }
 
     /**
@@ -34,7 +32,6 @@ class ShopController extends Controller
             'message' => 'Shop added successfully.',
             'data' => new ShopResource($shop)
         ]);
-
     }
 
     /**

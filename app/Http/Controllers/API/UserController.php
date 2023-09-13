@@ -55,4 +55,11 @@ class UserController extends Controller
     {
         //
     }
+
+    public function user_verification(Request $request)
+    {
+        $request->validate([
+            'user_unique_id' => 'required',
+        ]);
+    }
 }
