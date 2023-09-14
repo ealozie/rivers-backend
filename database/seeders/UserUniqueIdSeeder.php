@@ -16,9 +16,9 @@ class UserUniqueIdSeeder extends Seeder
         $unique_ids = [];
         $users = \App\Models\User::all();
         foreach ($users as $user) {
-            $unique_id = mt_rand(1000000000, 9999999999);
+            $unique_id = abs(mt_rand(1000000000, 9999999999));
             while (in_array($unique_id, $unique_ids)) {
-                $unique_id = mt_rand(1000000000, 9999999999);
+                $unique_id = abs(mt_rand(1000000000, 9999999999));
             }
             $unique_ids[] = $unique_id;
             $user->unique_id = $unique_id;
