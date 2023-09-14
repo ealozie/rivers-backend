@@ -13,15 +13,15 @@ class UserUniqueIdSeeder extends Seeder
     public function run(): void
     {
         //generate unique id of 10 digits for each user without repetition
-        $unique_ids = [];
+        //$unique_ids = [];
         $users = \App\Models\User::all();
         foreach ($users as $user) {
-            $unique_id = random_int(1000000000, 9999999999);
-            while (in_array($unique_id, $unique_ids)) {
-                $unique_id = random_int(1000000000, 9999999999);
-            }
-            $unique_ids[] = $unique_id;
-            $user->unique_id = $unique_id;
+            // $unique_id = random_int($min, $max);
+            // while (in_array($unique_id, $unique_ids)) {
+            //     $unique_id = random_int($max, $min);
+            // }
+            //$unique_ids[] = $unique_id;
+            $user->unique_id = time() + $user->id;
             $user->save();
         }
     }
