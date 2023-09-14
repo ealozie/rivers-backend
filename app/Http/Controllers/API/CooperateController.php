@@ -57,9 +57,9 @@ class CooperateController extends Controller
             //generate unique 10 digit number for user without repeating;
             $users = User::select('unique_id')->pluck('unique_id');
             $users_unique_ids = $users->toArray();
-            $unique_id = abs(mt_rand(1000000000, 9999999999));
+            $unique_id = random_int(1000000000, 9999999999);
             while (in_array($unique_id, $users_unique_ids)) {
-                $unique_id = abs(mt_rand(1000000000, 9999999999));
+                $unique_id = random_int(1000000000, 9999999999);
             }
             $user = new User();
             $user->name = $validatedData['business_name'];
