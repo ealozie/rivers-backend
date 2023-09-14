@@ -13,13 +13,16 @@ return new class extends Migration
     {
         Schema::create('assessments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id');
+            $table->foreignId('user_id')->nullable();
+            $table->foreignId('revenue_item_id');
+            $table->foreignId('agency_id');
             $table->string('full_name');
-            $table->string('email');
+            $table->string('email')->nullable();
             $table->string('phone_number');
             $table->string('contact_address')->nullable();
             $table->double('amount')->nullable();
             $table->string('assessment_reference')->nullable();
+            $table->string('receipt_number')->nullable();
             $table->foreignId('assessment_year_id');
             $table->string('status')->default('pending');
             $table->string('payment_status')->default('pending');

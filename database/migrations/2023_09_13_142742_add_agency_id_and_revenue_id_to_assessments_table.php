@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            // $table->string('unique_id')->after('id')->nullable();
+        Schema::table('assessments', function (Blueprint $table) {
+            $table->foreignId('agency_id')->nullable();
         });
     }
 
@@ -21,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
+        Schema::table('assessments', function (Blueprint $table) {
             //
         });
     }

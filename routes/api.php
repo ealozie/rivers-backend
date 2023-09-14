@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\AgencyController;
 use App\Http\Controllers\API\AppSettingController;
 use App\Http\Controllers\API\AssessmentController;
 use App\Http\Controllers\API\AssessmentYearController;
@@ -29,6 +30,7 @@ use App\Http\Controllers\API\PropertyTypeController;
 use App\Http\Controllers\API\PropertyUseController;
 use App\Http\Controllers\API\RegistrationOptionController;
 use App\Http\Controllers\API\ResidentialController;
+use App\Http\Controllers\API\RevenueItemController;
 use App\Http\Controllers\API\RevenueTypeController;
 use App\Http\Controllers\API\SettlementTypeController;
 use App\Http\Controllers\API\ShopController;
@@ -95,7 +97,9 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('spouse', SpouseController::class);
     Route::apiResource('shops', ShopController::class);
     Route::apiResource('signage', SignageController::class);
-    Route::apiResource('assessments', AssessmentController::class);
+    Route::apiResource('assessments', AssessmentController::class)->only(['index', 'store', 'show', 'destroy']);
+    Route::apiResource('agencies', AgencyController::class)->only(['index']);
+    Route::get('revenue-items-agency/{agency_id}', [RevenueItemController::class, 'revenue_item_agency']);
     Route::apiResource('cooperates', CooperateController::class);
     Route::apiResource('commercial-vehicles', CommercialVehicleController::class);
     Route::apiResource('properties', PropertyController::class);

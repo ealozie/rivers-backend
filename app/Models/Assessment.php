@@ -21,5 +21,7 @@ class Assessment extends Model
         'status',
         'payment_status',
         'added_by',
+        'revenue_item_id',
+        'agency_id',
     ];
 }

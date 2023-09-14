@@ -14,6 +14,10 @@ class AgencyResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'agency_name' => $this->agency_name,
+            'agency_code' => $this->agency_code,
+        ];
     }
 }

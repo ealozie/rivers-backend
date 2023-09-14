@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Contracts\Role;
 
@@ -40,8 +41,11 @@ class DatabaseSeeder extends Seeder
         //     RoleSeeder::class,
         // ]);
         $this->call([
-            PropertyUseSeeder::class,
-            PropertyTypeSeeder::class,
+            //PropertyUseSeeder::class,
+            //PropertyTypeSeeder::class,
+            AgencySeeder::class,
+            UserUniqueIdSeeder::class,
+            RevenueItemSeeder::class,
         ]);
     }
 }

@@ -32,10 +32,10 @@ class AssessmentController extends Controller
     {
         $validatedData = $request->validated();
         $auth_user = $request->user();
-        $user = User::find($validatedData['user_id']);
-        $validatedData['full_name'] = $user->name;
-        $validatedData['email'] = $user->email;
-        $validatedData['phone_number'] = $user->phone_number;
+        $user = User::where('email', $validatedData['email'])->first();
+        if ($user) {
+            $validatedData['user_id'] = $user->id;
+        }
         $validatedData['status'] = 'pending';
         $validatedData['payment_status'] = 'pending';
         $validatedData['added_by'] = $auth_user->id ?? 0;
@@ -74,11 +74,12 @@ class AssessmentController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Cancel the specified resource.
      */
     public function destroy(string $id)
     {
-        Assessment::destroy($id);
-        return response()->json(['status' => 'success', 'message' => 'Assessment deleted successfully',], 200);
+        $assessment = Assessment::find($id);
+        $assessment->status = 'cancelled';
+        return response()->json(['status' => 'success', 'message' => 'Assessment Cancelled successfully',], 200);
     }
 }

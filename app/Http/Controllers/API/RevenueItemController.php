@@ -3,22 +3,21 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\AgencyResource;
-use App\Models\Agency;
+use App\Http\Resources\RevenueItemResource;
+use App\Models\RevenueItem;
 use Illuminate\Http\Request;
 
 /**
- * @tags Agency Service
+ * @tags Revenue Item Service
  */
-class AgencyController extends Controller
+class RevenueItemController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $agencies = Agency::all();
-        return AgencyResource::collection($agencies);
+        //
     }
 
     /**
@@ -51,5 +50,13 @@ class AgencyController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+    /**
+     * Return Revenue items by its Agency ID.
+     */
+    public function revenue_item_agency($agency_id)
+    {
+        $revenue_items = RevenueItem::where('agency_id', $agency_id)->get();
+        return RevenueItemResource::collection($revenue_items);
     }
 }

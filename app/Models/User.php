@@ -54,6 +54,11 @@ class User extends Authenticatable
         return $this->hasOne(TicketAgent::class);
     }
 
+    public function residential_address()
+    {
+        return $this->hasOne(Residential::class);
+    }
+
     // public function canAccessPanel(Panel $panel): bool
     // {
     //     return str_ends_with($this->email, '@gmail.com') && $this->hasVerifiedEmail();

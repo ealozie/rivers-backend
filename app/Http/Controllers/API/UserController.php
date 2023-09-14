@@ -5,8 +5,12 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TicketAgentResource;
 use App\Http\Resources\UserResource;
+use App\Models\User;
 use Illuminate\Http\Request;
 
+/**
+ * @tags User Service
+ */
 class UserController extends Controller
 {
     /**
@@ -55,11 +59,27 @@ class UserController extends Controller
     {
         //
     }
-
+    /**
+     * Verify a User via unique ID.
+     */
     public function user_verification(Request $request)
     {
         $request->validate([
-            'user_unique_id' => 'required',
+            'unique_id' => 'required',
+        ]);
+        $user = User::where('unique_id', $request->unique_id)->first();
+        if (!$user) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User not found',
+            ], 404);
+        }
+        return response()->json([
+            'status' => 'success',
+            'message' => 'User was successfully found.',
+            'data' => [
+                'user' => new UserResource($user),
+            ],
         ]);
     }
 }
