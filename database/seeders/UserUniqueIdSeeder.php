@@ -21,7 +21,7 @@ class UserUniqueIdSeeder extends Seeder
             //     $unique_id = random_int($max, $min);
             // }
             //$unique_ids[] = $unique_id;
-            $user->unique_id = time() + $user->id;
+            $user->unique_id = time() + $user->id + mt_rand(11111, 99999);
             $user->save();
         }
     }
