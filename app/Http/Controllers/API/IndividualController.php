@@ -53,13 +53,7 @@ class IndividualController extends Controller
                 'data' => $response->body(),
             ], 422);
         }
-        //generate unique 10 digit number for user without repeating;
-        $users = User::select('unique_id')->pluck('unique_id');
-        $users_unique_ids = $users->toArray();
-        $unique_id = random_int(1000000000, 9999999999);
-        while (in_array($unique_id, $users_unique_ids)) {
-            $unique_id = random_int(1000000000, 9999999999);
-        }
+
         $user = new User();
         $user->name = $validatedData['first_name'] . ' ' . $validatedData['surname'];
         $user->email = $validatedData['email'];
@@ -71,7 +65,8 @@ class IndividualController extends Controller
         $user->password = Hash::make($password);
         $user->phone_number_verification_code =
             mt_rand(111111, 999999);
-        $user->unique_id = $unique_id;
+        $user->save();
+        $user->unique_id = time() + $user->id + mt_rand(11111, 99999);
         $user->save();
         //Send Phone Number Verification Code
         $phone_number = $user->phone_number;

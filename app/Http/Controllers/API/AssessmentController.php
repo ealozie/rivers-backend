@@ -32,15 +32,24 @@ class AssessmentController extends Controller
     {
         $validatedData = $request->validated();
         $auth_user = $request->user();
-        $user = User::where('email', $validatedData['email'])->first();
-        if ($user) {
-            $validatedData['user_id'] = $user->id;
-        }
+        // $user = User::where('email', $validatedData['email'])->first();
+        // if ($user) {
+        //     $validatedData['user_id'] = $user->id;
+        // }
         $validatedData['status'] = 'pending';
         $validatedData['payment_status'] = 'pending';
         $validatedData['added_by'] = $auth_user->id ?? 0;
         $validatedData['assessment_reference'] = 'ASSESSMENT-' . time() . '-' . rand(1000, 9999);
         $assessment = Assessment::create($validatedData);
+        return new AssessmentResource($assessment);
+    }
+
+    /**
+     * Return assessment by Receipt number or Assessment Reference number.
+     */
+    public function indentifier($indentifier)
+    {
+        $assessment = Assessment::where('assessment_reference', $indentifier)->orWhere('receipt_number', $indentifier)->first();
         return new AssessmentResource($assessment);
     }
 

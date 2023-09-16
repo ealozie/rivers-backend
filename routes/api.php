@@ -98,6 +98,7 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('shops', ShopController::class);
     Route::apiResource('signage', SignageController::class);
     Route::apiResource('assessments', AssessmentController::class)->only(['index', 'store', 'show', 'destroy']);
+    Route::apiResource('assessment/{identifier}', [AssessmentController::class, 'indentifier']);
     Route::apiResource('agencies', AgencyController::class)->only(['index']);
     Route::get('revenue-items-agency/{agency_id}', [RevenueItemController::class, 'revenue_item_agency']);
     Route::apiResource('cooperates', CooperateController::class);
