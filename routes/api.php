@@ -107,6 +107,7 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('property-types', PropertyTypeController::class);
     Route::apiResource('property-uses', PropertyUseController::class);
     Route::apiResource('users', UserController::class)->middleware('auth:sanctum')->only(['index']);
+    Route::get('user/email-phone-number', [UserController::class, 'email_phone_number'])->middleware('auth:sanctum');
     Route::post('user-verification', [UserController::class, 'user_verification']);
     Route::apiResource('ticket-vending', TicketVendingController::class)->middleware('auth:sanctum')->only(['index', 'store', 'show']);
     Route::apiResource('ticket-bulk-vending', TicketBulkVendingController::class)->middleware('auth:sanctum')->only(['store', 'show', 'index']);

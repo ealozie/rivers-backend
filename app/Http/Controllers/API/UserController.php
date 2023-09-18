@@ -82,4 +82,29 @@ class UserController extends Controller
             ],
         ]);
     }
+
+    /**
+     * Get User by Email or Phone Number.
+     */
+    public function email_phone_number(Request $request)
+    {
+        if ($request->has('email_phone_number')) {
+            $email_phone_number = $request->get('email_phone_number');
+            $user = User::where('email', $email_phone_number)
+                ->orWhere('phone_number', $email_phone_number)
+                ->first();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'User was successfully found.',
+                'data' => [
+                    'user' => new UserResource($user),
+                ],
+            ]);
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Email or Phone Number is required',
+            ], 422);
+        }
+    }
 }
