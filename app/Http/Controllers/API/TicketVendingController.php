@@ -39,6 +39,12 @@ class TicketVendingController extends Controller
         }
         $ticket_vending = TicketVending::where('user_id', $request->user()->id)->latest()->offset($offset)->limit($limit)->get();
         $total_number_of_records = TicketVending::where('user_id', $request->user()->id)->count();
+        $user = $request->user();
+        if ($user->hasRole('admin')) {
+            $ticket_vending = TicketVending::latest()->offset($offset)->limit($limit)->get();
+            $total_number_of_records = TicketVending::count();
+        }
+
         if (!count($ticket_vending)) {
             return response()->json([
                 'status' => 'error',

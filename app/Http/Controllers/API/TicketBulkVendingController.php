@@ -27,7 +27,13 @@ class TicketBulkVendingController extends Controller
      */
     public function index(Request $request)
     {
-        $ticket_bulk_vending = TicketBulkVending::where('user_id', $request->user()->id)->latest()->paginate(10);
+        $per_page = 20;
+        $ticket_bulk_vending = TicketBulkVending::where('user_id', $request->user()->id)->latest()->paginate($per_page);
+        $user = $request->user();
+        
+        if ($user->hasRole('admin')) {
+            $ticket_bulk_vending = TicketBulkVending::latest()->paginate($per_page);
+        }
         if (!count($ticket_bulk_vending)) {
             return response()->json([
                 'status' => 'error',

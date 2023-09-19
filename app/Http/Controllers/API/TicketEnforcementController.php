@@ -35,6 +35,18 @@ class TicketEnforcementController extends Controller
             $offset = (int) $request->get('offset');
         }
 
+        if ($user->hasRole('admin')) {
+            $ticket_enforcements = TicketEnforcement::latest()->offset($offset)->limit($limit)->get();
+            $total_number_of_records = TicketEnforcement::count();
+            return response()->json([
+            'status' => 'success',
+            'data' => [
+                'ticket_enforcement_data' => TicketEnforcementResource::collection($ticket_enforcements),
+                'total_number_of_records' => (int) $total_number_of_records
+            ]
+            ]);
+        }
+
         $ticket_agent = TicketAgent::where('user_id', $user->id)->first();
 
         if (!$ticket_agent) {
