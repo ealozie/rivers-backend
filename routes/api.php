@@ -104,8 +104,8 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('cooperates', CooperateController::class);
     Route::apiResource('commercial-vehicles', CommercialVehicleController::class);
     Route::apiResource('properties', PropertyController::class);
-    Route::apiResource('property-types', PropertyTypeController::class);
-    Route::apiResource('property-uses', PropertyUseController::class);
+    Route::apiResource('property-types', PropertyTypeController::class)->only(['index']);;
+    Route::apiResource('property-uses', PropertyUseController::class)->only(['index']);;
     Route::apiResource('users', UserController::class)->middleware('auth:sanctum')->only(['index']);
     Route::get('user/email-phone-number', [UserController::class, 'email_phone_number'])->middleware('auth:sanctum');
     Route::post('user-verification', [UserController::class, 'user_verification']);

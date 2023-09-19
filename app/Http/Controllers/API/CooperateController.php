@@ -10,6 +10,7 @@ use App\Http\Resources\UserResource;
 use App\Models\Cooperate;
 use App\Models\User;
 use App\Traits\SendSMS;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
@@ -20,12 +21,24 @@ use Illuminate\Support\Str;
 class CooperateController extends Controller
 {
     use SendSMS;
+
+
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum')->only('index');
+    }
+
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $user = $request->user();
+        $per_page = 20;
+        if ($user->hasRole('admin')) {
+            $cooperate_registrations = Cooperate::with('user')->paginate($per_page);
+            return CooperateResource::collection($cooperate_registrations);
+        }
     }
 
     /**

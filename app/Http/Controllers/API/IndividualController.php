@@ -11,6 +11,7 @@ use App\Models\Individual;
 use App\Models\User;
 use App\Traits\SendSMS;
 use Hash;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
@@ -20,12 +21,23 @@ use Illuminate\Support\Str;
 class IndividualController extends Controller
 {
     use SendSMS;
+
+    public function __construct()
+    {
+        //$this->middleware('auth:sanctum')->only('index');
+    }
+
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $user = $request->user();
+        $per_page = 20;
+        if ($user->hasRole('admin')) {
+            $individual_registrations = Individual::with('user')->paginate($per_page);
+            return IndividualResource::collection($individual_registrations);
+        }
     }
 
     /**

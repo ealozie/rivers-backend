@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\PropertyUseResource;
+use App\Models\PropertyUse;
 use Illuminate\Http\Request;
 
 /**
@@ -15,7 +17,8 @@ class PropertyUseController extends Controller
      */
     public function index()
     {
-        //
+        $property_uses = PropertyUse::all();
+        return PropertyUseResource::collection($property_uses);
     }
 
     /**

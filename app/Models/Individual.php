@@ -9,4 +9,10 @@ class Individual extends Model
 {
     use HasFactory;
     protected $guarded = ['password'];
+
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
