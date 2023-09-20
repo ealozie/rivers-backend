@@ -4,6 +4,7 @@ use App\Http\Controllers\API\AgencyController;
 use App\Http\Controllers\API\AppSettingController;
 use App\Http\Controllers\API\AssessmentController;
 use App\Http\Controllers\API\AssessmentYearController;
+use App\Http\Controllers\API\AWSImageRecognitionController;
 use App\Http\Controllers\API\BloodGroupController;
 use App\Http\Controllers\API\BusinessCategoryController;
 use App\Http\Controllers\API\BusinessLevelController;
@@ -116,5 +117,7 @@ Route::prefix('v1')->group(function () {
     Route::post('vehicle-enumeration-verifications', VehicleEnumerationVerificationController::class)->middleware('auth:sanctum');
     Route::get('ticket-agent-categories', TicketAgentCategoryController::class)->middleware('auth:sanctum');
     Route::post('wallet-fund-transfer', WalletFundTransferController::class)->middleware('auth:sanctum');
+    Route::get('initiate-liveness', [AWSImageRecognitionController::class, 'initiate_liveness'])->middleware('auth:sanctum');
+    Route::post('liveness-results', [AWSImageRecognitionController::class, 'liveness_results'])->middleware('auth:sanctum');
     //Route::apiResource('users', UserController::class);
 });
