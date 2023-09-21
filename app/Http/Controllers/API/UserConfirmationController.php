@@ -54,7 +54,9 @@ class UserConfirmationController extends Controller
 
     }
 
-
+    /**
+     * Confirm user Token.
+     */
     public function user_identity_token_confirmation(Request $request)
     {
         $validatedData = $request->validate([
