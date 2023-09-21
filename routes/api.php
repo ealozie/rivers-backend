@@ -127,8 +127,8 @@ Route::prefix('v1')->group(function () {
     Route::get('ticket-agent-types', TicketAgentTypeController::class)->middleware('auth:sanctum');
     Route::get('ticket-agent-status', TicketAgentStatusController::class)->middleware('auth:sanctum');
     Route::post('wallet-fund-transfer', WalletFundTransferController::class)->middleware('auth:sanctum');
-    Route::get('initiate-liveness', [AWSImageRecognitionController::class, 'initiate_liveness']);
-    Route::post('liveness-results', [AWSImageRecognitionController::class, 'liveness_results']);
+    Route::get('initiate-liveness', [AWSImageRecognitionController::class, 'initiate_liveness'])->middleware('auth:sanctum');
+    Route::post('liveness-results', [AWSImageRecognitionController::class, 'liveness_results'])->middleware('auth:sanctum');
     Route::post('user-identity-confirmation', [APIUserConfirmationController::class, 'initial_user_identity_confirmation']);
     Route::post('user-identity-token-confirmation', [APIUserConfirmationController::class, 'user_identity_token_confirmation']);
     //Route::apiResource('users', UserController::class);
