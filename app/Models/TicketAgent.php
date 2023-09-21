@@ -17,4 +17,20 @@ class TicketAgent extends Model
         'agent_status',
         'discount',
     ];
+
+
+    public function added_by_user()
+    {
+        return $this->belongsTo(User::class, 'added_by');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function ticket_categories()
+    {
+        return $this->hasMany(TicketAgentCategory::class);
+    }
 }

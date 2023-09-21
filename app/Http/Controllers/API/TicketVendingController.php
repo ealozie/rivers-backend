@@ -24,7 +24,7 @@ class TicketVendingController extends Controller
      * Get all resource.
      *
      * Authorization header is required to be set to Bearer `<token>` <br>
-     * Return list of all ticket categories that been vended by current authenticated agent. <br>
+     * Return list of all ticket vending that been vended by current authenticated agent. <br>
      * Additional Query parameter are `limit` and `offset`
      */
     public function index(Request $request)
@@ -47,9 +47,12 @@ class TicketVendingController extends Controller
 
         if (!count($ticket_vending)) {
             return response()->json([
-                'status' => 'error',
-                'message' => 'No ticket vending found.',
-            ], 404);
+                'status' => 'success',
+                'data' => [
+                'ticket_vending_data' => [],
+                'total_number_of_records' => (int) $total_number_of_records
+            ],
+            ], 200);
         }
         return response()->json([
             'status' => 'success',

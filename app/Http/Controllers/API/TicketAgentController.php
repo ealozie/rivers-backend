@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\TicketAgentListResource;
+use App\Models\TicketAgent;
+use App\Models\TicketAgentCategory;
 use Illuminate\Http\Request;
 
 /**
- * @tags Ticket Bulk Vending Service
+ * @tags Ticket Agents Service
  */
 class TicketAgentController extends Controller
 {
@@ -15,7 +18,9 @@ class TicketAgentController extends Controller
      */
     public function index()
     {
-        //
+        $per_page = 20;
+        $ticket_agents = TicketAgent::paginate($per_page);
+        return TicketAgentListResource::collection($ticket_agents);
     }
 
     /**
@@ -23,7 +28,32 @@ class TicketAgentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'agent_type' => 'required',
+            'discount' => 'required',
+            'agent_status' => 'required',
+            'can_transfer_wallet_fund' => 'required',
+            'agent_ticket_categories' => 'required|array|min:1',
+        ]);
+        $agent = TicketAgent::where('user_id', $validatedData['user_id'])->first();
+        if ($agent) {
+            return response()->json(['status' => 'success', 'message' => 'User is already an agent.']);
+        }
+        $validatedData['added_by'] = $request->user()->id;
+        $validatedData['wallet_balance'] = 0;
+        $agent = TicketAgent::create($validatedData);
+        foreach ($validatedData['agent_ticket_categories'] as $category) {
+            $ticket_agent_category = new TicketAgentCategory();
+            $ticket_agent_category->ticket_agent_id = $agent->id;
+            $ticket_agent_category->ticket_category_id = $category;
+            $ticket_agent_category->discount = 0;
+            $ticket_agent_category->added_by = $request->user()->id;
+            $ticket_agent_category->status = 'active';
+            $ticket_agent_category->save();
+        }
+        $ticket_agent = TicketAgent::find($agent->id);
+        return new TicketAgentListResource($ticket_agent);
     }
 
     /**
@@ -31,7 +61,8 @@ class TicketAgentController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $ticket_agent = TicketAgent::find($id);
+        return new TicketAgentListResource($ticket_agent);
     }
 
     /**
@@ -39,7 +70,33 @@ class TicketAgentController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validatedData = $request->validate([
+            'agent_type' => 'required',
+            'discount' => 'required',
+            'agent_status' => 'required',
+            'can_transfer_wallet_fund' => 'required',
+            'agent_ticket_categories' => 'sometimes|array|min:1',
+        ]);
+        $agent = TicketAgent::find($id);
+        if (!$agent) {
+            return response()->json(['status' => 'error', 'message' => 'Agent ID not found.']);
+        }
+        $agent->update($validatedData);
+        if (count($validatedData['agent_ticket_categories'])) {
+            TicketAgentCategory::where('ticket_agent_id', $agent->id)
+            ->delete();
+            foreach ($validatedData['agent_ticket_categories'] as $category) {
+                $ticket_agent_category = new TicketAgentCategory();
+                $ticket_agent_category->ticket_agent_id = $agent->id;
+                $ticket_agent_category->ticket_category_id = $category;
+                $ticket_agent_category->discount = 0;
+                $ticket_agent_category->added_by = $request->user()->id;
+                $ticket_agent_category->status = 'active';
+                $ticket_agent_category->save();
+            }
+        }
+        $ticket_agent = TicketAgent::find($agent->id);
+        return new TicketAgentListResource($ticket_agent);
     }
 
     /**

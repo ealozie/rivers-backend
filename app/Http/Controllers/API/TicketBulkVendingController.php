@@ -21,27 +21,55 @@ class TicketBulkVendingController extends Controller
 {
     use SendSMS;
     /**
-     * Display a listing of the resource.
+     * Get all resource.
      *
      * Authorization header is required to be set to Bearer `<token>` <br>
+     * Return list of all ticket bulk vending that been vended by current authenticated agent. <br>
+     * Additional Query parameter are `limit` and `offset`
      */
     public function index(Request $request)
     {
         $per_page = 20;
-        $ticket_bulk_vending = TicketBulkVending::where('user_id', $request->user()->id)->latest()->paginate($per_page);
+        $limit = 10;
+        $offset = 0;
+        if ($request->has('limit')) {
+            $limit = $request->get('limit');
+        }
+        if ($request->has('offset')) {
+            $offset = $request->get('offset');
+        }
+        $ticket_bulk_vending = TicketBulkVending::where('user_id', $request->user()->id)->latest()->offset($offset)->limit($limit)->get();
+        $total_number_of_records = TicketBulkVending::where('user_id', $request->user()->id)->count();
+
+        //$ticket_bulk_vending = TicketBulkVending::where('user_id', $request->user()->id)->latest()->paginate($per_page);
+
         $user = $request->user();
         
         if ($user->hasRole('admin')) {
             $ticket_bulk_vending = TicketBulkVending::latest()->paginate($per_page);
         }
+
         if (!count($ticket_bulk_vending)) {
             return response()->json([
-                'status' => 'error',
-                'message' => 'No ticket vending found.',
-            ], 404);
+                'status' => 'success',
+                'data' => [
+                'ticket_bulk_vending_data' => [],
+                'total_number_of_records' => (int) $total_number_of_records
+            ],
+            ], 200);
         }
-        $ticket_bulk_collection = new TicketBulkVendingCollection($ticket_bulk_vending);
-        return $ticket_bulk_collection;
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'ticket_bulk_vending_data' => new TicketBulkVendingCollection($ticket_bulk_vending),
+                'total_number_of_records' => (int) $total_number_of_records
+            ]
+        ]);
+        // if (!count($ticket_bulk_vending)) {
+        //     return [];
+        // }
+        // $ticket_bulk_collection = new TicketBulkVendingCollection($ticket_bulk_vending);
+        // return $ticket_bulk_collection;
     }
 
     /**
