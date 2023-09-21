@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Individual extends Model
 {
     use HasFactory;
-    protected $guarded = ['password'];
+    
+    protected $guarded = ['id'];
 
 
     public function user()

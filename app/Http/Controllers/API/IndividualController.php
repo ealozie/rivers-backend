@@ -74,12 +74,13 @@ class IndividualController extends Controller
         $password = Str::Password(8);
         $user->phone_number = $validatedData['phone_number'];
         $user->role = 'individual';
+        $user->status = 0;
         $user->password = Hash::make($password);
         $user->phone_number_verification_code =
             mt_rand(111111, 999999);
         $user->save();
-        $user->unique_id = time() + $user->id + mt_rand(11111, 99999);
-        $user->save();
+        //$user->unique_id = time() + $user->id + mt_rand(11111, 99999);
+        //$user->save();
         //Send Phone Number Verification Code
         $phone_number = $user->phone_number;
         $mobile_number = ltrim($phone_number, "0");
@@ -88,6 +89,7 @@ class IndividualController extends Controller
         $this->send_sms_process_message("+234" . $mobile_number, $message);;
         $validatedData['user_id'] = $user->id;
         $validatedData['demand_notice_category_id'] = 0;
+        
         $individual = Individual::create($validatedData);
         $user->assignRole('individual');
         return response()->json([
