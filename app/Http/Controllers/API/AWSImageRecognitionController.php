@@ -23,10 +23,6 @@ class AWSImageRecognitionController extends Controller
         $rekognition = new RekognitionClient([
             'region'    => env('AWS_DEFAULT_REGION'),
             'version'   => 'latest',
-            'credentials' => [
-                'key'    => env('AWS_ACCESS_KEY_ID'),
-                'secret' => env('AWS_SECRET_ACCESS_KEY'),
-             ],
         ]);
 
          // Start a Face Liveness session
@@ -64,10 +60,6 @@ class AWSImageRecognitionController extends Controller
         $rekognition = new RekognitionClient([
             'region'    => env('AWS_DEFAULT_REGION'),
             'version'   => 'latest',
-            'credentials' => [
-                'key'    => env('AWS_ACCESS_KEY_ID'),
-                'secret' => env('AWS_SECRET_ACCESS_KEY'),
-             ],
         ]);
 
         $result = $rekognition->getFaceLivenessSessionResults([
@@ -84,11 +76,7 @@ class AWSImageRecognitionController extends Controller
 
         $s3 = new S3Client([
             'region' => 'us-west-2', // Specify your desired AWS region
-            'version' => 'latest',   // Use the latest version of the AWS SDK
-            'credentials' => [
-                'key'    => env('AWS_ACCESS_KEY_ID'),
-                'secret' => env('AWS_SECRET_ACCESS_KEY'),
-             ],
+            'version' => 'latest',   // Use the latest version of the AWS
         ]);
 
         $userFaceImageKey = 'liveness-tests/' . $result['SessionId'] . '/reference.jpg';
