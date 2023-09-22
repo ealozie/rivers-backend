@@ -56,10 +56,10 @@ class AWSImageRecognitionController extends Controller
      */
     public function liveness_results(Request $request){
         $validatedData = $request->validate([
-            'sessionId' => 'required'
+            'sessionid' => 'required'
         ]);
 
-        $sessionId = $validatedData['sessionId'];
+        $sessionId = $validatedData['sessionid'];
 
         $rekognition = new RekognitionClient([
             'region'    => env('AWS_DEFAULT_REGION'),
