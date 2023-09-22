@@ -55,7 +55,12 @@ class AWSImageRecognitionController extends Controller
      * Process Streamed Data.
      */
     public function liveness_results(Request $request){
-        $sessionId = $request->sessionid;
+        $validatedData = $request->validate([
+            'sessionId' => 'required'
+        ]);
+
+        $sessionId = $validatedData['sessionId'];
+
         $rekognition = new RekognitionClient([
             'region'    => env('AWS_DEFAULT_REGION'),
             'version'   => 'latest',
@@ -80,6 +85,10 @@ class AWSImageRecognitionController extends Controller
         $s3 = new S3Client([
             'region' => 'us-west-2', // Specify your desired AWS region
             'version' => 'latest',   // Use the latest version of the AWS SDK
+            'credentials' => [
+                'key'    => env('AWS_ACCESS_KEY_ID'),
+                'secret' => env('AWS_SECRET_ACCESS_KEY'),
+             ],
         ]);
 
         $userFaceImageKey = 'liveness-tests/' . $result['SessionId'] . '/reference.jpg';
