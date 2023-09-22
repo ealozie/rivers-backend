@@ -143,11 +143,11 @@ class AWSImageRecognitionController extends Controller
             file_put_contents($storagePath, $imageData);
         }
         // Allow user to proceed with sign-up
-        $user = $request->user();
-        $user->unique_id = time() + $user->id + mt_rand(11111, 99999);
-        $user->facial_biometric_status = 'completed';
-        $user->facial_biometric_image_url = $imageData; 
-        $user->save();
+        // $user = $request->user();
+        // $user->unique_id = time() + $user->id + mt_rand(11111, 99999);
+        // $user->facial_biometric_status = 'completed';
+        // $user->facial_biometric_image_url = $imageData; 
+        // $user->save();
         return response()->json([
             'status' => 'success',
             'data' => $result
