@@ -42,6 +42,9 @@ class TicketVendingController extends Controller
         $user = $request->user();
         if ($user->hasRole('admin')) {
             $ticket_vending = TicketVending::latest()->offset($offset)->limit($limit)->get();
+            if ($request->has('all')) {
+                $ticket_vending = TicketVending::latest()->get();
+            }
             $total_number_of_records = TicketVending::count();
         }
 
