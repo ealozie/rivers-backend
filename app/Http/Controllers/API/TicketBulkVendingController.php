@@ -47,7 +47,7 @@ class TicketBulkVendingController extends Controller
         
         if ($user->hasRole('admin')) {
             $ticket_bulk_vending = TicketBulkVending::latest()->paginate($per_page);
-            if ($request->has('all')) {
+            if ($request->has('query') && $request->get('query') == 'all') {
                 $ticket_bulk_vending = TicketBulkVending::latest()->get();
             }
         }
