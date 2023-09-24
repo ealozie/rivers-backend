@@ -23,6 +23,7 @@ class Assessment extends Model
         'added_by',
         'revenue_item_id',
         'agency_id',
+        'entity_id',
     ];
 
 

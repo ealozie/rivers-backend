@@ -31,6 +31,7 @@ class AssessmentStoreRequest extends FormRequest
             'contact_address' => 'required|string',
             'amount' => 'required|numeric',
             'assessment_year_id' => 'required|exists:assessment_years,id',
+            'assessment_entity_id' => 'required',
         ];
     }
 }

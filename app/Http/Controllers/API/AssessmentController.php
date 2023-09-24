@@ -167,6 +167,7 @@ class AssessmentController extends Controller
         $validatedData['payment_status'] = 'pending';
         $validatedData['added_by'] = $auth_user->id ?? 0;
         $validatedData['assessment_reference'] = 'ASSESSMENT-' . time() . '-' . rand(1000, 9999);
+        $validatedData['entity_id'] = $validatedData['assessment_entity_id'];
         $assessment = Assessment::create($validatedData);
         return new AssessmentResource($assessment);
     }
