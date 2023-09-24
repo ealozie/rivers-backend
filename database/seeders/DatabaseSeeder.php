@@ -43,9 +43,10 @@ class DatabaseSeeder extends Seeder
         $this->call([
             //PropertyUseSeeder::class,
             //PropertyTypeSeeder::class,
-            AgencySeeder::class,
-            UserUniqueIdSeeder::class,
-            RevenueItemSeeder::class,
+            //AgencySeeder::class,
+            //UserUniqueIdSeeder::class,
+            //RevenueItemSeeder::class,
+            AllEntitiesIDSeeder::class,
         ]);
     }
 }
