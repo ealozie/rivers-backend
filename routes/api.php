@@ -102,7 +102,7 @@ Route::prefix('v1')->group(function () {
     Route::get('titles', TitleController::class);
     Route::apiResource('forgot-password', ForgotPasswordController::class)->only(['store', 'update']);
     Route::apiResource('individuals', IndividualController::class);
-    Route::apiResource('residential-address', ResidentialController::class);
+    //Route::apiResource('residential-address', ResidentialController::class);
     Route::apiResource('spouse', SpouseController::class);
     Route::apiResource('shops', ShopController::class);
     Route::apiResource('signage', SignageController::class);

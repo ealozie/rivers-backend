@@ -44,6 +44,11 @@ class IndividualStoreRequest extends FormRequest
             'occupation_id' => 'required|exists:occupations,id',
             'income_range' => 'required',
             'property_abssin' => 'required|string',
+            'street_number' => 'sometimes|string',
+            'street_name' => 'sometimes|string',
+            'city' => 'sometimes|string',
+            'landmark' => 'sometimes|string',
+            
         ];
     }
 }

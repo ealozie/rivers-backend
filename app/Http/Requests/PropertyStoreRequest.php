@@ -40,6 +40,12 @@ class PropertyStoreRequest extends FormRequest
             'notes' => 'sometimes|string',
             'property_pictures' => 'required|array',
             'property_pictures.*' => 'image|mimes:jpeg,png,jpg|max:2048',
+            'street_number' => 'sometimes|string',
+            'street_name' => 'sometimes|string',
+            'city' => 'sometimes|string',
+            'landmark' => 'sometimes|string',
+            'state_id' => 'required|exists:states,id',
+            'local_government_area_id' => 'required|exists:local_government_areas,id',
 
         ];
     }
