@@ -17,7 +17,9 @@ class TicketAgentWalletController extends Controller
      *
      * Authorization header is required to be set to Bearer `<token>` <br>
      * Return list of all ticket agent wallet transactions by the current authenticated agent. <br>
-     * Additional Query parameter are `limit` and `offset`
+     * Additional Query parameter are `limit` and `offset`.<br>
+     * Additional Query parameter `?query=all`, return all resources
+     * without pagination.
      */
     public function index(Request $request)
     {
