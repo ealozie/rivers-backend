@@ -121,6 +121,8 @@ Route::prefix('v1')->group(function () {
     Route::get('user/email-phone-number', [UserController::class, 'email_phone_number'])->middleware('auth:sanctum');
     Route::post('user-verification', [UserController::class, 'user_verification']);
     Route::apiResource('ticket-vending', TicketVendingController::class)->middleware('auth:sanctum')->only(['index', 'store', 'show']);
+    Route::get('ticket-vending-statistics', [TicketVendingController::class, 'ticket_statistics'])->middleware('auth:sanctum');
+
     Route::apiResource('ticket-bulk-vending', TicketBulkVendingController::class)->middleware('auth:sanctum')->only(['store', 'show', 'index']);
     Route::apiResource('ticket-agents', TicketAgentController::class)->middleware('auth:sanctum')->only(['store', 'show', 'index', 'update']);
     Route::apiResource('ticket-agent-wallet-transactions', TicketAgentWalletController::class)->middleware('auth:sanctum')->only(['show', 'index']);

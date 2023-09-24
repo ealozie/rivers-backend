@@ -12,6 +12,7 @@ use App\Models\TicketAgentWallet;
 use App\Models\TicketCategory;
 use App\Models\TicketVending;
 use App\Traits\SendSMS;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 /**
@@ -228,5 +229,30 @@ class TicketVendingController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    /**
+     * Ticket Vending Statistics for Agent.
+     */
+    public function ticket_statistics(Request $request)
+    {
+        Carbon::setWeekStartsAt(Carbon::SUNDAY);
+        Carbon::setWeekEndsAt(Carbon::SATURDAY);
+        $user = $request->user();
+        $tickets_today = TicketVending::where('user_id', $user->id)->whereDate('created_at', Carbon::today())->count();
+        $tickets_this_week = TicketVending::where('user_id', $user->id)->whereDate('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->count();
+        $tickets_this_month = TicketVending::where('user_id', $user->id)->whereBetween('created_at', [
+            Carbon::now()->startOfMonth(), 
+            Carbon::now()->endOfMonth()
+        ])->count();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'tickets_today' => $tickets_today,
+                'tickets_this_week' => $tickets_this_week,
+                'tickets_this_month' => $tickets_this_month,
+            ]
+        ], 200);
     }
 }
