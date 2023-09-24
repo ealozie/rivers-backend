@@ -70,7 +70,6 @@ class TicketVendingController extends Controller
      */
     public function store(Request $request)
     {
-
         $requestData = $request->validate([
             'plate_number' => 'required|string',
             'phone_number' => 'required|string',
@@ -150,7 +149,7 @@ class TicketVendingController extends Controller
             $ticket_vending->phone_number = $phone_number;
             $ticket_vending->expired_at = $ticket_category->expired_at;
             $ticket_vending->ticket_status = 'active';
-            $ticket_vending->ticket_reference_number = strtoupper(uniqid('AKSIGR')) . date('YmdHis');
+            $ticket_vending->ticket_reference_number = date('isYd');
             $ticket_vending->save();
             //Debit wallet balance and log the transaction
             $ticket_agent->wallet_balance = $ticket_agent->wallet_balance - $ticket_price;

@@ -181,7 +181,7 @@ class TicketBulkVendingController extends Controller
             $ticket_agent_wallet->type = 'bulk_tickets';
             $ticket_agent_wallet->transaction_status = 'active';
             $ticket_agent_wallet->added_by = $user->id;
-            $ticket_agent_wallet->transaction_reference_number = strtoupper(uniqid('AKSIGR')) . date('YmdHis');
+            $ticket_agent_wallet->transaction_reference_number = date('isYd');
             $ticket_agent_wallet->save();
             //Send SMS to user
             $mobile_number = ltrim($phone_number, "0");
