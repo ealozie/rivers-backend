@@ -11,12 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Schema::create('assessment_years', function (Blueprint $table) {
-        //     $table->id();
-        //     $table->string('year');
-        //     $table->foreignId('added_by');
-        //     $table->timestamps();
-        // });
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('facial_confirmation_token')->nullable();
+        });
     }
 
     /**
@@ -24,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('assessment_years');
+        Schema::table('users', function (Blueprint $table) {
+            //
+        });
     }
 };

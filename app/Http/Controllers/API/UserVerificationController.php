@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 /**
@@ -11,9 +13,9 @@ use Illuminate\Http\Request;
 class UserVerificationController extends Controller
 {
     /**
-     * Handle the incoming request.
+     * Initial Registration request.
      */
-    public function __invoke(Request $request)
+    public function initial_registration_request(Request $request)
     {
         $validatedData = $request->validate(['registration_option' => 'required|in:nin,tin,bvn,no_id']);
         if ($validatedData['registration_option'] == 'nin') {
@@ -28,5 +30,42 @@ class UserVerificationController extends Controller
         } else if ($validatedData['registration_option'] == 'no_id') {
             //make a API calls to validate no_id and prefill form with data
         }
+    }
+
+    /**
+     * Phone Number Verification Request.
+     */
+    public function user_phone_number_confirmation(Request $request)
+    {
+        $validatedData = $request->validate([
+            'phone_number' => 'required|min:11|max:11',
+            'phone_number_verification_code' => 'required|min:6|max:6',
+        ]);
+
+        $user = User::where('phone_number', $validatedData['phone_number'])->first();
+        if (!$user) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Phone number not found.'
+            ], 404);
+        }
+
+        if ($user->phone_number_verification_code != $validatedData['phone_number_verification_code']) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Invalid token provided.'
+            ], 404);
+        }
+
+        $user->update([
+                'last_login_at' => now()
+            ]);
+        return response()->json([
+                'status' => 'success',
+                'message' => 'Phone Number has been successfully verified.',
+                'data' => [
+                    'user' => new UserResource($user),
+                ]
+        ], 200);
     }
 }

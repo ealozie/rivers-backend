@@ -35,7 +35,7 @@ class UserConfirmationController extends Controller
         try {
             $name = $user->name;
             $token = mt_rand(111111, 999999);
-            $user->phone_number_verification_code = $token;
+            $user->facial_confirmation_token = $token;
             $user->save();
             $mobile_number = ltrim($validatedData['phone_number'], "0");
             $message = "Hello {$name}, your confirmation token is " . $token . ". Thank you for using CIRES-IRS.";
@@ -72,7 +72,7 @@ class UserConfirmationController extends Controller
             ], 404);
         }
 
-        if ($user->phone_number_verification_code != $validatedData['comnfirmation_token']) {
+        if ($user->facial_confirmation_token != $validatedData['comnfirmation_token']) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Invalid token provided.'

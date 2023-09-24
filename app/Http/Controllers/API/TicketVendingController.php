@@ -167,7 +167,11 @@ class TicketVendingController extends Controller
             $ticket_agent_wallet->save();
             //Send SMS to user
             $mobile_number = ltrim($phone_number, "0");
-            $message = "Hello, your ticket has been successfully purchased. Your ticket reference number is " . $ticket_vending->ticket_reference_number . ". Thank you for using AKSG-IRS.";
+            $ticket_category_name = $ticket_category->category_name;
+            $amount = number_format($ticket_actual_price, 2);
+            $expires_at = date('h:isa', strtotime($ticket_category->expired_at));
+            $message = "Hello,\nYour {$ticket_category_name} ticket purchase for {$plate_number} (₦{$amount}) was successful. Expires {$expires_at}. Thank you";
+            // $message = "Hello, your ticket has been successfully purchased. Your ticket reference number is " . $ticket_vending->ticket_reference_number . ". Thank you for using AKSG-IRS.";
             $this->send_sms_process_message("+234" . $mobile_number, $message);
         } catch (\Exception $e) {
             return response()->json([

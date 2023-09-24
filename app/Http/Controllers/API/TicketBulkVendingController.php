@@ -185,7 +185,7 @@ class TicketBulkVendingController extends Controller
             $ticket_agent_wallet->save();
             //Send SMS to user
             $mobile_number = ltrim($phone_number, "0");
-            $message = "Your ticket has been successfully processed. A total of " . $number_of_tickets . " ticket(s) has been processed for " . $plate_number . " for the next {$number_of_tickets} day(s). Thank you for using our service.";
+            $message = "Your ticket has been successfully processed. A total of " . $number_of_tickets . " ticket(s) has been processed for " . $plate_number . " for the next {$number_of_tickets} day(s). Thank you.";
             $this->send_sms_process_message("+234" . $mobile_number, $message);
             return response()->json([
                 'status' => 'success',

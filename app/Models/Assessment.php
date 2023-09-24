@@ -24,4 +24,30 @@ class Assessment extends Model
         'revenue_item_id',
         'agency_id',
     ];
+
+
+    public function assessment_year()
+    {
+        return $this->belongsTo(AssessmentYear::class);
+    }
+
+    public function added_by_user()
+    {
+        return $this->belongsTo(User::class, 'added_by');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function revenue_item()
+    {
+        return $this->belongsTo(RevenueItem::class);
+    }
+
+    public function agency()
+    {
+        return $this->belongsTo(Agency::class);
+    }
 }
