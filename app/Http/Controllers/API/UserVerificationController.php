@@ -60,12 +60,15 @@ class UserVerificationController extends Controller
         $user->update([
                 'last_login_at' => now()
             ]);
-        return response()->json([
+        $token = $user->createToken('igr_system_auth_token')->plainTextToken;
+            return response()->json([
                 'status' => 'success',
                 'message' => 'Phone Number has been successfully verified.',
                 'data' => [
+                    'token' => $token,
+                    'token_type' => 'Bearer',
                     'user' => new UserResource($user),
                 ]
-        ], 200);
+            ], 200);
     }
 }

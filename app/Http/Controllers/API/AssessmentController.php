@@ -6,7 +6,19 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\AssessmentStoreRequest;
 use App\Http\Requests\AssessmentUpdateRequest;
 use App\Http\Resources\AssessmentResource;
+use App\Http\Resources\CooperateResource;
+use App\Http\Resources\IndividualResource;
+use App\Http\Resources\PropertyResource;
+use App\Http\Resources\ShopResource;
+use App\Http\Resources\SignageResource;
+use App\Http\Resources\UserResource;
 use App\Models\Assessment;
+use App\Models\CommercialVehicle;
+use App\Models\Cooperate;
+use App\Models\Individual;
+use App\Models\Property;
+use App\Models\Shop;
+use App\Models\Signage;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -23,6 +35,121 @@ class AssessmentController extends Controller
     {
         $assessments = Assessment::paginate();
         return AssessmentResource::collection($assessments);
+    }
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function validate_assessment_entity_id(Request $request)
+    {
+        $validatedData = $request->validate([
+            'assessment_entity_id' => 'required',
+        ]);
+        $entity_id = $validatedData['assessment_entity_id'][0];
+        $assessment_entity_id = $validatedData['assessment_entity_id'];
+        if ($entity_id == 1) {
+            $individual = Individual::where('individual_id', $assessment_entity_id)->first();
+            if (!$individual) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'No record found'
+                ]);
+            }
+            $user = User::find($individual->user_id);
+            return response()->json([
+                'status' => 'success',
+                'data' => [
+                    'user' => new UserResource($user),
+                    'individual' => new IndividualResource($individual)
+                ]
+            ]);
+        } elseif ($entity_id == 2) {
+            $cooperate = Cooperate::where('cooperate_id', $assessment_entity_id)->first();
+            if (!$cooperate) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'No record found'
+                ]);
+            }
+            $user = User::find($cooperate->user_id);
+            return response()->json([
+                'status' => 'success',
+                'data' => [
+                    'user' => new UserResource($user),
+                    'cooperate' => new CooperateResource($cooperate)
+                ]
+            ]);
+        } elseif ($entity_id == 3) {
+            $shop = Shop::where('shop_id', $assessment_entity_id)->first();
+            if (!$shop) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'No record found'
+                ]);
+            }
+            $user = User::find($shop->user_id);
+            return response()->json([
+                'status' => 'success',
+                'data' => [
+                    'user' => new UserResource($user),
+                    'shop' => new ShopResource($shop)
+                ]
+            ]);
+        } elseif ($entity_id == 4) {
+            $property = Property::where('property_id', $assessment_entity_id)->first();
+            if (!$property) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'No record found'
+                ]);
+            }
+            $user = User::find($property->user_id);
+            return response()->json([
+                'status' => 'success',
+                'data' => [
+                    'user' => new UserResource($user),
+                    'property' => new PropertyResource($property)
+                ]
+            ]);
+        } elseif ($entity_id == 5) {
+            $signage = Signage::where('signage_id', $assessment_entity_id)->first();
+            if (!$signage) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'No record found'
+                ]);
+            }
+            $user = User::find($signage->user_id);
+            return response()->json([
+                'status' => 'success',
+                'data' => [
+                    'user' => new UserResource($user),
+                    'signage' => new SignageResource($signage)
+                ]
+            ]);
+        } elseif ($entity_id == 6) {
+            $vehicle = CommercialVehicle::where('vehicle_id', $assessment_entity_id)->first();
+            if (!$vehicle) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'No record found'
+                ]);
+            }
+            $user = User::find($vehicle->user_id);
+            return response()->json([
+                'status' => 'success',
+                'data' => [
+                    'user' => new UserResource($user),
+                    'vehicle' => new SignageResource($vehicle)
+                ]
+            ]);
+        } else {
+            return response()->json([
+                    'status' => 'error',
+                    'message' => 'Invalid assessment entity ID'
+                ]);
+        }
+        
     }
 
     /**
