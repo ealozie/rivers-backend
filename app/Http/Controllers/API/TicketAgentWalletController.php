@@ -23,7 +23,7 @@ class TicketAgentWalletController extends Controller
     {
         $user = $request->user();
 
-        if ($user->hasRole('admin')) {
+        if (!$user->hasRole('admin')) {
             $per_page = 20;
             $ticket_agent_wallet = TicketAgentWallet::paginate($per_page);
             return TicketAgentWalletResource::collection($ticket_agent_wallet);

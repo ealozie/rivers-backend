@@ -8,4 +8,16 @@ use Illuminate\Database\Eloquent\Model;
 class TicketAgentWallet extends Model
 {
     use HasFactory;
+
+
+    public function added_by_user()
+    {
+        return $this->belongsTo(User::class, 'added_by');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
 }

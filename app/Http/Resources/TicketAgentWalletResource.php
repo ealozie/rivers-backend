@@ -14,6 +14,16 @@ class TicketAgentWalletResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            "id" => $this->id,
+            "ticket_agent" => new UserResource($this->user),
+            "amount" => $this->amount,
+            "transaction_type" => $this->transaction_type,
+            "type" => $this->type,
+            "transaction_reference_number" => $this->transaction_reference_number,
+            "transaction_status" => $this->transaction_status,
+            "added_by" => new UserResource($this->added_by_user),
+            "created_at" => $this->created_at,
+        ];
     }
 }
