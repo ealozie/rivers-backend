@@ -38,7 +38,7 @@ class AssessmentController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Verify Assessment Entity ID.
      */
     public function validate_assessment_entity_id(Request $request)
     {
