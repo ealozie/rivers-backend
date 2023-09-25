@@ -43,7 +43,6 @@ class IndividualStoreRequest extends FormRequest
             'local_government_area_id' => 'required|exists:local_government_areas,id',
             'occupation_id' => 'required|exists:occupations,id',
             'income_range' => 'required',
-            'property_abssin' => 'required|string',
             'street_number' => 'sometimes|string',
             'street_name' => 'sometimes|string',
             'city' => 'sometimes|string',
