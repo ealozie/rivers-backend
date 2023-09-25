@@ -249,9 +249,9 @@ class TicketVendingController extends Controller
         return response()->json([
             'status' => 'success',
             'data' => [
-                'tickets_today' => $tickets_today,
-                'tickets_this_week' => $tickets_this_week,
-                'tickets_this_month' => $tickets_this_month,
+                'tickets_today' => (int) $tickets_today,
+                'tickets_this_week' => (int) $tickets_this_week,
+                'tickets_this_month' => (int) $tickets_this_month,
             ]
         ], 200);
     }
