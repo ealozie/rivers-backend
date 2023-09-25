@@ -237,11 +237,10 @@ class TicketVendingController extends Controller
      */
     public function ticket_statistics(Request $request)
     {
-        Carbon::setWeekStartsAt(Carbon::SUNDAY);
-        Carbon::setWeekEndsAt(Carbon::SATURDAY);
         $user = $request->user();
         $tickets_today = TicketVending::where('user_id', $user->id)->whereDate('created_at', Carbon::today())->count();
         $tickets_today_amount = TicketVending::where('user_id', $user->id)->whereDate('created_at', Carbon::today())->sum('ticket_amount');
+        return Carbon::now()->endOfWeek();
         $tickets_this_week = TicketVending::where('user_id', $user->id)->whereDate('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->count();
         $tickets_this_week_amount = TicketVending::where('user_id', $user->id)->whereDate('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->sum('ticket_amount');
         $tickets_this_month = TicketVending::where('user_id', $user->id)->whereBetween('created_at', [
@@ -258,7 +257,7 @@ class TicketVendingController extends Controller
             'data' => [
                 'tickets_today' => [
                     'total_tickets' => (int) $tickets_today,
-                    'total_amount' => (double) $tickets_today_amount
+                    'total_amount' => (float) $tickets_today_amount
                 ],
                 'tickets_this_week' => [
                     'total_tickets' => (int) $tickets_this_week,
