@@ -11,6 +11,7 @@ use App\Models\TicketAgentCategory;
 use App\Models\TicketAgentWallet;
 use App\Models\TicketCategory;
 use App\Models\TicketVending;
+use App\Models\User;
 use App\Traits\SendSMS;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -240,19 +241,34 @@ class TicketVendingController extends Controller
         Carbon::setWeekEndsAt(Carbon::SATURDAY);
         $user = $request->user();
         $tickets_today = TicketVending::where('user_id', $user->id)->whereDate('created_at', Carbon::today())->count();
+        $tickets_today_amount = TicketVending::where('user_id', $user->id)->whereDate('created_at', Carbon::today())->sum('ticket_amount');
         $tickets_this_week = TicketVending::where('user_id', $user->id)->whereDate('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->count();
+        $tickets_this_week_amount = TicketVending::where('user_id', $user->id)->whereDate('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->sum('ticket_amount');
         $tickets_this_month = TicketVending::where('user_id', $user->id)->whereBetween('created_at', [
             Carbon::now()->startOfMonth(), 
             Carbon::now()->endOfMonth()
         ])->count();
+        $tickets_this_month_amount = TicketVending::where('user_id', $user->id)->whereBetween('created_at', [
+            Carbon::now()->startOfMonth(), 
+            Carbon::now()->endOfMonth()
+        ])->sum('ticket_amount');
 
         return response()->json([
             'status' => 'success',
             'data' => [
-                'tickets_today' => (int) $tickets_today,
-                'tickets_this_week' => (int) $tickets_this_week,
-                'tickets_this_month' => (int) $tickets_this_month,
-            ]
+                'tickets_today' => [
+                    'total_tickets' => (int) $tickets_today,
+                    'total_amount' => (double) $tickets_today_amount
+                ],
+                'tickets_this_week' => [
+                    'total_tickets' => (int) $tickets_this_week,
+                    'total_amount' => (double) $tickets_this_week_amount
+
+                ] ,
+                'tickets_this_month' => [
+                    'total_tickets' => (int) $tickets_this_month,
+                    'total_amount' => (double) $tickets_this_month_amount
+                ]            ]
         ], 200);
     }
 }
