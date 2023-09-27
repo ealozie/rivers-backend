@@ -16,4 +16,33 @@ class Cooperate extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function business_type()
+    {
+        return $this->belongsTo(BusinessType::class);
+    }
+
+    public function settlement_type()
+    {
+        return $this->belongsTo(SettlementType::class);
+    }
+
+    public function business_category()
+    {
+        return $this->belongsTo(BusinessCategory::class);
+    }
+
+    public function business_sub_category()
+    {
+        return $this->belongsTo(BusinessSubCategory::class);
+    }
+
+    public function business_level()
+    {
+        return $this->belongsTo(BusinessLevel::class);
+    }
+    public function demand_notice_category()
+    {
+        return $this->belongsTo(DemandNoticeCategory::class);
+    }
 }

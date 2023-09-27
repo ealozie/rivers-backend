@@ -8,12 +8,55 @@ use Illuminate\Database\Eloquent\Model;
 class Individual extends Model
 {
     use HasFactory;
-    
+
     protected $guarded = ['id'];
 
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function nationality()
+    {
+        return $this->belongsTo(Nationality::class);
+    }
+    public function title()
+    {
+        return $this->belongsTo(Title::class);
+    }
+
+    public function marital_status()
+    {
+        return $this->belongsTo(MaritalStatus::class);
+    }
+
+    public function geno_type()
+    {
+        return $this->belongsTo(GenoType::class);
+    }
+
+    public function local_government_area()
+    {
+        return $this->belongsTo(LocalGovernmentArea::class);
+    }
+
+    public function demand_notice_category()
+    {
+        return $this->belongsTo(DemandNoticeCategory::class);
+    }
+
+    public function occupation()
+    {
+        return $this->belongsTo(Occupation::class);
+    }
+
+    public function blood_group()
+    {
+        return $this->belongsTo(BloodGroup::class);
+    }
+    public function state()
+    {
+        return $this->belongsTo(State::class);
     }
 }

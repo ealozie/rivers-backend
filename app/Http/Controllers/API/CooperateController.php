@@ -118,7 +118,14 @@ class CooperateController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $cooperate = Cooperate::find($id);
+        if (!$cooperate) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Cooperate not found',
+            ], 404);
+        }
+        return new CooperateResource($cooperate);
     }
 
     /**

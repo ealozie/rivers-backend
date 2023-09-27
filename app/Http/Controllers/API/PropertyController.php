@@ -20,7 +20,12 @@ class PropertyController extends Controller
      */
     public function index()
     {
-        //
+        $properties = Property::all();
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Properties retrieved successfully.',
+            'data' => PropertyResource::collection($properties)
+        ]);
     }
 
     /**
@@ -37,9 +42,8 @@ class PropertyController extends Controller
                     $path = $property_image->store('property_pictures', 'public');
                     $property_picture = new PropertyPicture();
                     $property_picture->property_id = $property->id;
-                    $property_picture->picture_path = "/storage/".$path;
+                    $property_picture->picture_path = "/storage/" . $path;
                     $property_picture->save();
-
                 }
             }
             return response()->json([

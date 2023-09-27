@@ -14,6 +14,27 @@ class ShopResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            "id" => $this->id,
+            "shop_id" => $this->shop_id,
+            "name" => $this->name,
+            "shop_number" => $this->shop_number,
+            "zone" => $this->zone,
+            "location" => $this->location,
+            "market_name" => $this->market_name,
+            "street_name" => $this->street_name,
+            "street_number" => $this->street_number,
+            "city" => $this->city,
+            "local_government_area" => $this->local_government_area,
+            "business_category" => $this->business_category,
+            "business_sub_category" => $this->business_sub_category,
+            "classification" => $this->classification,
+            "user" => $this->user,
+            "status" => $this->status,
+            "notes" => $this->notes,
+            //"added_by" => $this->added_by,
+            "created_at" => $this->created_at,
+            "updated_at" => $this->updated_at,
+        ];
     }
 }

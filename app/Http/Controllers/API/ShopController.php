@@ -18,6 +18,12 @@ class ShopController extends Controller
      */
     public function index()
     {
+        $shops = Shop::all();
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Shops retrieved successfully.',
+            'data' => ShopResource::collection($shops)
+        ]);
     }
 
     /**

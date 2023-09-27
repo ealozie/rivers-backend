@@ -110,7 +110,14 @@ class IndividualController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $individual = Individual::find($id);
+        if (!$individual) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Individual not found',
+            ], 404);
+        }
+        return new IndividualResource($individual);
     }
 
     /**
