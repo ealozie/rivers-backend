@@ -64,7 +64,15 @@ class PropertyController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $property = Property::find($id);
+        if (!$property) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No property found.',
+            ], 404); 
+        }
+
+        return new PropertyResource($property);
     }
 
     /**
