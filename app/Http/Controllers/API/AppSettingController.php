@@ -18,14 +18,48 @@ class AppSettingController extends Controller
      *
      * Authorization header is required to be set to Bearer `<token>` <br>
      */
-    public function __invoke(Request $request)
+    public function index()
     {
-        $app_logo = AppSetting::where('key', 'APP_LOGO')->first();
-        $app_name = AppSetting::where('key', 'APP_NAME')->first();
-
+        $settings = [];
+        $app_settings = AppSetting::all();
+        foreach ($app_settings as $app_setting) {
+            $settings[$app_setting->key] = $app_setting->value;
+        }
         return response()->json([
-            'app_logo' => $app_logo->value,
-            'app_name' => $app_name->value,
+            'data' => $settings
         ]);
+        //return AppSettingResource::collection($app_settings);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        //
     }
 }
