@@ -7,6 +7,7 @@ use App\Http\Requests\ShopStoreRequest;
 use App\Http\Requests\ShopUpdateRequest;
 use App\Http\Resources\ShopResource;
 use App\Models\Shop;
+use App\Models\User;
 
 /**
  * @tags Shop Service
@@ -48,7 +49,7 @@ class ShopController extends Controller
         $shop = Shop::find($id);
         return response()->json([
             'status' => 'success',
-            'message' => 'Shop added successfully.',
+            'message' => 'Shop retrieved successfully.',
             'data' => new ShopResource($shop)
         ]);
     }
@@ -63,7 +64,7 @@ class ShopController extends Controller
         $shop->update($validatedData);
         return response()->json([
             'status' => 'success',
-            'message' => 'Shop added successfully.',
+            'message' => 'Shop updated successfully.',
             'data' => new ShopResource($shop)
         ]);
     }
@@ -74,5 +75,31 @@ class ShopController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    /**
+     * Get Shop by User ID or User Unique ID.
+     */
+    public function show_by_user_id(string $user_id_or_unique_id)
+    {
+        $user = User::where('id', $user_id_or_unique_id)->orWhere('unique_id', $user_id_or_unique_id)->first();
+        if (!$user) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User ID not found.',
+            ], 404);
+        }
+        $shop = Shop::where('user_id', $user->id)->get();
+        if (!count($shop)) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Shop not found.',
+            ], 404);
+        }
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Shop retrieved successfully.',
+            'data' => ShopResource::collection($shop)
+        ]);
     }
 }

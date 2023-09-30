@@ -8,6 +8,7 @@ use App\Http\Requests\PropertyUpdateRequest;
 use App\Http\Resources\PropertyResource;
 use App\Models\Property;
 use App\Models\PropertyPicture;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 /**
@@ -69,7 +70,7 @@ class PropertyController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'No property found.',
-            ], 404); 
+            ], 404);
         }
 
         return new PropertyResource($property);
@@ -89,5 +90,31 @@ class PropertyController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    /**
+     * Get Properties by User ID or User Unique ID.
+     */
+    public function show_by_user_id(string $user_id_or_unique_id)
+    {
+        $user = User::where('id', $user_id_or_unique_id)->orWhere('unique_id', $user_id_or_unique_id)->first();
+        if (!$user) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User ID not found.',
+            ], 404);
+        }
+        $property = Property::where('user_id', $user->id)->get();
+        if (!count($property)) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Property not found.',
+            ], 404);
+        }
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Property retrieved successfully.',
+            'data' => PropertyResource::collection($property)
+        ]);
     }
 }

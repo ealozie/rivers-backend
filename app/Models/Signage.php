@@ -22,4 +22,22 @@ class Signage extends Model
         'notes',
         'added_by',
     ];
+
+    //Belongs to local government area
+    public function local_government_area()
+    {
+        return $this->belongsTo(LocalGovernmentArea::class);
+    }
+
+    //Belongs to user
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    //Belongs to user
+    public function added_by_user()
+    {
+        return $this->belongsTo(User::class, 'added_by');
+    }
 }

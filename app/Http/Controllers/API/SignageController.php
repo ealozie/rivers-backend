@@ -7,6 +7,7 @@ use App\Http\Requests\SignageStoreRequest;
 use App\Http\Requests\SignageUpdateRequest;
 use App\Http\Resources\SignageResource;
 use App\Models\Signage;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -68,5 +69,31 @@ class SignageController extends Controller
     {
         Signage::destroy($id);
         return response()->json(['status' => 'success', 'message' => 'Signage deleted successfully',], 200);
+    }
+
+    /**
+     * Get Signage by User ID or User Unique ID.
+     */
+    public function show_by_user_id(string $user_id_or_unique_id)
+    {
+        $user = User::where('id', $user_id_or_unique_id)->orWhere('unique_id', $user_id_or_unique_id)->first();
+        if (!$user) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User ID not found.',
+            ], 404);
+        }
+        $signage = Signage::where('user_id', $user->id)->get();
+        if (!count($signage)) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Signage not found.',
+            ], 404);
+        }
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Signage retrieved successfully.',
+            'data' => SignageResource::collection($signage)
+        ]);
     }
 }

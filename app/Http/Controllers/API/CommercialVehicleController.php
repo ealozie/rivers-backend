@@ -7,6 +7,7 @@ use App\Http\Requests\CommercialVehicleStoreRequest;
 use App\Http\Requests\CommercialVehicleUpdateRequest;
 use App\Http\Resources\CommercialVehicleResource;
 use App\Models\CommercialVehicle;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -110,5 +111,31 @@ class CommercialVehicleController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    /**
+     * Get Commercial Vehicles by User ID or User Unique ID.
+     */
+    public function show_by_user_id(string $user_id_or_unique_id)
+    {
+        $user = User::where('id', $user_id_or_unique_id)->orWhere('unique_id', $user_id_or_unique_id)->first();
+        if (!$user) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User ID not found.',
+            ], 404);
+        }
+        $commercial_vehicles = CommercialVehicle::where('user_id', $user->id)->get();
+        if (!count($commercial_vehicles)) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Commercial vehicle not found.',
+            ], 404);
+        }
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Commercial vehicle retrieved successfully.',
+            'data' => CommercialVehicleResource::collection($commercial_vehicles)
+        ]);
     }
 }

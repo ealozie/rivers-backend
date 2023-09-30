@@ -145,11 +145,10 @@ class AssessmentController extends Controller
             ]);
         } else {
             return response()->json([
-                    'status' => 'error',
-                    'message' => 'Invalid assessment entity ID'
-                ]);
+                'status' => 'error',
+                'message' => 'Invalid assessment entity ID'
+            ]);
         }
-        
     }
 
     /**
@@ -218,5 +217,55 @@ class AssessmentController extends Controller
         $assessment = Assessment::find($id);
         $assessment->status = 'cancelled';
         return response()->json(['status' => 'success', 'message' => 'Assessment Cancelled successfully',], 200);
+    }
+
+    /**
+     * Get Assessments by User ID or User Unique ID.
+     */
+    public function show_by_user_id(string $user_id_or_unique_id)
+    {
+        $user = User::where('id', $user_id_or_unique_id)->orWhere('unique_id', $user_id_or_unique_id)->first();
+        if (!$user) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User ID not found.',
+            ], 404);
+        }
+        $assessment = Assessment::where('user_id', $user->id)->get();
+        if (!count($assessment)) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Assessment not found.',
+            ], 404);
+        }
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Assessment retrieved successfully.',
+            'data' => AssessmentResource::collection($assessment)
+        ]);
+    }
+
+    /**
+     * Get Assessment By Reference or Receipt number.
+     */
+    public function show_by_reference_number(string $reference_number)
+    {
+        $assessment = Assessment::where('assessment_reference', $reference_number)->orWhere('receipt_number', $reference_number)->first();
+        if (!$assessment) {
+            return response()->json(['status' => 'error', 'message' => 'Assessment not found',], 404);
+        }
+        return new AssessmentResource($assessment);
+    }
+
+    /**
+     * Get Assessment By Phone Number.
+     */
+    public function show_by_phone_number(string $phone_number)
+    {
+        $assessment = Assessment::where('phone_number', $phone_number)->first();
+        if (!$assessment) {
+            return response()->json(['status' => 'error', 'message' => 'Assessment not found',], 404);
+        }
+        return new AssessmentResource($assessment);
     }
 }

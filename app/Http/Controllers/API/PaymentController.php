@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\PaymentResource;
+use App\Models\Payment;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 /**
@@ -15,7 +18,8 @@ class PaymentController extends Controller
      */
     public function index()
     {
-        //
+        $payments = Payment::all();
+        return PaymentResource::collection($payments);
     }
 
     /**
@@ -23,7 +27,13 @@ class PaymentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $requestData = $request->all();
+        $requestData['user_id'] = $request->user()->id;
+        Payment::create($requestData);
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Payment logged successfully.'
+        ]);
     }
 
     /**
@@ -48,5 +58,43 @@ class PaymentController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    /**
+     * Get Payments by User ID or User Unique ID.
+     */
+    public function show_by_user_id(string $user_id_or_unique_id)
+    {
+        $user = User::where('id', $user_id_or_unique_id)->orWhere('unique_id', $user_id_or_unique_id)->first();
+        if (!$user) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User ID not found.',
+            ], 404);
+        }
+        $property = Payment::where('user_id', $user->id)->get();
+        if (!count($property)) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Payment not found.',
+            ], 404);
+        }
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Payments retrieved successfully.',
+            'data' => PaymentResource::collection($property)
+        ]);
+    }
+
+    /**
+     * Get Payment By Reference or Receipt number.
+     */
+    public function show_by_reference_number(string $reference_number)
+    {
+        $payment = Payment::where('reference_number', $reference_number)->orWhere('receipt_number', $reference_number)->first();
+        if (!$payment) {
+            return response()->json(['status' => 'error', 'message' => 'Payment not found',], 404);
+        }
+        return new PaymentResource($payment);
     }
 }
