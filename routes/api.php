@@ -53,7 +53,9 @@ use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\UserFacialBiometricController;
 use App\Http\Controllers\API\UserUpdatePasswordController;
 use App\Http\Controllers\API\UserVerificationController;
+use App\Http\Controllers\API\VehicleCategoryController;
 use App\Http\Controllers\API\VehicleEnumerationVerificationController;
+use App\Http\Controllers\API\VehicleManufacturerController;
 use App\Http\Controllers\API\WalletFundTransferController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\UserConfirmationController;
@@ -124,6 +126,8 @@ Route::prefix('v1')->group(function () {
     Route::get('ticket-vending-statistics', [TicketVendingController::class, 'ticket_statistics'])->middleware('auth:sanctum');
 
     Route::apiResource('ticket-bulk-vending', TicketBulkVendingController::class)->middleware('auth:sanctum')->only(['store', 'show', 'index']);
+    Route::apiResource('vehicle-manufacturers', VehicleManufacturerController::class)->middleware('auth:sanctum')->only(['index', 'show']);
+    Route::apiResource('vehicle-categories', VehicleCategoryController::class)->middleware('auth:sanctum')->only(['index']);
     Route::apiResource('ticket-agents', TicketAgentController::class)->middleware('auth:sanctum')->only(['store', 'show', 'index', 'update']);
     Route::apiResource('ticket-agent-wallet-transactions', TicketAgentWalletController::class)->middleware('auth:sanctum')->only(['show', 'index']);
     Route::apiResource('ticket-enforcements', TicketEnforcementController::class)->middleware('auth:sanctum');
