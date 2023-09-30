@@ -22,6 +22,17 @@ class AppSettingSeeder extends Seeder
             'ALLOW_TICKETING_ON_SATURDAY' => true,
             'ALLOW_TICKETING_ON_SUNDAY' => false,
             'APP_LOGO' => 'https://via.placeholder.com/150',
+            "FORCE_ASSESSMENT_FIFO" => false,
+            "DOCUMENT_VERIFICATION_FEES" => 1000,
+            "PAYMENT_VERIFICATION_FEES" => 1000,
+            "DOCUMENT_DOWNLOAD_TIMELINE" => 24,
+            "DOCUMENT_DOWNLOAD_FEES" => 1000,
+            "RECEIPT_TEMPLATE" => "https://via.placeholder.com/150",
+            "TICKET_REVENUE_ITEM" => 5,
+            "ORGANIZATION_NAME" => "ABIA State Government",
+            "CONTACT_NUMBER" => "08012345678",
+            "CONTACT_ADDRESS" => "No 1, Abia State Road, Umuahia",
+            "CONTACT_EMAIL" => "admin@abiastategov.ng"
         ];
 
         AppSetting::truncate();

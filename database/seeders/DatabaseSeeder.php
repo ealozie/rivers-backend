@@ -46,7 +46,7 @@ class DatabaseSeeder extends Seeder
             //AgencySeeder::class,
             //UserUniqueIdSeeder::class,
             //RevenueItemSeeder::class,
-            AllEntitiesIDSeeder::class,
+            AppSettingSeeder::class,
         ]);
     }
 }
