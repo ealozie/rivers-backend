@@ -99,6 +99,9 @@ class PaymentController extends Controller
         return new PaymentResource($payment);
     }
 
+    /**
+     * InterSwitch Payment Webhook.
+     */
     public function payment_webhoook_for_wallet(Request $request)
     {
         $requestData = $request->getContent();
