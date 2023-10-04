@@ -32,7 +32,15 @@ class AppSettingSeeder extends Seeder
             "ORGANIZATION_NAME" => "ABIA State Government",
             "CONTACT_NUMBER" => "08012345678",
             "CONTACT_ADDRESS" => "No 1, Abia State Road, Umuahia",
-            "CONTACT_EMAIL" => "admin@abiastategov.ng"
+            "CONTACT_EMAIL" => "admin@abiastategov.ng",
+            "QT_MERCHANT_CODE" => '',
+            "QT_PAY_ITEM_ID" => '',
+            "QT_DATA_REF" => '',
+            "QT_CLIENT_ID" => '',
+            "QT_SECRET_KEY" => '',
+            "QT_MERCHANT_ID" => '',
+            "QT_ALIAS" => '',
+            "QT_N_SECRET_KEY" => '',
         ];
 
         AppSetting::truncate();
