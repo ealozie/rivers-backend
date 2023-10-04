@@ -7,7 +7,9 @@ use App\Http\Resources\PaymentResource;
 use App\Jobs\ProcessISWPaymentTransaction;
 use App\Models\Payment;
 use App\Models\User;
+use AWS\CRT\Log;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log as FacadesLog;
 
 /**
  * @tags Payment Service
@@ -105,6 +107,11 @@ class PaymentController extends Controller
     public function payment_webhoook_for_wallet(Request $request)
     {
         $requestData = $request->getContent();
+        //Log data
+        $logFile = fopen(storage_path('logs/isw_payment_webhook.log'), 'a');
+        fwrite($logFile, $requestData . "\n");
+        fclose($logFile);
+        FacadesLog::info($requestData);
         if ($request->hasHeader('X-Interswitch-Signature')) {
             $secret_key = env('ISW_WEBHOOK_PAYMENT_SECRET_KEY');
             $signature = hash_hmac('sha256', $requestData, $secret_key);
