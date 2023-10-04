@@ -21,7 +21,8 @@ class CommercialVehicleController extends Controller
      */
     public function index()
     {
-        //
+        $commercial_vehicles = CommercialVehicle::latest()->get();
+        return CommercialVehicleResource::collection($commercial_vehicles);
     }
 
     /**
