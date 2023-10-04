@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PaymentResource;
+use App\Jobs\ProcessISWPaymentTransaction;
 use App\Models\Payment;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -96,5 +97,20 @@ class PaymentController extends Controller
             return response()->json(['status' => 'error', 'message' => 'Payment not found',], 404);
         }
         return new PaymentResource($payment);
+    }
+
+    public function payment_webhoook_for_wallet(Request $request)
+    {
+        $requestData = $request->getContent();
+        if ($request->hasHeader('X-Interswitch-Signature')) {
+            $secret_key = env('ISW_WEBHOOK_PAYMENT_SECRET_KEY');
+            $signature = hash_hmac('sha256', $requestData, $secret_key);
+            //verify this signature with the one sent in the header
+            if ($signature == $request->header('X-Interswitch-Signature')) {
+                $requestObject = json_decode($requestData);
+                ProcessISWPaymentTransaction::dispatch($requestObject);
+            }
+        }
+        return response()->json();
     }
 }

@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
+use App\Models\Document;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Contracts\Role;
@@ -47,6 +48,8 @@ class DatabaseSeeder extends Seeder
             //UserUniqueIdSeeder::class,
             //RevenueItemSeeder::class,
             AppSettingSeeder::class,
+            DocumentLifeSpanSeeder::class,
+            TollGateCategorySeeder::class,
         ]);
     }
 }
