@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use App\Traits\SendSMS;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
  */
 class LoginController extends Controller
 {
+    use SendSMS;
 
     /**
      * Login.
@@ -21,6 +23,9 @@ class LoginController extends Controller
      */
     public function __invoke(Request $request)
     {
+        // $message = "Hello Emmanuel,\n this is a test sms. Let me know if your received it.\n Thank you";
+        // $this->send_sms_process_message("+2348034325030", $message);
+
         $credentials = $request->validate([
             'phone_number' => ['required'],
             'password' => ['required'],

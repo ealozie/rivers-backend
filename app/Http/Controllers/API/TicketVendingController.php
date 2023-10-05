@@ -175,9 +175,10 @@ class TicketVendingController extends Controller
             $mobile_number = ltrim($phone_number, "0");
             $ticket_category_name = $ticket_category->category_name;
             $amount = number_format($ticket_actual_price, 2);
-            $expires_at = date('h:isa', strtotime($ticket_category->expired_at));
-            $message = "Hello,\nYour {$ticket_category_name} ticket purchase for {$plate_number} (₦{$amount}) was successful. Expires {$expires_at}. Thank you";
+            $expires_at = date('h:ia', strtotime($ticket_category->expired_at));
+            $message = "Hello, your {$ticket_category_name} ticket purchase for {$plate_number} (N{$amount}) was successful. Expires at {$expires_at}. Thank you.";
             // $message = "Hello, your ticket has been successfully purchased. Your ticket reference number is " . $ticket_vending->ticket_reference_number . ". Thank you for using AKSG-IRS.";
+            //return $mobile_number;
             $this->send_sms_process_message("+234" . $mobile_number, $message);
         } catch (\Exception $e) {
             return response()->json([
@@ -240,8 +241,18 @@ class TicketVendingController extends Controller
         $user = $request->user();
         $tickets_today = TicketVending::where('user_id', $user->id)->whereDate('created_at', Carbon::today())->count();
         $tickets_today_amount = TicketVending::where('user_id', $user->id)->whereDate('created_at', Carbon::today())->sum('ticket_amount');
-        $tickets_this_week = TicketVending::where('user_id', $user->id)->whereDate('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->count();
-        $tickets_this_week_amount = TicketVending::where('user_id', $user->id)->whereDate('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->sum('ticket_amount');
+
+        //$tickets_this_week = TicketVending::where('user_id', $user->id)->whereDate('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->count();
+        $now = Carbon::now();
+        $tickets_this_week = TicketVending::whereBetween("created_at", [
+           $now->startOfWeek()->format('Y-m-d'),
+           $now->endOfWeek()->format('Y-m-d')
+        ])->count();
+        $tickets_this_week_amount = TicketVending::whereBetween("created_at", [
+           $now->startOfWeek()->format('Y-m-d'),
+           $now->endOfWeek()->format('Y-m-d')
+        ])->sum('ticket_amount');
+        //$tickets_this_week_amount = TicketVending::where('user_id', $user->id)->whereDate('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->sum('ticket_amount');
         $tickets_this_month = TicketVending::where('user_id', $user->id)->whereBetween('created_at', [
             Carbon::now()->startOfMonth(), 
             Carbon::now()->endOfMonth()
