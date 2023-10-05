@@ -123,4 +123,73 @@ class PaymentController extends Controller
         }
         return response()->json();
     }
+
+    /**
+     * Generate Reference number for InterSwitch Payment.
+     */
+    public function payment_generate_reference(Request $request)
+    {
+        $validateData = $request->validate([
+            'amount' => 'required',
+        ]);
+        $user = $request->user();
+        try {
+            $payment = new Payment();
+            $payment->user_id = $user->id;
+            $payment->reference_number = 'ref_smcpt_'.mt_rand(11111, 99999).date('dY').mt_rand(11, 99);
+            $payment->payment_gateway = 'InterSwitch';
+            $payment->amount = $validateData['amount'];
+            $payment->save();
+            return response()->json([
+            'status' => 'success',
+            'data' => [
+                'payment_reference_number' => $payment->reference_number,
+                'user' => $user
+            ]
+        ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'An error occurred while processing your request. Please try again.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Verify InterSwitch Payment using Reference number.
+     * 
+     * Query parameter `ref_number` is required.<br>
+     * Authentication Token is required.
+     */
+
+    public function payment_reference_verification(Request $request)
+    {
+        if ($request->has('ref_number')) {
+            $reference_number = $request->get('ref_number');
+            $payment = Payment::where('reference_number', $reference_number)->first();
+            if (!$payment) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Reference number not found'
+                ], 404);
+            }
+            if ($payment->transaction_status == '00') {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Transaction was succesful.'
+                ]);
+            } else {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Transaction status cannot be determined.'
+                ], 404);
+            }
+        } else {
+            return response()->json([
+                    'status' => 'error',
+                    'message' => 'ref_number query is required'
+                ], 404);
+        }
+    }
 }

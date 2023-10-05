@@ -1,10 +1,10 @@
 <?php
 
+use App\Http\Controllers\API\AWSImageRecognitionController;
 use App\Http\Controllers\API\AgencyController;
 use App\Http\Controllers\API\AppSettingController;
 use App\Http\Controllers\API\AssessmentController;
 use App\Http\Controllers\API\AssessmentYearController;
-use App\Http\Controllers\API\AWSImageRecognitionController;
 use App\Http\Controllers\API\BloodGroupController;
 use App\Http\Controllers\API\BusinessCategoryController;
 use App\Http\Controllers\API\BusinessLevelController;
@@ -28,6 +28,7 @@ use App\Http\Controllers\API\IndividualController;
 use App\Http\Controllers\API\LocalGovernmentAreaController;
 use App\Http\Controllers\API\LoginController;
 use App\Http\Controllers\API\LogoutController;
+use App\Http\Controllers\API\LogoutTokenValidationController;
 use App\Http\Controllers\API\MaritalStatusController;
 use App\Http\Controllers\API\MarketNameController;
 use App\Http\Controllers\API\NationalityController;
@@ -81,6 +82,7 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::prefix('v1')->group(function () {
+    //Route::get('token-verification', LogoutTokenValidationController::class);
     Route::post('login', LoginController::class);
     Route::post('logout', LogoutController::class)->middleware('auth:sanctum');
     Route::post('update-password', UserUpdatePasswordController::class)->middleware('auth:sanctum');
@@ -141,6 +143,8 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('property-types', PropertyTypeController::class)->only(['index']);
     Route::apiResource('payments', PaymentController::class)->middleware('auth:sanctum')->only(['index', 'store']);
     Route::post('payments-webhook', [PaymentController::class, 'payment_webhoook_for_wallet']);
+    Route::post('payments-isw-generate-reference', [PaymentController::class, 'payment_generate_reference'])->middleware('auth:sanctum');
+    Route::get('payments-isw-reference-verification', [PaymentController::class, 'payment_reference_verification'])->middleware('auth:sanctum');
     Route::get('payments-by-user-id/{user_id_or_unique_id}', [PaymentController::class, 'show_by_user_id'])->middleware('auth:sanctum');
     Route::get('payments-by-reference-number/{reference_number}', [PaymentController::class, 'show_by_reference_number'])->middleware('auth:sanctum');
     Route::apiResource('property-uses', PropertyUseController::class)->only(['index']);
