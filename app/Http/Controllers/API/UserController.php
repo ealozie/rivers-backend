@@ -19,6 +19,15 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
+        if ($user->hasRole('admin')) {
+            $users = User::all();
+            return response()->json([
+                'status' => 'success',
+                'data' => [
+                    'users' => UserResource::collection($users),
+                ],
+            ]);
+        }
         return response()->json([
             'status' => 'success',
             'data' => [
@@ -39,9 +48,16 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Request $request, string $id)
     {
-        //
+        $user = User::find($id);
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'user' => new UserResource($user),
+                'agent' => new TicketAgentResource($user->agent)
+            ],
+        ]);
     }
 
     /**

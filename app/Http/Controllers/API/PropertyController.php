@@ -36,6 +36,7 @@ class PropertyController extends Controller
     {
         $validatedData = $request->validated();
         try {
+            $validatedData['property_id'] = '4' . date('hi') . mt_rand(11111, 99999);
             $property = Property::create($validatedData);
             if ($request->hasFile('property_pictures') && count($validatedData['property_pictures'])) {
                 $property_images = $validatedData['property_pictures'];

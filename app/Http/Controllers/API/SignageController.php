@@ -33,6 +33,7 @@ class SignageController extends Controller
         $user = $request->user();
         $validatedData = $request->validated();
         $validatedData['added_by'] = $user->id ?? 0;
+        $validatedData['signage_id'] = '5' . date('hi') . mt_rand(11111, 99999);
         $signage = Signage::create($validatedData);
         return new SignageResource($signage);
     }

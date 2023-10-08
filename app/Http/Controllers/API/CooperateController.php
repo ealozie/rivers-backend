@@ -80,7 +80,9 @@ class CooperateController extends Controller
             $user->phone_number_verification_code =
                 mt_rand(111111, 999999);
             $user->save();
-            $user->unique_id = time() + $user->id + mt_rand(11111, 99999);
+
+            $validatedData['cooperate_id'] = '2' . date('hi') . mt_rand(11111, 99999);
+            $user->unique_id = $validatedData['cooperate_id'];
             $user->save();
             //Send Phone Number Verification Code
             $phone_number = $user->phone_number;
@@ -94,6 +96,7 @@ class CooperateController extends Controller
                 $path = $request->file('picture_path')->store('cooperates', 'public');
                 $validatedData['picture_path'] = "/storage/" . $path;
             }
+            $validatedData['cooperate_id'] = '2' . date('hi') . mt_rand(11111, 99999);
             $cooperate = Cooperate::create($validatedData);
             $user->assignRole('cooperate');
             return response()->json([

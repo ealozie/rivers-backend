@@ -33,6 +33,7 @@ class ShopController extends Controller
     public function store(ShopStoreRequest $request)
     {
         $validatedData = $request->validated();
+        $validatedData['shop_id'] = '3' . date('hi') . mt_rand(11111, 99999);
         $shop = Shop::firstOrCreate($validatedData);
         return response()->json([
             'status' => 'success',

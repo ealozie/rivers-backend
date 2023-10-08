@@ -125,7 +125,17 @@ class IndividualController extends Controller
      */
     public function update(IndividualUpdateRequest $request, string $id)
     {
-        //
+        $validatedData = $request->validated();
+        $individual = Individual::find($id);
+        $user = User::where('id', $individual->user_id)->first();
+        $individual->update($validatedData);
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'user' => new UserResource($user),
+                'individual' => new IndividualResource($individual),
+            ]
+        ]);
     }
 
     /**

@@ -4,8 +4,10 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TicketAgentListResource;
+use App\Http\Resources\TicketAgentWalletResource;
 use App\Models\TicketAgent;
 use App\Models\TicketAgentCategory;
+use App\Models\TicketAgentWallet;
 use Illuminate\Http\Request;
 
 /**
@@ -84,7 +86,7 @@ class TicketAgentController extends Controller
         $agent->update($validatedData);
         if (count($validatedData['agent_ticket_categories'])) {
             TicketAgentCategory::where('ticket_agent_id', $agent->id)
-            ->delete();
+                ->delete();
             foreach ($validatedData['agent_ticket_categories'] as $category) {
                 $ticket_agent_category = new TicketAgentCategory();
                 $ticket_agent_category->ticket_agent_id = $agent->id;
@@ -105,5 +107,19 @@ class TicketAgentController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    /**
+     * Get Ticket Wallet Transactions by Agent ID.
+     */
+    public function ticket_agent_transactions(Request $request, $agent_id)
+    {
+        //check if agent ID exist
+        $agent = TicketAgent::find($agent_id);
+        if (!$agent) {
+            return response()->json(['status' => 'error', 'message' => 'Agent ID not found.']);
+        }
+        $agent_transactions = TicketAgentWallet::where('ticket_agent_id', $agent_id)->get();
+        return TicketAgentWalletResource::collection($agent_transactions);
     }
 }

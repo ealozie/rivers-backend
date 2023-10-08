@@ -82,7 +82,7 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::prefix('v1')->group(function () {
-    //Route::get('token-verification', LogoutTokenValidationController::class);
+    Route::get('token-verification', LogoutTokenValidationController::class);
     Route::post('login', LoginController::class);
     Route::post('logout', LogoutController::class)->middleware('auth:sanctum');
     Route::post('update-password', UserUpdatePasswordController::class)->middleware('auth:sanctum');
@@ -135,7 +135,7 @@ Route::prefix('v1')->group(function () {
     Route::get('assessment/{identifier}', [AssessmentController::class, 'indentifier']);
     Route::apiResource('agencies', AgencyController::class)->only(['index']);
     Route::get('revenue-items-agency/{agency_id}', [RevenueItemController::class, 'revenue_item_agency']);
-    Route::apiResource('cooperates', CooperateController::class);
+    Route::apiResource('cooperates', CooperateController::class)->middleware('auth:sanctum');
     Route::apiResource('commercial-vehicles', CommercialVehicleController::class)->middleware('auth:sanctum');
     Route::get('commercial-vehicles-by-user-id/{user_id_or_unique_id}', [CommercialVehicleController::class, 'show_by_user_id'])->middleware('auth:sanctum');
     Route::apiResource('properties', PropertyController::class)->middleware('auth:sanctum');
@@ -148,7 +148,7 @@ Route::prefix('v1')->group(function () {
     Route::get('payments-by-user-id/{user_id_or_unique_id}', [PaymentController::class, 'show_by_user_id'])->middleware('auth:sanctum');
     Route::get('payments-by-reference-number/{reference_number}', [PaymentController::class, 'show_by_reference_number'])->middleware('auth:sanctum');
     Route::apiResource('property-uses', PropertyUseController::class)->only(['index']);
-    Route::apiResource('users', UserController::class)->middleware('auth:sanctum')->only(['index']);
+    Route::apiResource('users', UserController::class)->middleware('auth:sanctum')->only(['index', 'show']);
     Route::get('user/email-phone-number', [UserController::class, 'email_phone_number'])->middleware('auth:sanctum');
     Route::post('user-verification', [UserController::class, 'user_verification']);
     Route::apiResource('ticket-vending', TicketVendingController::class)->middleware('auth:sanctum')->only(['index', 'store', 'show']);
@@ -158,8 +158,10 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('vehicle-manufacturers', VehicleManufacturerController::class)->middleware('auth:sanctum')->only(['index', 'show']);
     Route::apiResource('vehicle-categories', VehicleCategoryController::class)->middleware('auth:sanctum')->only(['index']);
     Route::apiResource('ticket-agents', TicketAgentController::class)->middleware('auth:sanctum')->only(['store', 'show', 'index', 'update']);
+    Route::get('ticket-agents-wallet-transactions/{agent_id}', [TicketAgentController::class, 'ticket_agent_transactions'])->middleware('auth:sanctum');
     Route::apiResource('ticket-agent-wallet-transactions', TicketAgentWalletController::class)->middleware('auth:sanctum')->only(['show', 'index']);
     Route::apiResource('ticket-enforcements', TicketEnforcementController::class)->middleware('auth:sanctum');
+    Route::get('ticket-agent-enforcements/{agent_id}', [TicketEnforcementController::class, 'ticket_agent_enforcements'])->middleware('auth:sanctum');
     Route::get('ticket-categories', TicketCategoryController::class);
     Route::post('vehicle-enumeration-verifications', VehicleEnumerationVerificationController::class)->middleware('auth:sanctum');
     Route::get('ticket-agent-categories', TicketAgentCategoryController::class)->middleware('auth:sanctum');

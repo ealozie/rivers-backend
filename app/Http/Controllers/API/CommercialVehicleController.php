@@ -44,6 +44,7 @@ class CommercialVehicleController extends Controller
                 $path = $request->file('permit_image')->store('commercial_vehicles', 'public');
                 $validatedData['permit_image'] = "/storage/" . $path;
             }
+            $validatedData['vehicle_id'] = '6' . date('hi') . mt_rand(11111, 99999);
             $commercial_vehicle = CommercialVehicle::create($validatedData);
             return response()->json([
                 'status' => 'success',

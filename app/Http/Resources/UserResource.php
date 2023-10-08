@@ -20,9 +20,20 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'unique_id' => $this->unique_id,
             'phone_number' => $this->phone_number,
-            'role' => $this->role,
             'last_login_at' => $this->last_login_at,
             'residential_address' => $this->residential_address,
+            'roles' => $this->get_roles_as_array_list(),
         ];
+    }
+
+
+    public function get_roles_as_array_list()
+    {
+        $roles = $this->roles;
+        $roles_array = [];
+        foreach ($roles as $role) {
+            $roles_array[] = $role->name;
+        }
+        return $roles_array;
     }
 }

@@ -24,7 +24,7 @@ class TicketAgentCategoryController extends Controller
         if (!$ticket_agent) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'You are not allowed to enforce tickets. Contact the administrator for assistance.',
+                'message' => 'You are not an agent.',
             ], 403);
         }
         $agent_categories = TicketAgentCategory::where('ticket_agent_id', $ticket_agent->id)->get();

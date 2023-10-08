@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Individual;
 use Illuminate\Http\Request;
 use Aws\Rekognition\RekognitionClient;
 use Aws\S3\S3Client;
@@ -19,14 +20,15 @@ class AWSImageRecognitionController extends Controller
     /**
      * Initiate Faceliveness to obtain Session ID.
      */
-    public function initiate_liveness(){
+    public function initiate_liveness()
+    {
         $rekognition = new RekognitionClient([
             'region'    => env('AWS_DEFAULT_REGION'),
             'version'   => 'latest',
         ]);
 
-         // Start a Face Liveness session
-         $result = $rekognition->createFaceLivenessSession([
+        // Start a Face Liveness session
+        $result = $rekognition->createFaceLivenessSession([
             'Settings' => [
                 'AuditImagesLimit' => 4, // Adjust as needed
                 'OutputConfig' => [
@@ -50,7 +52,8 @@ class AWSImageRecognitionController extends Controller
     /**
      * Process Streamed Data.
      */
-    public function liveness_results(Request $request){
+    public function liveness_results(Request $request)
+    {
         $validatedData = $request->validate([
             'sessionid' => 'required'
         ]);
@@ -67,7 +70,7 @@ class AWSImageRecognitionController extends Controller
         ]);
         // dd($result);
         // Process the session results
-        if($result['Confidence'] < 50){
+        if ($result['Confidence'] < 50) {
             return response()->json([
                 'status' => 'success',
                 'data' => $result
@@ -92,7 +95,7 @@ class AWSImageRecognitionController extends Controller
             $referenceImageKey = $sessionFolder['Key'];
             $extension = strtolower(pathinfo($referenceImageKey, PATHINFO_EXTENSION));
             $selfFolder = explode('/', $referenceImageKey)[1];
-            if($i == 0 || $result['SessionId'] == $selfFolder || $i == count($sessionFolders['Contents']) - 1 || !in_array($extension, $validExtensions)){
+            if ($i == 0 || $result['SessionId'] == $selfFolder || $i == count($sessionFolders['Contents']) - 1 || !in_array($extension, $validExtensions)) {
                 $i++;
                 continue;
             }
@@ -116,12 +119,12 @@ class AWSImageRecognitionController extends Controller
             if (!empty($comparisonResult['FaceMatches'])) {
                 // User's face matches with a reference face, prevent duplicate sign-up
                 return response()->json([
-                    'status'=> 'success',
+                    'status' => 'success',
                     'message' => 'You have been captured before.'
                 ], 200);
             }
         }
-        $storageDirectory = storage_path('app/public/liveness-images/').$sessionId.'/';
+        $storageDirectory = storage_path('app/public/liveness-images/') . $sessionId . '/';
         foreach ($result['AuditImages'] as $auditImage) {
             $s3Object = $auditImage['S3Object'];
             $key = $s3Object['Name'];
@@ -144,14 +147,18 @@ class AWSImageRecognitionController extends Controller
         }
         // Allow user to proceed with sign-up
         $user = $request->user();
-        $user->unique_id = time() + $user->id + mt_rand(11111, 99999);
+        $user_unique_id  = '1' . date('hi') . mt_rand(11111, 99999);
+
+        $user->unique_id = $user_unique_id;
         $user->facial_biometric_status = 'completed';
-        //$user->facial_biometric_image_url = $imageData; 
+        //$user->facial_biometric_image_url = $imageData;
         $user->save();
+        $individual = Individual::where('user_id', $user->id)->first();
+        $individual->individual_id = $user_unique_id;
+        $individual->save();
         return response()->json([
             'status' => 'success',
             'data' => $result
         ], 200);
-
     }
 }

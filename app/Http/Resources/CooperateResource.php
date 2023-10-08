@@ -18,6 +18,7 @@ class CooperateResource extends JsonResource
             "id" => $this->id,
             "cooperate_id" => $this->cooperate_id,
             "rc_number" => $this->rc_number,
+            "user" => new UserResource($this->user),
             "business_name" => $this->business_name,
             "business_type" => $this->business_type,
             "longitude" => $this->longitude,

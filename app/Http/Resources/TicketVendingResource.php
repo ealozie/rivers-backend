@@ -21,7 +21,7 @@ class TicketVendingResource extends JsonResource
             'ticket_category' => $this->ticket_category->category_name ?? '',
             'amount' => number_format($this->amount, 2),
             'agent' => $this->user->name ?? '',
-            'phone_number' => $this->phone_number,
+            'phone_number' => $this->phone_number ?? '',
             'ticket_reference_number' => $this->ticket_reference_number,
             'ticket_status' => $this->ticket_status,
             'expire_at' => date('h:ia', strtotime($this->expired_at)),
