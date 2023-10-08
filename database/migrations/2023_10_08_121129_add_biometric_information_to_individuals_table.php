@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('individuals', function (Blueprint $table) {
-            $table->string('phone_number', 11)->after('city')->unique();
+            $table->string('phone_number', 11)->after('city');
             $table->string('email_address', 100)->after('city')->unique();
             $table->string('registration_status')->default('pending')->after('city');
             $table->string('facial_biometric_status')->default('pending')->after('city');
