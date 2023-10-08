@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('individuals', function (Blueprint $table) {
             $table->string('phone_number', 11)->after('city');
-            $table->string('email_address', 100)->after('city')->unique();
+            $table->string('email_address', 100)->after('city');
             $table->string('registration_status')->default('pending')->after('city');
             $table->string('facial_biometric_status')->default('pending')->after('city');
             $table->string('facial_biometric_image_url')->default('pending')->after('city');
