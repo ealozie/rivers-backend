@@ -150,11 +150,12 @@ class AWSImageRecognitionController extends Controller
         $user_unique_id  = '1' . date('hi') . mt_rand(11111, 99999);
 
         $user->unique_id = $user_unique_id;
-        $user->facial_biometric_status = 'completed';
         //$user->facial_biometric_image_url = $imageData;
         $user->save();
         $individual = Individual::where('user_id', $user->id)->first();
         $individual->individual_id = $user_unique_id;
+        //$individual->facial_biometric_image_url = $imageData;
+        $individual->facial_biometric_status = 'completed';
         $individual->save();
         return response()->json([
             'status' => 'success',
