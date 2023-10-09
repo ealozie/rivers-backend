@@ -42,4 +42,14 @@ class Property extends Model
         return $this->belongsTo(DemandNoticeCategory::class);
     }
 
+    public function local_government_area()
+    {
+        return $this->belongsTo(LocalGovernmentArea::class);
+    }
+
+    public function state()
+    {
+        return $this->belongsTo(State::class);
+    }
+
 }

@@ -33,6 +33,8 @@ class PropertyResource extends JsonResource
             'is_connected_to_power' => $this->is_connected_to_power ? true : false,
             'has_fence' => $this->has_fence ? true : false,
             'notes' => $this->notes,
+            "local_government_area" => $this->local_government_area,
+            "state" => $this->state,
             'property_pictures' => PropertyPictureResource::collection($this->propertyPictures)
 
         ];
