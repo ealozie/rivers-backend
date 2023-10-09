@@ -144,6 +144,9 @@ class CooperateController extends Controller
             }
             $cooperate = Cooperate::findOrFail($id);
             $cooperate->update($validatedData);
+            $user = User::where('id', $cooperate->user_id)->first();
+            $user->name = $validatedData['business_name'];
+            $user->save();
             return response()->json([
                 'status' => 'success',
                 'data' => new CooperateResource($cooperate),
