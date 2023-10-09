@@ -25,7 +25,7 @@ class PropertyResource extends JsonResource
             'number_of_rooms' => $this->number_of_rooms,
             'plot_size' => $this->plot_size,
             'property_use' => $this->propertyUse->name ?? '',
-            'demand_notice_category' => $this->demandNoticeCategory->name ?? '',
+            'demand_notice_category' => $this->demandNoticeCategory ?? '',
             'longitude' => $this->longitude,
             'latitude' => $this->latitude,
             'has_borehole' => $this->has_borehole ? true : false,
