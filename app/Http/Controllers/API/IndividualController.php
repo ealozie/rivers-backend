@@ -128,6 +128,8 @@ class IndividualController extends Controller
         $validatedData = $request->validated();
         $individual = Individual::find($id);
         $user = User::where('id', $individual->user_id)->first();
+        $user->name = $validatedData['first_name'] . " " . $validatedData['middle_name'] . " " . $validatedData['surname'];
+        $user->save();
         $individual->update($validatedData);
         return response()->json([
             'status' => 'success',
