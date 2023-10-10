@@ -91,6 +91,7 @@ class IndividualController extends Controller
         $validatedData['demand_notice_category_id'] = 0;
 
         $token = $user->createToken('igr_system_auth_token')->plainTextToken;
+        $validatedData['email_address'] = $validatedData['email'];
         $individual = Individual::create($validatedData);
         $user->assignRole('individual');
         return response()->json([

@@ -120,7 +120,7 @@ class CommercialVehicleController extends Controller
      */
     public function show_by_user_id(string $user_id_or_unique_id)
     {
-        $user = User::where('id', $user_id_or_unique_id)->orWhere('unique_id', $user_id_or_unique_id)->first();
+        $user = User::where('unique_id', $user_id_or_unique_id)->first();
         if (!$user) {
             return response()->json([
                 'status' => 'error',
