@@ -22,7 +22,7 @@ class AssessmentStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => 'sometimes|integer',
+            'user_id' => 'required|exists:users,unique_id',
             'full_name' => 'required|string',
             'phone_number' => 'required|string',
             'email' => 'required|email',

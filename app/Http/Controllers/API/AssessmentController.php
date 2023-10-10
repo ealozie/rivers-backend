@@ -162,7 +162,9 @@ class AssessmentController extends Controller
         // if ($user) {
         //     $validatedData['user_id'] = $user->id;
         // }
+        $user = User::where('unique_id', $validatedData['user_id'])->first();
         $validatedData['status'] = 'pending';
+        $validatedData['user_id'] = $user->id;
         $validatedData['payment_status'] = 'pending';
         $validatedData['added_by'] = $auth_user->id ?? 0;
         $validatedData['assessment_reference'] = 'ASSESSMENT-' . time() . '-' . rand(1000, 9999);
@@ -231,7 +233,7 @@ class AssessmentController extends Controller
                 'message' => 'User ID not found.',
             ], 404);
         }
-        $assessment = Assessment::where('user_id', $user->unique_id)->get();
+        $assessment = Assessment::where('assessment_entity_id', $user->unique_id)->get();
         if (!count($assessment)) {
             return response()->json([
                 'status' => 'error',
