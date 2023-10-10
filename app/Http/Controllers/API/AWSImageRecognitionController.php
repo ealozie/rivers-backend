@@ -154,8 +154,9 @@ class AWSImageRecognitionController extends Controller
         $user->save();
         $individual = Individual::where('user_id', $user->id)->first();
         $individual->individual_id = $user_unique_id;
-        //$individual->facial_biometric_image_url = $imageData;
+        $individual->facial_biometric_image_url = "/storage/liveness-images/".$sessionId."/audit_3.jpg";
         $individual->facial_biometric_status = 'completed';
+        $individual->registration_status = 'completed';
         $individual->save();
         return response()->json([
             'status' => 'success',
