@@ -233,7 +233,7 @@ class AssessmentController extends Controller
                 'message' => 'User ID not found.',
             ], 404);
         }
-        $assessment = Assessment::where('assessment_entity_id', $user->unique_id)->get();
+        $assessment = Assessment::where('entity_id', $user->unique_id)->get();
         if (!count($assessment)) {
             return response()->json([
                 'status' => 'error',
