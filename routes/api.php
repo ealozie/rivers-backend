@@ -58,6 +58,7 @@ use App\Http\Controllers\API\TicketEnforcementController;
 use App\Http\Controllers\API\TicketVendingController;
 use App\Http\Controllers\API\TitleController;
 use App\Http\Controllers\API\TollGateCategoryController;
+use App\Http\Controllers\API\UserConfirmationController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\UserFacialBiometricController;
 use App\Http\Controllers\API\UserUpdatePasswordController;
@@ -66,7 +67,6 @@ use App\Http\Controllers\API\VehicleCategoryController;
 use App\Http\Controllers\API\VehicleEnumerationVerificationController;
 use App\Http\Controllers\API\VehicleManufacturerController;
 use App\Http\Controllers\API\WalletFundTransferController;
-use App\Http\Controllers\UserConfirmationController;
 use Illuminate\Support\Facades\Route;
 
 /*
