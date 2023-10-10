@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
+use App\Models\Individual;
 use App\Models\User;
 use App\Traits\SendSMS;
 use Illuminate\Http\Request;
@@ -35,8 +36,9 @@ class UserConfirmationController extends Controller
         try {
             $name = $user->name;
             $token = mt_rand(111111, 999999);
-            $user->facial_confirmation_token = $token;
-            $user->save();
+            $individual = Individual::where('user_id', $user->id)->first();
+            $individual->facial_confirmation_token = $token;
+            $individual->save();
             $mobile_number = ltrim($validatedData['phone_number'], "0");
             $message = "Hello {$name}, your confirmation token is " . $token . ". Thank you for using CIRES-IRS.";
             $this->send_sms_process_message("+234" . $mobile_number, $message);
@@ -72,7 +74,8 @@ class UserConfirmationController extends Controller
             ], 404);
         }
 
-        if ($user->facial_confirmation_token != $validatedData['comnfirmation_token']) {
+        $individual = Individual::where('user_id', $user->id)->first();
+        if ($individual->facial_confirmation_token != $validatedData['comnfirmation_token']) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Invalid token provided.'
