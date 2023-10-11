@@ -280,4 +280,46 @@ class TicketVendingController extends Controller
                 ]            ]
         ], 200);
     }
+
+    /**
+     * Get Tickets by Agent ID resource.
+     *
+     * Authorization header is required to be set to Bearer `<token>` <br>
+     * Return list of all ticket vending that been vended by the agent. <br>
+     * Additional Query parameter are `limit` and `offset`. <br>
+     * Additional Query parameter `?query=all`, return all resources
+     * without pagination.
+     */
+    public function tickets_by_agent(Request $request, $ticket_agent_id)
+    {
+        $limit = 20;
+        $offset = 0;
+        if ($request->has('limit')) {
+            $limit = $request->get('limit');
+        }
+        if ($request->has('offset')) {
+            $offset = $request->get('offset');
+        }
+        $ticket_vending = TicketVending::where('ticket_agent_id', $ticket_agent_id)->latest()->offset($offset)->limit($limit)->get();
+        if ($request->has('query') && $request->get('query') == 'all') {
+            $ticket_vending = TicketVending::where('ticket_agent_id', $ticket_agent_id)->latest()->get();
+        }
+        $total_number_of_records = TicketVending::where('ticket_agent_id', $ticket_agent_id)->count();
+        if (!count($ticket_vending)) {
+            return response()->json([
+                'status' => 'success',
+                'data' => [
+                'ticket_vending_data' => [],
+                'total_number_of_records' => (int) $total_number_of_records
+            ],
+            ], 200);
+        }
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'ticket_vending_data' => TicketVendingResource::collection($ticket_vending),
+                'total_number_of_records' => (int) $total_number_of_records
+            ]
+        ]);
+    }
 }

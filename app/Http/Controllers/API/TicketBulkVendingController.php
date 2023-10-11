@@ -245,4 +245,49 @@ class TicketBulkVendingController extends Controller
     {
         //
     }
+
+    /**
+     * Get all tickets by agent ID resource.
+     *
+     * Authorization header is required to be set to Bearer `<token>` <br>
+     * Return list of all ticket bulk vending that has been initiated by agent. <br>
+     * Additional Query parameter are `limit` and `offset`. <br>
+     * Additional Query parameter `?query=all`, return all resources
+     * without pagination.
+     */
+    public function tickets_by_agent(Request $request, $ticket_agent_id)
+    {
+        $per_page = 20;
+        $limit = 10;
+        $offset = 0;
+        if ($request->has('limit')) {
+            $limit = $request->get('limit');
+        }
+        if ($request->has('offset')) {
+            $offset = $request->get('offset');
+        }
+        $ticket_bulk_vending = TicketBulkVending::where('ticket_agent_id', $ticket_agent_id)->latest()->offset($offset)->limit($limit)->get();
+        $total_number_of_records = TicketBulkVending::where('ticket_agent_id', $ticket_agent_id)->count();
+
+        if ($request->has('query') && $request->get('query') == 'all') {
+            $ticket_bulk_vending = TicketBulkVending::where('ticket_agent_id', $ticket_agent_id)->latest()->get();
+        }
+
+        if (!count($ticket_bulk_vending)) {
+            return response()->json([
+                'status' => 'success',
+                'data' => [
+                'ticket_bulk_vending_data' => [],
+                'total_number_of_records' => (int) $total_number_of_records
+            ],
+            ], 200);
+        }
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'ticket_bulk_vending_data' => new TicketBulkVendingCollection($ticket_bulk_vending),
+                'total_number_of_records' => (int) $total_number_of_records
+            ]
+        ]);
+    }
 }

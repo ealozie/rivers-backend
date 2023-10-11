@@ -153,7 +153,8 @@ Route::prefix('v1')->group(function () {
     Route::post('user-verification', [UserController::class, 'user_verification']);
     Route::apiResource('ticket-vending', TicketVendingController::class)->middleware('auth:sanctum')->only(['index', 'store', 'show']);
     Route::get('ticket-vending-statistics', [TicketVendingController::class, 'ticket_statistics'])->middleware('auth:sanctum');
-
+    Route::get('ticket-vending-by-agent-id/{ticket_agent_id}', [TicketVendingController::class, 'tickets_by_agent'])->middleware('auth:sanctum');
+    Route::get('ticket-bulk-vending-by-agent-id/{ticket_agent_id}', [TicketBulkVendingController::class, 'tickets_by_agent'])->middleware('auth:sanctum');
     Route::apiResource('ticket-bulk-vending', TicketBulkVendingController::class)->middleware('auth:sanctum')->only(['store', 'show', 'index']);
     Route::apiResource('vehicle-manufacturers', VehicleManufacturerController::class)->middleware('auth:sanctum')->only(['index', 'show']);
     Route::apiResource('vehicle-categories', VehicleCategoryController::class)->middleware('auth:sanctum')->only(['index']);
