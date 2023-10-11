@@ -20,4 +20,9 @@ class TicketAgentWallet extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function beneficiary()
+    {
+        return $this->belongsTo(User::class, 'beneficiary_id');
+    }
+
 }

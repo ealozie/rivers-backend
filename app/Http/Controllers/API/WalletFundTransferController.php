@@ -79,7 +79,9 @@ class WalletFundTransferController extends Controller
         $ticket_agent_wallet->type = 'transfer';
         $ticket_agent_wallet->transaction_status = 'active';
         $ticket_agent_wallet->added_by = $user->id;
-        $ticket_agent_wallet->transaction_reference_number = date('isYd');
+        $ticket_agent_wallet->beneficiary_id = $recipient->id;
+        $reference = date('isYd');
+        $ticket_agent_wallet->transaction_reference_number = $reference;
         $ticket_agent_wallet->save();
         //Log recipient wallet
         $recipient_wallet = new TicketAgentWallet();
@@ -90,7 +92,8 @@ class WalletFundTransferController extends Controller
         $recipient_wallet->type = 'transfer';
         $recipient_wallet->transaction_status = 'active';
         $recipient_wallet->added_by = $user->id;
-        $recipient_wallet->transaction_reference_number = date('isdY');
+        $ticket_agent_wallet->beneficiary_id = $recipient->id;
+        $recipient_wallet->transaction_reference_number = $reference;
         $recipient_wallet->save();
 
         //Send SMS to recipient

@@ -23,6 +23,7 @@ class TicketAgentWalletResource extends JsonResource
             "transaction_reference_number" => $this->transaction_reference_number,
             "transaction_status" => $this->transaction_status,
             "transaction_by" => new UserResource($this->added_by_user),
+            "beneficiary" => $this->beneficiary_id ? new UserResource($this->beneficiary) : '',
             "created_at" => $this->created_at,
         ];
     }
