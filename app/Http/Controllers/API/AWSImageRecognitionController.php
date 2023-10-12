@@ -160,7 +160,10 @@ class AWSImageRecognitionController extends Controller
         $individual->save();
         return response()->json([
             'status' => 'success',
-            'data' => $result
+            'data' => [
+                'result' => $result,
+                'individual_id' => $user->unique_id
+            ]
         ], 200);
     }
 }

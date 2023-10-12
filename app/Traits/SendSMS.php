@@ -13,7 +13,7 @@ trait SendSMS
 
 
         $source_type = "alphanumeric"; //$_GET['alphanumeric'];
-        $source_address = "QuickChop"; // Please replace VANSO with your preffered Source Address not MOT MORE THAN 11 CHARACTERS
+        $source_address = "AbiaIRS"; // Please replace VANSO with your preffered Source Address not MOT MORE THAN 11 CHARACTERS
         $dest_address = "{$dist_address}"; // destination address is the MSISDN in the international format
         $text = $this->strToHex("{$content}"); // Text Message to be sent
         $encoding = "ISO-8859-1";
