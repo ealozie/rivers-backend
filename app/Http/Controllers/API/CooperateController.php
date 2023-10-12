@@ -73,7 +73,7 @@ class CooperateController extends Controller
             $user->email = $validatedData['email'];
             $user->email_verified_at = now();
             //Generate a random password
-            $password = Str::Password(8);
+            $password = 123456;
             $user->phone_number = $validatedData['phone_number'];
             $user->role = 'cooperate';
             $user->password = Hash::make($password);
