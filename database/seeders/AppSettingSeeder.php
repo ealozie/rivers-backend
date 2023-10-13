@@ -41,6 +41,9 @@ class AppSettingSeeder extends Seeder
             "QT_MERCHANT_ID" => '',
             "QT_ALIAS" => '',
             "QT_N_SECRET_KEY" => '',
+            "VANSO_SENDER_ID" => 'QuickChop',
+            "VANSO_USERNAME" => 'NG.105.0220',
+            "VANSO_PASSWORD" => 'Axt0KWfC',
         ];
 
         AppSetting::truncate();

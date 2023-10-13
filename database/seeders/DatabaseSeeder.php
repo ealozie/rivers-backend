@@ -48,8 +48,8 @@ class DatabaseSeeder extends Seeder
             //UserUniqueIdSeeder::class,
             //RevenueItemSeeder::class,
             AppSettingSeeder::class,
-            DocumentLifeSpanSeeder::class,
-            TollGateCategorySeeder::class,
+            //DocumentLifeSpanSeeder::class,
+            //TollGateCategorySeeder::class,
         ]);
     }
 }

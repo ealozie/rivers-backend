@@ -2,18 +2,24 @@
 
 namespace App\Traits;
 
+use App\Models\AppSetting;
+use App\Models\VansoSMSLog;
+
 trait SendSMS
 {
 
     public function send_sms_process_message($dist_address, $content)
     {
+        $app_setting_user_name = AppSetting::where('key', 'VANSO_USERNAME')->first()->value;
+        $app_setting_password = AppSetting::where('key', 'VANSO_PASSWORD')->first()->value;
+        $app_setting_sender_id = AppSetting::where('key', 'VANSO_SENDER_ID')->first()->value;
         $stratus_url = "http://sxmp.gw1.vanso.com/api/sxmp/1.0"; // stratus sxmp server url
-        $username = "NG.105.0220"; // your account's username. Check the email for details. This field must be in double quotes
-        $password = "Axt0KWfC";  //  your account's password. Check the email for details. This field must be in double quotes
+        $username = $app_setting_user_name; // your account's username. Check the email for details. This field must be in double quotes
+        $password = $app_setting_password;  //  your account's password. Check the email for details. This field must be in double quotes
 
 
         $source_type = "alphanumeric"; //$_GET['alphanumeric'];
-        $source_address = "ABIA IRS"; // Please replace VANSO with your preffered Source Address not MOT MORE THAN 11 CHARACTERS
+        $source_address = $app_setting_sender_id; // Please replace VANSO with your preffered Source Address not MOT MORE THAN 11 CHARACTERS
         $dest_address = "{$dist_address}"; // destination address is the MSISDN in the international format
         $text = $this->strToHex("{$content}"); // Text Message to be sent
         $encoding = "ISO-8859-1";
@@ -52,6 +58,12 @@ trait SendSMS
 
         callback/postback (DLR) operations. */
                 //echo "Received TicketID : " . $ticketId;
+                $sms_log = new VansoSMSLog();
+                $sms_log->phone_number = $dist_address;
+                $sms_log->content = $content;
+                $sms_log->ticket_id = $ticketId;
+                $sms_log->sender_id = $app_setting_sender_id;
+                $sms_log->save();
             } else {
                 // error if code is not 0 an error occured
                 $message = $root->error[0]['message']; /*c * IMPORTANT NOTE : An an error occured and should be handled        here. */
