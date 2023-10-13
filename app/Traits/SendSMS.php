@@ -3,7 +3,7 @@
 namespace App\Traits;
 
 use App\Models\AppSetting;
-use App\Models\VansoSMSLog;
+// use App\Models\VansoSMSLog;
 
 trait SendSMS
 {
@@ -58,12 +58,12 @@ trait SendSMS
 
         callback/postback (DLR) operations. */
                 //echo "Received TicketID : " . $ticketId;
-                $sms_log = new VansoSMSLog();
-                $sms_log->phone_number = $dist_address;
-                $sms_log->content = $content;
-                $sms_log->ticket_id = $ticketId;
-                $sms_log->sender_id = $app_setting_sender_id;
-                $sms_log->save();
+                // $sms_log = new VansoSMSLog();
+                // $sms_log->phone_number = $dist_address;
+                // $sms_log->content = $content;
+                // $sms_log->ticket_id = $ticketId;
+                // $sms_log->sender_id = $app_setting_sender_id;
+                // $sms_log->save();
             } else {
                 // error if code is not 0 an error occured
                 $message = $root->error[0]['message']; /*c * IMPORTANT NOTE : An an error occured and should be handled        here. */
