@@ -101,6 +101,8 @@ class UserController extends Controller
 
     /**
      * Get User by Email or Phone Number.
+     * 
+     * Query parameter is `email_phone_number` `e.g: http://igr-system.test/api/v1/user/email-phone-number?email_phone_number=08034325697`
      */
     public function email_phone_number(Request $request)
     {
