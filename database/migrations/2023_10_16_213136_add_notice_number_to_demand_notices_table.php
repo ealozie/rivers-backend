@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('demand_notices', function (Blueprint $table) {
-            $table->string('demand_notice_number', 15)->after('id');
-            $table->date('enforcement_begins_at')->after('date_served');
+            $table->string('demand_notice_number', 15)->after('id')->nullable();
+            $table->date('enforcement_begins_at')->after('date_served')->nullable();
         });
     }
 
