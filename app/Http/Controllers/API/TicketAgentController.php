@@ -8,6 +8,7 @@ use App\Http\Resources\TicketAgentWalletResource;
 use App\Models\TicketAgent;
 use App\Models\TicketAgentCategory;
 use App\Models\TicketAgentWallet;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 /**
@@ -45,6 +46,8 @@ class TicketAgentController extends Controller
         $validatedData['added_by'] = $request->user()->id;
         $validatedData['wallet_balance'] = 0;
         $agent = TicketAgent::create($validatedData);
+        $user = User::find($validatedData['user_id']);
+        $user->assignRole('agent');
         foreach ($validatedData['agent_ticket_categories'] as $category) {
             $ticket_agent_category = new TicketAgentCategory();
             $ticket_agent_category->ticket_agent_id = $agent->id;
