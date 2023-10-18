@@ -17,6 +17,7 @@ class DemandNoticeCategoryResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'enforcement_duration' => $this->enforcement_duration,
         ];
     }
 }

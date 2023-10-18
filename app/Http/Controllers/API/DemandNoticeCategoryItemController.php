@@ -3,8 +3,16 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\DemandNoticeCategoryItemStoreRequest;
+use App\Http\Resources\DemandNoticeCategoryItemResource;
+use App\Models\Agency;
+use App\Models\DemandNoticeCategoryItem;
+use App\Models\RevenueItem;
 use Illuminate\Http\Request;
 
+/**
+ * @tags Demand Notice Category Item Service
+ */
 class DemandNoticeCategoryItemController extends Controller
 {
     /**
@@ -12,15 +20,25 @@ class DemandNoticeCategoryItemController extends Controller
      */
     public function index()
     {
-        //
+        $demand_notice_category_items = DemandNoticeCategoryItem::all();
+        return DemandNoticeCategoryItemResource::collection($demand_notice_category_items);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(DemandNoticeCategoryItemStoreRequest $request)
     {
-        //
+        $requestData = $request->validated();
+        $agency = Agency::find($requestData['agency_id'])->first();
+        $revenue_item = RevenueItem::find($requestData['revenue_item_id'])->first();
+        $requestData['agency_code'] = $agency->agency_code;
+        $requestData['revenue_code'] = $revenue_item->revenue_code;
+        $requestData['amount'] = $revenue_item->fixed_fee;
+        $requestData['added_by'] = $request->user()->id;
+        $requestData['status'] = 'active';
+        $demand_notice_category_item = DemandNoticeCategoryItem::create($requestData);
+        return new DemandNoticeCategoryItemResource($demand_notice_category_item);
     }
 
     /**
@@ -28,7 +46,8 @@ class DemandNoticeCategoryItemController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $demand_notice_category_item = DemandNoticeCategoryItem::find($id);
+        return new DemandNoticeCategoryItemResource($demand_notice_category_item);
     }
 
     /**
@@ -36,7 +55,17 @@ class DemandNoticeCategoryItemController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $requestData = $request->validated();
+        $agency = Agency::find($requestData['agency_id'])->first();
+        $revenue_item = RevenueItem::find($requestData['revenue_item_id'])->first();
+        $requestData['agency_code'] = $agency->agency_code;
+        $requestData['revenue_code'] = $revenue_item->revenue_code;
+        $requestData['amount'] = $revenue_item->fixed_fee;
+        $requestData['added_by'] = $request->user()->id;
+        $requestData['status'] = 'active';
+        $demand_notice_category_item = DemandNoticeCategoryItem::find($id);
+        $demand_notice_category_item->update($requestData);
+        return new DemandNoticeCategoryItemResource($demand_notice_category_item);
     }
 
     /**
@@ -44,6 +73,13 @@ class DemandNoticeCategoryItemController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $demand_notice_category_item = DemandNoticeCategoryItem::find($id);
+        $demand_notice_category_item->delete();
+        return response()->json(
+            [
+                'status' => 'success',
+                'message' => 'Demand Notice Category Item deleted successfully'
+            ]
+        );
     }
 }

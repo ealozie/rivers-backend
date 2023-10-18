@@ -14,6 +14,7 @@ use App\Http\Controllers\API\ClassificationController;
 use App\Http\Controllers\API\CommercialVehicleController;
 use App\Http\Controllers\API\CooperateController;
 use App\Http\Controllers\API\DemandNoticeCategoryController;
+use App\Http\Controllers\API\DemandNoticeCategoryItemController;
 use App\Http\Controllers\API\DemandNoticeController;
 use App\Http\Controllers\API\DemandNoticeItemController;
 use App\Http\Controllers\API\DocumentController;
@@ -98,7 +99,8 @@ Route::prefix('v1')->group(function () {
     Route::post('user-registration-verification', [UserVerificationController::class, 'initial_registration_request']);
     Route::post('user-phone-number-verification', [UserVerificationController::class, 'user_phone_number_confirmation']);
     Route::patch('user-facial-biometric', UserFacialBiometricController::class);
-    Route::get('demand-notice-categories', DemandNoticeCategoryController::class);
+    Route::apiResource('demand-notice-categories', DemandNoticeCategoryController::class);
+    Route::apiResource('demand-notice-categories-item', DemandNoticeCategoryItemController::class)->middleware('auth:sanctum');
     Route::get('local-government-areas/{state_id}', LocalGovernmentAreaController::class);
     Route::get('market-names', MarketNameController::class);
     Route::get('nationalities', NationalityController::class);
@@ -120,7 +122,7 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('document-type-toll-gates', DocumentTypeTollGateController::class)->middleware('auth:sanctum')->only(['index']);
     Route::apiResource('document-toll-gates-entries', DocumentTollGateEntryController::class)->middleware('auth:sanctum')->only(['index']);
     Route::apiResource('demand-notice-items', DemandNoticeItemController::class)->middleware('auth:sanctum')->only(['index']);
-    Route::apiResource('demand-notices', DemandNoticeController::class)->middleware('auth:sanctum')->only(['index']);
+    Route::apiResource('demand-notices', DemandNoticeController::class)->middleware('auth:sanctum')->only(['index', 'store', 'update', 'show']);
     Route::apiResource('document-types', DocumentTypeController::class)->middleware('auth:sanctum')->only(['index']);
     Route::apiResource('documents', DocumentController::class)->middleware('auth:sanctum')->only(['index']);
     Route::apiResource('document-life-spans', DocumentLifeSpanController::class)->middleware('auth:sanctum')->only(['index']);
@@ -133,8 +135,9 @@ Route::prefix('v1')->group(function () {
     Route::get('assessments-by-phone-number/{phone_number}', [AssessmentController::class, 'show_by_phone_number'])->middleware('auth:sanctum');
     Route::post('assessment-entity-validation', [AssessmentController::class, 'validate_assessment_entity_id']);
     Route::get('assessment/{identifier}', [AssessmentController::class, 'indentifier']);
-    Route::apiResource('agencies', AgencyController::class)->only(['index']);
-    Route::get('revenue-items-agency/{agency_id}', [RevenueItemController::class, 'revenue_item_agency']);
+    Route::apiResource('agencies', AgencyController::class)->only(['index', 'show', 'update', 'store'])->middleware('auth:sanctum');
+    Route::apiResource('revenue-items', RevenueItemController::class)->only(['index', 'show', 'update', 'store'])->middleware('auth:sanctum');
+    Route::get('revenue-items-agency/{agency_id}', [RevenueItemController::class, 'revenue_item_agency'])->middleware('auth:sanctum');
     Route::apiResource('cooperates', CooperateController::class)->middleware('auth:sanctum');
     Route::apiResource('commercial-vehicles', CommercialVehicleController::class)->middleware('auth:sanctum');
     Route::get('commercial-vehicles-by-user-id/{user_id_or_unique_id}', [CommercialVehicleController::class, 'show_by_user_id'])->middleware('auth:sanctum');

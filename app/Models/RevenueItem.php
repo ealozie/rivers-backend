@@ -9,7 +9,7 @@ class RevenueItem extends Model
 {
     use HasFactory;
 
-
+    protected $guarded = ['id'];
     public function revenue_type()
     {
         return $this->belongsTo(RevenueType::class);

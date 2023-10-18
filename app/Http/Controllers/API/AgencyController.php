@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\AgencyStoreRequest;
+use App\Http\Requests\AgencyUpdateRequest;
 use App\Http\Resources\AgencyResource;
 use App\Models\Agency;
-use Illuminate\Http\Request;
 
 /**
  * @tags Agency Service
@@ -24,9 +25,12 @@ class AgencyController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(AgencyStoreRequest $request)
     {
-        //
+        $validated = $request->validated();
+        $validated['added_by'] = $request->user()->id;
+        $agency = Agency::create($validated);
+        return new AgencyResource($agency);
     }
 
     /**
@@ -34,15 +38,19 @@ class AgencyController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $agency = Agency::findOrFail($id);
+        return new AgencyResource($agency);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(AgencyUpdateRequest $request, string $id)
     {
-        //
+        $requestData = $request->validated();
+        $agency = Agency::findOrFail($id);
+        $agency->update($requestData);
+        return new AgencyResource($agency);
     }
 
     /**

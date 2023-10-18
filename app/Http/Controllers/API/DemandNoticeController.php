@@ -3,8 +3,13 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\DemandNoticeStoreRequest;
+use App\Http\Requests\DemandNoticeUpdateRequest;
 use App\Http\Resources\DemandNoticeResource;
 use App\Models\DemandNotice;
+use App\Models\DemandNoticeCategory;
+use App\Models\DemandNoticeCategoryItem;
+use App\Models\DemandNoticeItem;
 use Illuminate\Http\Request;
 
 /**
@@ -24,9 +29,24 @@ class DemandNoticeController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(DemandNoticeStoreRequest $request)
     {
-        //
+        $requestData = $request->validated();
+        $requestData['demand_notice_number'] = 'DN-' . date('Y') . '-' . date('md') . '-' . rand(1000, 9999);
+        $requestData['generated_by'] = $request->user()->id;
+        $demand_notice = DemandNotice::create($requestData);
+        $demand_notice_category_items = DemandNoticeCategoryItem::where('demand_notice_category_id', $requestData['demand_notice_category_id'])->get();
+        foreach ($demand_notice_category_items as $demand_notice_category_item) {
+            $demand_notice_item = new DemandNoticeItem();
+            $demand_notice_item->demand_notice_id = $demand_notice->id;
+            $demand_notice_item->year_id = $requestData['year_id'];
+            $demand_notice_item->agency_code = $demand_notice_category_item->agency_code;
+            $demand_notice_item->revenue_code = $demand_notice_category_item->revenue_code;
+            $demand_notice_item->amount = $demand_notice_category_item->amount;
+            $demand_notice_item->payment_status = 'pending';
+            $demand_notice_item->save();
+        }
+        return new DemandNoticeResource($demand_notice);
     }
 
     /**
@@ -34,15 +54,22 @@ class DemandNoticeController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $demand_notice = DemandNotice::findOrFail($id);
+        return new DemandNoticeResource($demand_notice);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(DemandNoticeUpdateRequest $request, string $id)
     {
-        //
+        $requestData = $request->validated();
+        $demand_notice = DemandNotice::findOrFail($id);
+        $requestData['has_been_served'] = true;
+        $demand_notice_enforcement_duration = DemandNoticeCategory::findOrFail($demand_notice->demand_notice_category_id)->enforcement_duration;
+        $requestData['enforcement_begins_at'] = date('Y-m-d', strtotime($requestData['date_served'] . ' + ' . $demand_notice_enforcement_duration . ' days'));
+        $demand_notice->update($requestData);
+        return new DemandNoticeResource($demand_notice);
     }
 
     /**
