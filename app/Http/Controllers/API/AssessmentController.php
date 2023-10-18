@@ -12,6 +12,8 @@ use App\Http\Resources\PropertyResource;
 use App\Http\Resources\ShopResource;
 use App\Http\Resources\SignageResource;
 use App\Http\Resources\UserResource;
+use App\Imports\BulkAssessmentImport;
+use App\Imports\BulkAssessmentWithoutIDImport;
 use App\Models\Assessment;
 use App\Models\CommercialVehicle;
 use App\Models\Cooperate;
@@ -22,6 +24,7 @@ use App\Models\Signage;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 
 /**
  * @tags Assessment Service
@@ -269,5 +272,39 @@ class AssessmentController extends Controller
             return response()->json(['status' => 'error', 'message' => 'Assessment not found',], 404);
         }
         return new AssessmentResource($assessment);
+    }
+
+    /**
+     * Process Bulk Assessment with IDs
+     */
+    public function bulk_assessment_store(Request $request)
+    {
+        $request->validate([
+            'assessment_file' => 'required|mimes:csv,xlx,xlsx|max:2048',
+        ]);
+        $user = $request->user();
+        $path = $request->file('assessment_file');
+        $file_name = $path->store('assessments');
+        $file_storage_path = storage_path('app/' . $file_name);
+        Excel::import(new BulkAssessmentImport($user), $file_storage_path);
+        $assessments = Assessment::latest()->get();
+        return AssessmentResource::collection($assessments);
+    }
+
+    /**
+     * Process Bulk Assessment without IDs
+     */
+    public function bulk_assessment_without_id_store(Request $request)
+    {
+        $request->validate([
+            'assessment_file' => 'required|mimes:csv,xlx,xlsx|max:2048',
+        ]);
+        $user = $request->user();
+        $path = $request->file('assessment_file');
+        $file_name = $path->store('assessments');
+        $file_storage_path = storage_path('app/' . $file_name);
+        Excel::import(new BulkAssessmentWithoutIDImport($user), $file_storage_path);
+        $assessments = Assessment::latest()->get();
+        return AssessmentResource::collection($assessments);
     }
 }

@@ -87,7 +87,7 @@ Route::prefix('v1')->group(function () {
     Route::post('login', LoginController::class);
     Route::post('logout', LogoutController::class)->middleware('auth:sanctum');
     Route::post('update-password', UserUpdatePasswordController::class)->middleware('auth:sanctum');
-    Route::apiResource('app-settings', AppSettingController::class)->middleware('auth:sanctum')->only(['index']);
+    Route::apiResource('app-settings', AppSettingController::class)->middleware('auth:sanctum')->only(['index', 'update']);
     Route::get('assessment-years', AssessmentYearController::class);
     Route::get('business-levels', BusinessLevelController::class);
     Route::get('business-types', BusinessTypeController::class);
@@ -129,11 +129,14 @@ Route::prefix('v1')->group(function () {
     Route::get('shops-by-user-id/{user_id_or_unique_id}', [ShopController::class, 'show_by_user_id'])->middleware('auth:sanctum');
     Route::apiResource('signage', SignageController::class)->middleware('auth:sanctum');
     Route::get('signage-by-user-id/{user_id_or_unique_id}', [SignageController::class, 'show_by_user_id'])->middleware('auth:sanctum');
+
     Route::apiResource('assessments', AssessmentController::class)->middleware('auth:sanctum')->only(['index', 'store', 'show', 'destroy']);
     Route::get('assessments-by-user-id/{user_id_or_unique_id}', [AssessmentController::class, 'show_by_user_id'])->middleware('auth:sanctum');
     Route::get('assessments-by-reference-number/{reference_number}', [AssessmentController::class, 'show_by_reference_number'])->middleware('auth:sanctum');
     Route::get('assessments-by-phone-number/{phone_number}', [AssessmentController::class, 'show_by_phone_number'])->middleware('auth:sanctum');
     Route::post('assessment-entity-validation', [AssessmentController::class, 'validate_assessment_entity_id']);
+    Route::post('bulk-assessments-with-id', [AssessmentController::class, 'bulk_assessment_store'])->middleware('auth:sanctum');
+    Route::post('bulk-assessments-without-id', [AssessmentController::class, 'bulk_assessment_without_id_store'])->middleware('auth:sanctum');
     Route::get('assessment/{identifier}', [AssessmentController::class, 'indentifier']);
     Route::apiResource('agencies', AgencyController::class)->only(['index', 'show', 'update', 'store'])->middleware('auth:sanctum');
     Route::apiResource('revenue-items', RevenueItemController::class)->only(['index', 'show', 'update', 'store'])->middleware('auth:sanctum');

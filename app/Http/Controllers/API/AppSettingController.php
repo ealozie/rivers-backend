@@ -23,7 +23,10 @@ class AppSettingController extends Controller
         $settings = [];
         $app_settings = AppSetting::all();
         foreach ($app_settings as $app_setting) {
-            $settings[$app_setting->key] = $app_setting->value;
+            $settings[$app_setting->key] = [
+                'id' => $app_setting->id,
+                'value' => $app_setting->value,
+            ];
         }
         return response()->json([
             'data' => $settings
@@ -52,7 +55,13 @@ class AppSettingController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validatedData = $request->validate([
+            'value' => 'required'
+        ]);
+        $app_setting = AppSetting::findOrFail($id);
+        $app_setting->value = $validatedData['value'];
+        $app_setting->save();
+        return new AppSettingResource($app_setting);
     }
 
     /**
