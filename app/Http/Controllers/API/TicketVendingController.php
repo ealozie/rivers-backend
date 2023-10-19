@@ -244,11 +244,11 @@ class TicketVendingController extends Controller
 
         //$tickets_this_week = TicketVending::where('user_id', $user->id)->whereDate('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->count();
         $now = Carbon::now();
-        $tickets_this_week = TicketVending::whereBetween("created_at", [
+        $tickets_this_week = TicketVending::where('user_id', $user->id)->whereBetween("created_at", [
            $now->startOfWeek()->format('Y-m-d'),
            $now->endOfWeek()->format('Y-m-d')
         ])->count();
-        $tickets_this_week_amount = TicketVending::whereBetween("created_at", [
+        $tickets_this_week_amount = TicketVending::where('user_id', $user->id)->whereBetween("created_at", [
            $now->startOfWeek()->format('Y-m-d'),
            $now->endOfWeek()->format('Y-m-d')
         ])->sum('ticket_amount');
