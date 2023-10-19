@@ -123,6 +123,7 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('document-toll-gates-entries', DocumentTollGateEntryController::class)->middleware('auth:sanctum')->only(['index']);
     Route::apiResource('demand-notice-items', DemandNoticeItemController::class)->middleware('auth:sanctum')->only(['index']);
     Route::apiResource('demand-notices', DemandNoticeController::class)->middleware('auth:sanctum')->only(['index', 'store', 'update', 'show']);
+    Route::get('demand-notices-by-demand-notice-number/{demand_notice_number}', [DemandNoticeController::class, 'show_by_demand_notice_number'])->middleware('auth:sanctum');
     Route::apiResource('document-types', DocumentTypeController::class)->middleware('auth:sanctum')->only(['index']);
     Route::apiResource('documents', DocumentController::class)->middleware('auth:sanctum')->only(['index']);
     Route::apiResource('document-life-spans', DocumentLifeSpanController::class)->middleware('auth:sanctum')->only(['index']);

@@ -26,7 +26,7 @@ class DemandNoticeResource extends JsonResource
             'enforcement_begins_at' => $this->enforcement_begins_at,
             'longitude' => $this->longitude,
             'latitude' => $this->latitude,
-            'status' => $this->status,
+            'demand_notice_status' => $this->status,
             'has_been_served' => $this->has_been_served,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

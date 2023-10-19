@@ -79,4 +79,20 @@ class DemandNoticeController extends Controller
     {
         //
     }
+
+    /**
+     * Get Demand Notice by Demand Notice Number.
+     */
+    public function show_by_demand_notice_number(string $demand_notice_number)
+    {
+        $demand_notice = DemandNotice::where('demand_notice_number', $demand_notice_number)->first();
+        if (!$demand_notice) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Demand notice not found.'
+            ], 404);
+        }
+        $demand_notices = DemandNotice::where('user_id', $demand_notice->user_id)->where('status', 'pending')->oldest()->get();
+        return DemandNoticeResource::collection($demand_notices);
+    }
 }
