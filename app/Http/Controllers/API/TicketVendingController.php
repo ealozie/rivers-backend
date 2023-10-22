@@ -56,9 +56,9 @@ class TicketVendingController extends Controller
             return response()->json([
                 'status' => 'success',
                 'data' => [
-                'ticket_vending_data' => [],
-                'total_number_of_records' => (int) $total_number_of_records
-            ],
+                    'ticket_vending_data' => [],
+                    'total_number_of_records' => (int) $total_number_of_records
+                ],
             ], 200);
         }
         return response()->json([
@@ -85,7 +85,7 @@ class TicketVendingController extends Controller
         $phone_number = $requestData['phone_number'];
         $ticket_category_id = $requestData['ticket_category_id'];
         $plate_number = $requestData['plate_number'];
-        
+
         //Check if user is an agent
         $user = $request->user();
         $ticket_agent = TicketAgent::where('user_id', $user->id)->first();
@@ -108,7 +108,7 @@ class TicketVendingController extends Controller
             ], 403);
         }
 
-        
+
 
         if (!$ticket_category->allow_multiple_ticket_purchase) {
             $ticket_vending = TicketVending::where('plate_number', $plate_number)->where('ticket_category_id', $ticket_category_id)->whereDate('created_at', date('Y-m-d'))->first();
@@ -245,20 +245,20 @@ class TicketVendingController extends Controller
         //$tickets_this_week = TicketVending::where('user_id', $user->id)->whereDate('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->count();
         $now = Carbon::now();
         $tickets_this_week = TicketVending::where('user_id', $user->id)->whereBetween("created_at", [
-           $now->startOfWeek()->format('Y-m-d'),
-           $now->endOfWeek()->format('Y-m-d')
+            $now->startOfWeek()->format('Y-m-d'),
+            $now->endOfWeek()->format('Y-m-d')
         ])->count();
         $tickets_this_week_amount = TicketVending::where('user_id', $user->id)->whereBetween("created_at", [
-           $now->startOfWeek()->format('Y-m-d'),
-           $now->endOfWeek()->format('Y-m-d')
+            $now->startOfWeek()->format('Y-m-d'),
+            $now->endOfWeek()->format('Y-m-d')
         ])->sum('ticket_amount');
         //$tickets_this_week_amount = TicketVending::where('user_id', $user->id)->whereDate('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->sum('ticket_amount');
         $tickets_this_month = TicketVending::where('user_id', $user->id)->whereBetween('created_at', [
-            Carbon::now()->startOfMonth(), 
+            Carbon::now()->startOfMonth(),
             Carbon::now()->endOfMonth()
         ])->count();
         $tickets_this_month_amount = TicketVending::where('user_id', $user->id)->whereBetween('created_at', [
-            Carbon::now()->startOfMonth(), 
+            Carbon::now()->startOfMonth(),
             Carbon::now()->endOfMonth()
         ])->sum('ticket_amount');
 
@@ -271,13 +271,62 @@ class TicketVendingController extends Controller
                 ],
                 'tickets_this_week' => [
                     'total_tickets' => (int) $tickets_this_week,
-                    'total_amount' => (double) $tickets_this_week_amount
+                    'total_amount' => (float) $tickets_this_week_amount
 
-                ] ,
+                ],
                 'tickets_this_month' => [
                     'total_tickets' => (int) $tickets_this_month,
-                    'total_amount' => (double) $tickets_this_month_amount
-                ]            ]
+                    'total_amount' => (float) $tickets_this_month_amount
+                ]
+            ]
+        ], 200);
+    }
+
+    /**
+     * Ticket Vending Statistics.
+     */
+    public function ticket_total_statistics(Request $request)
+    {
+        $tickets_today = TicketVending::whereDate('created_at', Carbon::today())->count();
+        $tickets_today_amount = TicketVending::whereDate('created_at', Carbon::today())->sum('ticket_amount');
+
+        //$tickets_this_week = TicketVending::where('user_id', $user->id)->whereDate('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->count();
+        $now = Carbon::now();
+        $tickets_this_week = TicketVending::whereBetween("created_at", [
+            $now->startOfWeek()->format('Y-m-d'),
+            $now->endOfWeek()->format('Y-m-d')
+        ])->count();
+        $tickets_this_week_amount = TicketVending::whereBetween("created_at", [
+            $now->startOfWeek()->format('Y-m-d'),
+            $now->endOfWeek()->format('Y-m-d')
+        ])->sum('ticket_amount');
+        //$tickets_this_week_amount = TicketVending::where('user_id', $user->id)->whereDate('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->sum('ticket_amount');
+        $tickets_this_month = TicketVending::whereBetween('created_at', [
+            Carbon::now()->startOfMonth(),
+            Carbon::now()->endOfMonth()
+        ])->count();
+        $tickets_this_month_amount = TicketVending::whereBetween('created_at', [
+            Carbon::now()->startOfMonth(),
+            Carbon::now()->endOfMonth()
+        ])->sum('ticket_amount');
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'tickets_today' => [
+                    'total_tickets' => (int) $tickets_today,
+                    'total_amount' => (float) $tickets_today_amount
+                ],
+                'tickets_this_week' => [
+                    'total_tickets' => (int) $tickets_this_week,
+                    'total_amount' => (float) $tickets_this_week_amount
+
+                ],
+                'tickets_this_month' => [
+                    'total_tickets' => (int) $tickets_this_month,
+                    'total_amount' => (float) $tickets_this_month_amount
+                ]
+            ]
         ], 200);
     }
 
@@ -309,9 +358,9 @@ class TicketVendingController extends Controller
             return response()->json([
                 'status' => 'success',
                 'data' => [
-                'ticket_vending_data' => [],
-                'total_number_of_records' => (int) $total_number_of_records
-            ],
+                    'ticket_vending_data' => [],
+                    'total_number_of_records' => (int) $total_number_of_records
+                ],
             ], 200);
         }
         return response()->json([

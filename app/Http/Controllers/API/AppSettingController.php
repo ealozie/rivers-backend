@@ -56,12 +56,48 @@ class AppSettingController extends Controller
     public function update(Request $request, string $id)
     {
         $validatedData = $request->validate([
-            'value' => 'required'
+            'APP_NAME' => 'required|string',
+            'ALLOW_TICKET_VENDING' => 'required|boolean',
+            'ALLOW_TICKET_BULK_VENDING' => 'required|boolean',
+            'ALLOW_TICKET_ENFORCEMENT' => 'required|boolean',
+            'ALLOW_WALLET_FUND_TRANSFER' => 'required|boolean',
+            'ALLOW_TICKETING_ON_SATURDAY' => 'required|boolean',
+            'ALLOW_TICKETING_ON_SUNDAY' => 'required|boolean',
+            'APP_LOGO' => 'required|string',
+            "FORCE_ASSESSMENT_FIFO" => 'required|boolean',
+            "DOCUMENT_VERIFICATION_FEES" => 'required|numeric',
+            "PAYMENT_VERIFICATION_FEES" => 'required|numeric',
+            "DOCUMENT_DOWNLOAD_TIMELINE" => 'required|numeric',
+            "DOCUMENT_DOWNLOAD_FEES" => 'required|numeric',
+            "RECEIPT_TEMPLATE" => 'required|string',
+            "TICKET_REVENUE_ITEM" => 'required|numeric',
+            "ORGANIZATION_NAME" => 'required|string',
+            "CONTACT_NUMBER" => 'required|string',
+            "CONTACT_ADDRESS" => 'required|string',
+            "CONTACT_EMAIL" => 'required|email',
+            "QT_MERCHANT_CODE" => 'required|string',
+            "QT_PAY_ITEM_ID" => 'required|string',
+            "QT_DATA_REF" => 'required|string',
+            "QT_CLIENT_ID" => 'required|string',
+            "QT_SECRET_KEY" => 'required|string',
+            "QT_MERCHANT_ID" => 'required|string',
+            "QT_ALIAS" => 'required|string',
+            "QT_N_SECRET_KEY" => 'required|string',
+            "VANSO_SENDER_ID" => 'required|string',
+            "VANSO_USERNAME" => 'required|string',
+            "VANSO_PASSWORD" => 'required|string',
         ]);
-        $app_setting = AppSetting::findOrFail($id);
-        $app_setting->value = $validatedData['value'];
-        $app_setting->save();
-        return new AppSettingResource($app_setting);
+        foreach ($validatedData as $key => $value) {
+            $app_setting = AppSetting::where('key', $key)->first();
+            if ($app_setting) {
+                $app_setting->value = $value;
+                $app_setting->save();
+            }
+        }
+        return response()->json([
+            'status' => 'success',
+            'message' => 'App settings updated successfully'
+        ]);
     }
 
     /**

@@ -29,6 +29,7 @@ class AssessmentUpdateRequest extends FormRequest
             'revenue_item_id' => 'required|exists:revenue_items,id',
             'contact_address' => 'required|string',
             'amount' => 'required|numeric',
+            'due_date' => 'required|date',
             'assessment_year_id' => 'required|exists:assessment_years,id',
         ];
     }

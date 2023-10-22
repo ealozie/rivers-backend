@@ -161,10 +161,6 @@ class AssessmentController extends Controller
     {
         $validatedData = $request->validated();
         $auth_user = $request->user();
-        // $user = User::where('email', $validatedData['email'])->first();
-        // if ($user) {
-        //     $validatedData['user_id'] = $user->id;
-        // }
         $user = User::where('unique_id', $validatedData['user_id'])->first();
         $validatedData['status'] = 'pending';
         $validatedData['user_id'] = $user->id;

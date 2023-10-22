@@ -14,4 +14,9 @@ class RevenueItem extends Model
     {
         return $this->belongsTo(RevenueType::class);
     }
+
+    public function agency()
+    {
+        return $this->belongsTo(Agency::class);
+    }
 }

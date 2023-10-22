@@ -37,7 +37,10 @@ class DemandNoticeCategoryItemController extends Controller
         $requestData['amount'] = $revenue_item->fixed_fee;
         $requestData['added_by'] = $request->user()->id;
         $requestData['status'] = 'active';
-        $demand_notice_category_item = DemandNoticeCategoryItem::create($requestData);
+        $demand_notice_category_item = DemandNoticeCategoryItem::where('revenue_code', $requestData['revenue_code'])->where('demand_notice_category_id', $requestData['demand_notice_category_id'])->first();
+        if (!$demand_notice_category_item) {
+            $demand_notice_category_item = DemandNoticeCategoryItem::create($requestData);
+        }
         return new DemandNoticeCategoryItemResource($demand_notice_category_item);
     }
 

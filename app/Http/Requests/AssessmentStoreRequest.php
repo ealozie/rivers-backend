@@ -32,6 +32,7 @@ class AssessmentStoreRequest extends FormRequest
             'amount' => 'required|numeric',
             'assessment_year_id' => 'required|exists:assessment_years,id',
             'assessment_entity_id' => 'required',
+            'due_date' => 'required|date',
         ];
     }
 }

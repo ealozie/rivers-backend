@@ -24,6 +24,7 @@ class Assessment extends Model
         'revenue_item_id',
         'agency_id',
         'entity_id',
+        'due_date',
     ];
 
 
