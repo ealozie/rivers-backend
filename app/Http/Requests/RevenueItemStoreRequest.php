@@ -23,11 +23,11 @@ class RevenueItemStoreRequest extends FormRequest
     {
         return [
             'agency_id' => 'required|numeric',
-            'revenue_name' => 'required|string',
-            'revenue_code' => 'required|string',
+            'revenue_name' => 'required|string|unique:revenue_items',
+            'revenue_code' => 'required|string|unique:revenue_items',
             'fixed_fee' => 'required|numeric',
             'revenue_type_id' => 'required|numeric',
-            'notes' => 'nullable|string',
+            'notes' => 'sometimes|string',
         ];
     }
 }

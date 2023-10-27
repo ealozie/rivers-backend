@@ -22,10 +22,10 @@ class AgencyStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'agency_name' => 'required|string',
-            'agency_code' => 'required|string',
+            'agency_name' => 'required|string|unique:agencies',
+            'agency_code' => 'required|string|unique:agencies',
             'status' => 'required|string',
-            'note' => 'required|string',
+            'note' => 'sometimes|string',
         ];
     }
 }

@@ -137,15 +137,18 @@ class TicketEnforcementController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+        $total_enforcements_today = TicketEnforcement::ofToday()->where('plate_number', $validatedData['plate_number'])->count();
         if ($status == 'failed') {
             return response()->json([
                 'status' => 'error',
                 'message' => 'No ticket found.',
+                'total_enforcements_today' => $total_enforcements_today,
             ], 404);
         }
         return response()->json([
             'status' => 'success',
             'message' => 'Tickets retrieved successfully',
+            'total_enforcements_today' => $total_enforcements_today,
             'data' => TicketVendingResource::collection($ticket_vending),
         ]);
     }

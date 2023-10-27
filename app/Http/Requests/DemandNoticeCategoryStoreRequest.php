@@ -22,7 +22,7 @@ class DemandNoticeCategoryStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string',
+            'name' => 'required|string|unique:demand_notice_categories',
             'enforcement_duration' => 'required|numeric',
             'status' => 'required|string',
         ];
