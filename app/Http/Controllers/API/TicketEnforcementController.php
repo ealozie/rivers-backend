@@ -127,7 +127,7 @@ class TicketEnforcementController extends Controller
             $ticket_enforcement->plate_number = $validatedData['plate_number'];
             $ticket_enforcement->ticket_agent_id = $ticket_agent->id;
             $ticket_enforcement->ticket_category_id = $validatedData['ticket_category_id'] ?? 0;
-            $ticket_enforcement->response = json_encode($ticket_vending);
+            $ticket_enforcement->response = count($ticket_vending) ? json_encode(TicketVendingResource::collection($ticket_vending)) : json_encode($ticket_vending);
             $ticket_enforcement->status = $status;
             $ticket_enforcement->save();
         } catch (\Exception $e) {
