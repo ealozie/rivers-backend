@@ -14,4 +14,9 @@ class TicketEnforcement extends Model
     {
         return $this->belongsTo(TicketCategory::class, 'ticket_category_id');
     }
+
+    public function ticket_agent()
+    {
+        return $this->belongsTo(TicketAgent::class);
+    }
 }
