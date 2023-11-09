@@ -23,7 +23,7 @@ class DemandNoticeStoreRequest extends FormRequest
     {
         return [
             'demand_notice_category_id' => 'required|integer',
-            'user_id' => 'required|integer',
+            'user_id' => 'required',
             'year_id' => 'required|integer',
         ];
     }

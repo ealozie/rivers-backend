@@ -34,6 +34,14 @@ class DemandNoticeController extends Controller
         $requestData = $request->validated();
         $requestData['demand_notice_number'] = 'DN-' . date('Y') . '-' . date('md') . '-' . rand(1000, 9999);
         $requestData['generated_by'] = $request->user()->id;
+        $user = User::where('unique_id', $requestData['user_id'])->first();
+        if (!$user) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User not found.'
+            ]);
+        }
+        $requestData['user_id'] = $user->id;
         $demand_notice = DemandNotice::create($requestData);
         $demand_notice_category_items = DemandNoticeCategoryItem::where('demand_notice_category_id', $requestData['demand_notice_category_id'])->get();
         foreach ($demand_notice_category_items as $demand_notice_category_item) {

@@ -29,12 +29,14 @@ class DemandNoticeCategoryItemController extends Controller
      */
     public function store(DemandNoticeCategoryItemStoreRequest $request)
     {
+
+        //Prevent duplicate
         $requestData = $request->validated();
         $agency = Agency::find($requestData['agency_id'])->first();
         $revenue_item = RevenueItem::find($requestData['revenue_item_id'])->first();
         $requestData['agency_code'] = $agency->agency_code;
         $requestData['revenue_code'] = $revenue_item->revenue_code;
-        $requestData['amount'] = $revenue_item->fixed_fee;
+        //$requestData['amount'] = $revenue_item->fixed_fee;
         $requestData['added_by'] = $request->user()->id;
         $requestData['status'] = 'active';
         $demand_notice_category_item = DemandNoticeCategoryItem::where('revenue_code', $requestData['revenue_code'])->where('demand_notice_category_id', $requestData['demand_notice_category_id'])->first();
