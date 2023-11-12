@@ -10,6 +10,7 @@ use App\Models\DemandNotice;
 use App\Models\DemandNoticeCategory;
 use App\Models\DemandNoticeCategoryItem;
 use App\Models\DemandNoticeItem;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 /**
@@ -41,6 +42,7 @@ class DemandNoticeController extends Controller
                 'message' => 'User not found.'
             ]);
         }
+        //check that demand notice hasn't been geneated before
         $requestData['user_id'] = $user->id;
         $demand_notice = DemandNotice::create($requestData);
         $demand_notice_category_items = DemandNoticeCategoryItem::where('demand_notice_category_id', $requestData['demand_notice_category_id'])->get();
