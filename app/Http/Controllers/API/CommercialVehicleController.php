@@ -140,4 +140,57 @@ class CommercialVehicleController extends Controller
             'data' => CommercialVehicleResource::collection($commercial_vehicles)
         ]);
     }
+
+    /**
+     * Advanced Search in resource.
+     *
+     * Query paramters `vehicle_id` or `plate_number`.<br>
+     * Additonal Query paramters `vehicle_category_id`, `vehicle_manufacturer_id`, `vehicle_model_id`, `chassis_number`, `engine_number`, `business_level_id`, `date_from and date_to`
+     */
+    public function search(Request $request)
+    {
+        $per_page = 20;
+        
+        if ($request->has('vehicle_id')) {
+            $query_request = $request->get('vehicle_id');
+            $individual_registrations = CommercialVehicle::where('vehicle_id', $query_request)->paginate($per_page);
+        }
+        if ($request->has('plate_number')) {
+            $query_request = $request->get('plate_number');
+            $individual_registrations = CommercialVehicle::where('plate_number', $query_request)->paginate($per_page);
+        }
+        if ($request->has('vehicle_category_id')) {
+            $query_request = $request->get('vehicle_category_id');
+            $individual_registrations = CommercialVehicle::where('vehicle_category_id', $query_request)->paginate($per_page);
+        }
+        if ($request->has('vehicle_manufacturer_id')) {
+            $query_request = $request->get('vehicle_manufacturer_id');
+            $individual_registrations = CommercialVehicle::where('vehicle_manufacturer_id', $query_request)->paginate($per_page);
+        }
+        if ($request->has('vehicle_model_id')) {
+            $query_request = $request->get('vehicle_model_id');
+            $individual_registrations = CommercialVehicle::where('vehicle_model_id', $query_request)->paginate($per_page);
+        }
+        if ($request->has('chassis_number')) {
+            $query_request = $request->get('chassis_number');
+            $individual_registrations = CommercialVehicle::where('chassis_number', $query_request)->paginate($per_page);
+        }
+        if ($request->has('engine_number')) {
+            $query_request = $request->get('engine_number');
+            $individual_registrations = CommercialVehicle::where('engine_number', $query_request)->paginate($per_page);
+        }
+     
+        if ($request->has('date_from') && $request->has('date_to')) {
+            $date_from = $request->get('date_from');
+            $date_to = $request->get('date_to');
+            $individual_registrations = CommercialVehicle::whereBetween('created_at', [$date_from, $date_to])->paginate($per_page);
+        }
+        if (!isset($individual_registrations)){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Invalid request.'
+            ]);
+        }
+        return CommercialVehicleResource::collection($individual_registrations);
+    }
 }

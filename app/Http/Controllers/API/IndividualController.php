@@ -148,4 +148,79 @@ class IndividualController extends Controller
     {
         //
     }
+
+    /**
+     * Advanced Search in resource.
+     *
+     * Query paramters `first_name` or `middle_name`.<br>
+     * Additonal Query paramters `surname`, `gender`, `date_of_birth`, `state_id`, `local_government_area_id`, `income_range`, `email`, `phone_number`, `date_from and date_to` and `individual_id`
+     */
+    public function search(Request $request)
+    {
+        $per_page = 20;
+        if ($request->has('first_name')) {
+            $query_request = $request->get('first_name');
+            $individual_registrations = Individual::with('user')->where('first_name', 'like', "%{$query_request}%")->paginate($per_page);
+        }
+        if ($request->has('middle_name')) {
+            $query_request = $request->get('middle_name');
+            $individual_registrations = Individual::with('user')->where('middle_name', 'like', "%{$query_request}%")->paginate($per_page);
+        }
+        if ($request->has('surname')) {
+            $query_request = $request->get('surname');
+            $individual_registrations = Individual::with('user')->where('surname', 'like', "%{$query_request}%")->paginate($per_page);
+        }
+        if ($request->has('gender')) {
+            $query_request = $request->get('gender');
+            $individual_registrations = Individual::with('user')->where('gender', $query_request)->paginate($per_page);
+        }
+        if ($request->has('date_of_birth')) {
+            $query_request = $request->get('date_of_birth');
+            $individual_registrations = Individual::with('user')->where('date_of_birth', $query_request)->paginate($per_page);
+        }
+        if ($request->has('state_id')) {
+            $query_request = $request->get('state_id');
+            $individual_registrations = Individual::with('user')->where('state_id', $query_request)->paginate($per_page);
+        }
+        if ($request->has('local_government_area_id')) {
+            $query_request = $request->get('local_government_area_id');
+            $individual_registrations = Individual::with('user')->where('local_government_area_id', $query_request)->paginate($per_page);
+        }
+        if ($request->has('income_range')) {
+            $query_request = $request->get('income_range');
+            $individual_registrations = Individual::with('user')->where('income_range', $query_request)->paginate($per_page);
+        }
+        if ($request->has('email')) {
+            $query_request = $request->get('email');
+            $individual_registrations = Individual::whereHas('user', function($query) use ($query_request) {
+                $query->where('email', $query_request);
+            })->paginate($per_page);
+        }
+        if ($request->has('phone_number')) {
+            $query_request = $request->get('phone_number');
+            $individual_registrations = Individual::whereHas('user', function($query) use ($query_request) {
+                $query->where('phone_number', $query_request);
+            })->paginate($per_page);
+        }
+
+        if ($request->has('individual_id')) {
+            $query_request = $request->get('individual_id');
+            $individual_registrations = Individual::whereHas('user', function($query) use ($query_request) {
+                $query->where('individual_id', $query_request);
+            })->paginate($per_page);
+        }
+
+        if ($request->has('date_from') && $request->has('date_to')) {
+            $date_from = $request->get('date_from');
+            $date_to = $request->get('date_to');
+            $individual_registrations = Individual::with('user')->whereBetween('created_at', [$date_from, $date_to])->paginate($per_page);
+        }
+        if (!isset($individual_registrations)){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Invalid request.'
+            ]);
+        }
+        return IndividualResource::collection($individual_registrations);
+    }
 }

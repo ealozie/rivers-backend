@@ -118,4 +118,61 @@ class PropertyController extends Controller
             'data' => PropertyResource::collection($property)
         ]);
     }
+
+    /**
+     * Advanced Search in resource.
+     *
+     * Query paramters `property_category_id` or `property_type_id`.<br>
+     * Additonal Query paramters `local_government_area_id`, `is_connected_to_power`, `property_use_id`, `demand_notice_category_id`, `date_from and date_to`, `has_borehole`, `property_id`
+     */
+    public function search(Request $request)
+    {
+        $per_page = 20;
+        if ($request->has('property_category_id')) {
+            $query_request = $request->get('property_category_id');
+            $individual_registrations = Property::with('user')->where('property_category_id', $query_request)->paginate($per_page);
+        }
+        if ($request->has('property_type_id')) {
+            $query_request = $request->get('property_type_id');
+            $individual_registrations = Property::with('user')->where('property_type_id', $query_request)->paginate($per_page);
+        }
+        if ($request->has('local_government_area_id')) {
+            $query_request = $request->get('local_government_area_id');
+            $individual_registrations = Property::with('user')->where('local_government_area_id', $query_request)->paginate($per_page);
+        }
+        if ($request->has('property_use_id')) {
+            $query_request = $request->get('property_use_id');
+            $individual_registrations = Property::with('user')->where('property_use_id', $query_request)->paginate($per_page);
+        }
+        if ($request->has('demand_notice_category_id')) {
+            $query_request = $request->get('demand_notice_category_id');
+            $individual_registrations = Property::with('user')->where('demand_notice_category_id', $query_request)->paginate($per_page);
+        }
+        if ($request->has('has_borehole')) {
+            $query_request = $request->get('has_borehole');
+            $individual_registrations = Property::with('user')->where('has_borehole', $query_request)->paginate($per_page);
+        }
+
+        if ($request->has('is_connected_to_power')) {
+            $query_request = $request->get('is_connected_to_power');
+            $individual_registrations = Property::with('user')->where('is_connected_to_power', $query_request)->paginate($per_page);
+        }
+        
+        if ($request->has('property_id')) {
+            $query_request = $request->get('property_id');
+             $individual_registrations = Property::with('user')->where('property_id', $query_request)->paginate($per_page);
+        }
+        if ($request->has('date_from') && $request->has('date_to')) {
+            $date_from = $request->get('date_from');
+            $date_to = $request->get('date_to');
+            $individual_registrations = Property::with('user')->whereBetween('created_at', [$date_from, $date_to])->paginate($per_page);
+        }
+        if (!isset($individual_registrations)){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Invalid request.'
+            ]);
+        }
+        return PropertyResource::collection($individual_registrations);
+    }
 }

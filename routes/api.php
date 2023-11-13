@@ -115,9 +115,11 @@ Route::prefix('v1')->group(function () {
     Route::get('titles', TitleController::class);
     Route::apiResource('forgot-password', ForgotPasswordController::class)->only(['store', 'update']);
     Route::apiResource('individuals', IndividualController::class);
+    Route::get('individuals-search', [IndividualController::class, 'search']);
     //Route::apiResource('residential-address', ResidentialController::class);
     Route::apiResource('spouse', SpouseController::class);
     Route::apiResource('shops', ShopController::class)->middleware('auth:sanctum');
+    Route::get('shops-search', [ShopController::class, 'search'])->middleware('auth:sanctum');
     Route::apiResource('toll-gate-categories', TollGateCategoryController::class)->middleware('auth:sanctum')->only(['index']);
     Route::apiResource('document-type-toll-gates', DocumentTypeTollGateController::class)->middleware('auth:sanctum')->only(['index']);
     Route::apiResource('document-toll-gates-entries', DocumentTollGateEntryController::class)->middleware('auth:sanctum')->only(['index']);
@@ -132,6 +134,7 @@ Route::prefix('v1')->group(function () {
     Route::get('signage-by-user-id/{user_id_or_unique_id}', [SignageController::class, 'show_by_user_id'])->middleware('auth:sanctum');
 
     Route::apiResource('assessments', AssessmentController::class)->middleware('auth:sanctum')->only(['index', 'store', 'show', 'destroy']);
+    Route::get('assessments-search', [AssessmentController::class, 'search'])->middleware('auth:sanctum');
     Route::get('assessments-by-user-id/{user_id_or_unique_id}', [AssessmentController::class, 'show_by_user_id'])->middleware('auth:sanctum');
     Route::get('assessments-by-reference-number/{reference_number}', [AssessmentController::class, 'show_by_reference_number'])->middleware('auth:sanctum');
     Route::get('assessments-by-phone-number/{phone_number}', [AssessmentController::class, 'show_by_phone_number'])->middleware('auth:sanctum');
@@ -143,12 +146,16 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('revenue-items', RevenueItemController::class)->only(['index', 'show', 'update', 'store'])->middleware('auth:sanctum');
     Route::get('revenue-items-agency/{agency_id}', [RevenueItemController::class, 'revenue_item_agency'])->middleware('auth:sanctum');
     Route::apiResource('cooperates', CooperateController::class)->middleware('auth:sanctum');
+    Route::get('cooperates-search', [CooperateController::class, 'search'])->middleware('auth:sanctum');
     Route::apiResource('commercial-vehicles', CommercialVehicleController::class)->middleware('auth:sanctum');
+    Route::get('commercial-vehicles-search', [CommercialVehicleController::class, 'search'])->middleware('auth:sanctum');
     Route::get('commercial-vehicles-by-user-id/{user_id_or_unique_id}', [CommercialVehicleController::class, 'show_by_user_id'])->middleware('auth:sanctum');
     Route::apiResource('properties', PropertyController::class)->middleware('auth:sanctum');
+    Route::get('properties-search', [PropertyController::class, 'search'])->middleware('auth:sanctum');
     Route::get('properties-by-user-id/{user_id_or_unique_id}', [PropertyController::class, 'show_by_user_id'])->middleware('auth:sanctum');
     Route::apiResource('property-types', PropertyTypeController::class)->only(['index']);
     Route::apiResource('payments', PaymentController::class)->middleware('auth:sanctum')->only(['index', 'store']);
+    Route::get('payments-search', [PaymentController::class, 'search'])->middleware('auth:sanctum');
     Route::post('payments-webhook', [PaymentController::class, 'payment_webhoook_for_wallet']);
     Route::post('payments-isw-generate-reference', [PaymentController::class, 'payment_generate_reference'])->middleware('auth:sanctum');
     Route::get('payments-isw-reference-verification', [PaymentController::class, 'payment_reference_verification'])->middleware('auth:sanctum');
@@ -159,17 +166,20 @@ Route::prefix('v1')->group(function () {
     Route::get('user/email-phone-number', [UserController::class, 'email_phone_number'])->middleware('auth:sanctum');
     Route::post('user-verification', [UserController::class, 'user_verification']);
     Route::apiResource('ticket-vending', TicketVendingController::class)->middleware('auth:sanctum')->only(['index', 'store', 'show']);
+    Route::get('ticket-vending-search', [TicketVendingController::class, 'search'])->middleware('auth:sanctum');
     Route::get('ticket-vending-statistics', [TicketVendingController::class, 'ticket_statistics'])->middleware('auth:sanctum');
     Route::get('ticket-total-vending-statistics', [TicketVendingController::class, 'ticket_total_statistics'])->middleware('auth:sanctum');
     Route::get('ticket-vending-by-agent-id/{ticket_agent_id}', [TicketVendingController::class, 'tickets_by_agent'])->middleware('auth:sanctum');
     Route::get('ticket-bulk-vending-by-agent-id/{ticket_agent_id}', [TicketBulkVendingController::class, 'tickets_by_agent'])->middleware('auth:sanctum');
     Route::apiResource('ticket-bulk-vending', TicketBulkVendingController::class)->middleware('auth:sanctum')->only(['store', 'show', 'index']);
+    Route::get('ticket-bulk-vending-search', [TicketBulkVendingController::class, 'search'])->middleware('auth:sanctum');
     Route::apiResource('vehicle-manufacturers', VehicleManufacturerController::class)->middleware('auth:sanctum')->only(['index', 'show']);
     Route::apiResource('vehicle-categories', VehicleCategoryController::class)->middleware('auth:sanctum')->only(['index']);
     Route::apiResource('ticket-agents', TicketAgentController::class)->middleware('auth:sanctum')->only(['store', 'show', 'index', 'update']);
     Route::get('ticket-agents-wallet-transactions/{agent_id}', [TicketAgentController::class, 'ticket_agent_transactions'])->middleware('auth:sanctum');
     Route::apiResource('ticket-agent-wallet-transactions', TicketAgentWalletController::class)->middleware('auth:sanctum')->only(['show', 'index']);
     Route::apiResource('ticket-enforcements', TicketEnforcementController::class)->middleware('auth:sanctum');
+    Route::get('ticket-enforcements-search', [TicketEnforcementController::class, 'search'])->middleware('auth:sanctum');
     Route::get('ticket-agent-enforcements/{agent_id}', [TicketEnforcementController::class, 'ticket_agent_enforcements'])->middleware('auth:sanctum');
     Route::get('ticket-categories', TicketCategoryController::class);
     Route::post('vehicle-enumeration-verifications', VehicleEnumerationVerificationController::class)->middleware('auth:sanctum');

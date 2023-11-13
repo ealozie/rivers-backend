@@ -303,4 +303,52 @@ class AssessmentController extends Controller
         $assessments = Assessment::latest()->get();
         return AssessmentResource::collection($assessments);
     }
+
+    /**
+     * Advanced Search in resource.
+     *
+     * Query paramters `full_name` or `phone_number`.<br>
+     * Additonal Query paramters `agency_id`, `revenue_item_id`, `assessment_year_id`, `date_from and date_to`
+     */
+    public function search(Request $request)
+    {
+        $per_page = 20;
+        
+        if ($request->has('full_name')) {
+            $query_request = $request->get('full_name');
+            $ticket_response = Assessment::where('full_name', 'like', "%$query_request%")->paginate($per_page);
+        }
+        if ($request->has('phone_number')) {
+            $query_request = $request->get('phone_number');
+            $ticket_response = Assessment::where('phone_number', $query_request)->paginate($per_page);
+        }
+        if ($request->has('agency_id')) {
+            $query_request = $request->get('agency_id');
+            $ticket_response = Assessment::where('agency_id', $query_request)->paginate($per_page);
+        }
+        if ($request->has('revenue_item_id')) {
+            $query_request = $request->get('revenue_item_id');
+            $ticket_response = Assessment::where('revenue_item_id', $query_request)->paginate($per_page);
+        }
+        if ($request->has('assessment_year_id')) {
+            $query_request = $request->get('assessment_year_id');
+            $ticket_response = Assessment::where('assessment_year_id', $query_request)->paginate($per_page);
+        }
+        if ($request->has('due_date')) {
+            $query_request = $request->get('due_date');
+            $ticket_response = Assessment::where('due_date', $query_request)->paginate($per_page);
+        }
+        if ($request->has('date_from') && $request->has('date_to')) {
+            $date_from = $request->get('date_from');
+            $date_to = $request->get('date_to');
+            $ticket_response = Assessment::whereBetween('created_at', [$date_from, $date_to])->paginate($per_page);
+        }
+        if (!isset($ticket_response)){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Invalid request.'
+            ]);
+        }
+        return AssessmentResource::collection($ticket_response);
+    }
 }

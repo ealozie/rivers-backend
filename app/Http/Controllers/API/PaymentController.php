@@ -192,4 +192,56 @@ class PaymentController extends Controller
                 ], 404);
         }
     }
+
+    /**
+     * Advanced Search in resource.
+     *
+     * Query paramters `payer_name` or `reference_number`.<br>
+     * Additonal Query paramters `transaction_id`, `retrieval_reference_number`, `payer_phone_number`, `receipt_number`, `payment_channel`, `date_from and date_to`
+     */
+    public function search(Request $request)
+    {
+        $per_page = 20;
+        
+        if ($request->has('payer_name')) {
+            $query_request = $request->get('payer_name');
+            $response = Payment::where('payer_name', 'like', "%$query_request%")->paginate($per_page);
+        }
+        if ($request->has('reference_number')) {
+            $query_request = $request->get('reference_number');
+            $response = Payment::where('reference_number', $query_request)->paginate($per_page);
+        }
+        if ($request->has('transaction_id')) {
+            $query_request = $request->get('transaction_id');
+            $response = Payment::where('transaction_id', $query_request)->paginate($per_page);
+        }
+        if ($request->has('retrieval_reference_number')) {
+            $query_request = $request->get('retrieval_reference_number');
+            $response = Payment::where('retrieval_reference_number', $query_request)->paginate($per_page);
+        }
+        if ($request->has('payer_phone_number')) {
+            $query_request = $request->get('payer_phone_number');
+            $response = Payment::where('payer_phone_number', $query_request)->paginate($per_page);
+        }
+        if ($request->has('receipt_number')) {
+            $query_request = $request->get('receipt_number');
+            $response = Payment::where('receipt_number', $query_request)->paginate($per_page);
+        }
+        if ($request->has('payment_channel')) {
+            $query_request = $request->get('payment_channel');
+            $response = Payment::where('payment_channel', $query_request)->paginate($per_page);
+        }        
+        if ($request->has('date_from') && $request->has('date_to')) {
+            $date_from = $request->get('date_from');
+            $date_to = $request->get('date_to');
+            $response = Payment::whereBetween('created_at', [$date_from, $date_to])->paginate($per_page);
+        }
+        if (!isset($response)){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Invalid request.'
+            ]);
+        }
+        return PaymentResource::collection($response);;
+    }
 }

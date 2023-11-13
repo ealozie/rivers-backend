@@ -167,4 +167,71 @@ class CooperateController extends Controller
     {
         //
     }
+
+    /**
+     * Advanced Search in resource.
+     *
+     * Query paramters `business_name` or `rc_number`.<br>
+     * Additonal Query paramters `business_type_id`, `email`, `phone_number`, `cooperate_id`, `business_sub_category_id`, `business_level_id`, `email`, `business_category_id`, `date_from and date_to` and `demand_notice_category_id`
+     */
+    public function search(Request $request)
+    {
+        $per_page = 20;
+        if ($request->has('business_name')) {
+            $query_request = $request->get('business_name');
+            $individual_registrations = Cooperate::with('user')->where('business_name', 'like', "%{$query_request}%")->paginate($per_page);
+        }
+        if ($request->has('rc_number')) {
+            $query_request = $request->get('rc_number');
+            $individual_registrations = Cooperate::with('user')->where('rc_number', $query_request)->paginate($per_page);
+        }
+        if ($request->has('business_type_id')) {
+            $query_request = $request->get('business_type_id');
+            $individual_registrations = Cooperate::with('user')->where('business_type_id', $query_request)->paginate($per_page);
+        }
+        if ($request->has('email')) {
+            $query_request = $request->get('email');
+            $individual_registrations = Cooperate::whereHas('user', function($query) use ($query_request) {
+                $query->where('email', $query_request);
+            })->paginate($per_page);
+        }
+        if ($request->has('phone_number')) {
+            $query_request = $request->get('phone_number');
+            $individual_registrations = Cooperate::whereHas('user', function($query) use ($query_request) {
+                $query->where('phone_number', $query_request);
+            })->paginate($per_page);
+        }
+        if ($request->has('cooperate_id')) {
+            $query_request = $request->get('cooperate_id');
+             $individual_registrations = Cooperate::with('user')->where('cooperate_id', $query_request)->paginate($per_page);
+        }
+        if ($request->has('business_sub_category_id')) {
+            $query_request = $request->get('business_sub_category_id');
+            $individual_registrations = Cooperate::with('user')->where('business_sub_category_id', $query_request)->paginate($per_page);
+        }
+        if ($request->has('business_level_id')) {
+            $query_request = $request->get('business_level_id');
+            $individual_registrations = Cooperate::with('user')->where('business_level_id', $query_request)->paginate($per_page);
+        }
+        if ($request->has('business_category_id')) {
+            $query_request = $request->get('business_category_id');
+            $individual_registrations = Cooperate::with('user')->where('business_category_id', $query_request)->paginate($per_page);
+        }
+        if ($request->has('demand_notice_category_id')) {
+            $query_request = $request->get('demand_notice_category_id');
+            $individual_registrations = Cooperate::with('user')->where('demand_notice_category_id', $query_request)->paginate($per_page);
+        }
+        if ($request->has('date_from') && $request->has('date_to')) {
+            $date_from = $request->get('date_from');
+            $date_to = $request->get('date_to');
+            $individual_registrations = Cooperate::with('user')->whereBetween('created_at', [$date_from, $date_to])->paginate($per_page);
+        }
+        if (!isset($individual_registrations)){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Invalid request.'
+            ]);
+        }
+        return CooperateResource::collection($individual_registrations);
+    }
 }

@@ -371,4 +371,48 @@ class TicketVendingController extends Controller
             ]
         ]);
     }
+
+    /**
+     * Advanced Search in resource.
+     *
+     * Query paramters `plate_number` or `ticket_category_id`.<br>
+     * Additonal Query paramters `phone_number`, `ticket_reference_number`, `ticket_agent_id`, `date_from and date_to`
+     */
+    public function search(Request $request)
+    {
+        $per_page = 20;
+        
+        if ($request->has('plate_number')) {
+            $query_request = $request->get('plate_number');
+            $ticket_response = TicketVending::where('plate_number', $query_request)->paginate($per_page);
+        }
+        if ($request->has('ticket_category_id')) {
+            $query_request = $request->get('ticket_category_id');
+            $ticket_response = TicketVending::where('ticket_category_id', $query_request)->paginate($per_page);
+        }
+        if ($request->has('phone_number')) {
+            $query_request = $request->get('phone_number');
+            $ticket_response = TicketVending::where('phone_number', $query_request)->paginate($per_page);
+        }
+        if ($request->has('ticket_reference_number')) {
+            $query_request = $request->get('ticket_reference_number');
+            $ticket_response = TicketVending::where('ticket_reference_number', $query_request)->paginate($per_page);
+        }
+        if ($request->has('ticket_agent_id')) {
+            $query_request = $request->get('ticket_agent_id');
+            $ticket_response = TicketVending::where('ticket_agent_id', $query_request)->paginate($per_page);
+        }
+        if ($request->has('date_from') && $request->has('date_to')) {
+            $date_from = $request->get('date_from');
+            $date_to = $request->get('date_to');
+            $ticket_response = TicketVending::whereBetween('created_at', [$date_from, $date_to])->paginate($per_page);
+        }
+        if (!isset($ticket_response)){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Invalid request.'
+            ]);
+        }
+        return TicketVendingResource::collection($ticket_response);
+    }
 }

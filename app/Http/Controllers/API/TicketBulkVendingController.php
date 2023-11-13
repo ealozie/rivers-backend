@@ -290,4 +290,40 @@ class TicketBulkVendingController extends Controller
             ]
         ]);
     }
+
+    /**
+     * Advanced Search in resource.
+     *
+     * Query paramters `plate_number` or `ticket_category_id`.<br>
+     * Additonal Query paramters `ticket_agent_id`, `date_from and date_to`
+     */
+    public function search(Request $request)
+    {
+        $per_page = 20;
+        
+        if ($request->has('plate_number')) {
+            $query_request = $request->get('plate_number');
+            $ticket_response = TicketBulkVending::where('plate_number', $query_request)->paginate($per_page);
+        }
+        if ($request->has('ticket_category_id')) {
+            $query_request = $request->get('ticket_category_id');
+            $ticket_response = TicketBulkVending::where('ticket_category_id', $query_request)->paginate($per_page);
+        }
+        if ($request->has('ticket_agent_id')) {
+            $query_request = $request->get('ticket_agent_id');
+            $ticket_response = TicketBulkVending::where('ticket_agent_id', $query_request)->paginate($per_page);
+        }
+        if ($request->has('date_from') && $request->has('date_to')) {
+            $date_from = $request->get('date_from');
+            $date_to = $request->get('date_to');
+            $ticket_response = TicketBulkVending::whereBetween('created_at', [$date_from, $date_to])->paginate($per_page);
+        }
+        if (!isset($ticket_response)){
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Invalid request.'
+            ]);
+        }
+        return TicketBulkVendingCollection::collection($ticket_response);
+    }
 }
