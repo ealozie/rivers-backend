@@ -26,18 +26,22 @@ class MonifyWebhookController extends Controller
         $signature = $_SERVER['HTTP_MONNIFY_SIGNATURE'];
         
         //Log::info($signature);
+        // $text = '{"eventData":{"product":{"reference":"ref_smcpt_5714820202369","type":"MOBILE_SDK"},"transactionReference":"MNFY|85|20231120233848|001348","paymentReference":"ref_smcpt_5714820202369","paidOn":"2023-11-20 23:38:55.163","paymentDescription":"","metaData":{},"paymentSourceInformation":[],"destinationAccountInformation":{},"amountPaid":100,"totalPayable":100,"cardDetails":{"last4":"1111","expMonth":"12","maskedPan":"411111******1111","expYear":"25","bin":"411111","reusable":false},"paymentMethod":"CARD","currency":"NGN","settlementAmount":"90.00","paymentStatus":"PAID","customer":{"name":"Joseph Nathaniel","email":"gibahjoe@gmail.com"}},"eventType":"SUCCESSFUL_TRANSACTION"}';
+        ;
+        //return $requestData['eventData']['transactionReference'];
         try {
         if ($signature) {
             $computed_signature = hash_hmac('sha512', $requestDataContent, $secret_key);
-            $requestData = $requestDataContent;
+            $requestData = json_decode($requestDataContent, true)
+            //$requestData = $requestDataContent;
         //     $logFile = fopen(storage_path('logs/monipoint_payment_webhook.log'), 'a');
         // fwrite($logFile, $computed_signature . "\n");
         // fclose($logFile);
         $logFile = fopen(storage_path('logs/monipoint_payment_webhook.log'), 'a');
-        fwrite($logFile, gettype($requestDataContent) . "\n");
+        fwrite($logFile, gettype($requestData) . "\n");
         fclose($logFile);
         $logFile1 = fopen(storage_path('logs/monipoint_data_payment_webhook.log'), 'a');
-        fwrite($logFile1, $requestDataContent . "\n");
+        fwrite($logFile1, $requestData . "\n");
         fclose($logFile1);
             if ($computed_signature == $signature) {
                 $payment_ref = $requestData['eventData']['product']['reference'];
