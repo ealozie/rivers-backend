@@ -23,8 +23,9 @@ class DemandNoticeStoreRequest extends FormRequest
     {
         return [
             'demand_notice_category_id' => 'required|integer',
-            'user_id' => 'required',
+            'entity_id' => 'required',
             'year_id' => 'required|integer',
+            'entity_type' => 'required|in:individual,property,cooperate,signage,vehicle,shop'
         ];
     }
 }

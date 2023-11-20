@@ -6,10 +6,16 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\DemandNoticeStoreRequest;
 use App\Http\Requests\DemandNoticeUpdateRequest;
 use App\Http\Resources\DemandNoticeResource;
+use App\Models\CommercialVehicle;
+use App\Models\Cooperate;
 use App\Models\DemandNotice;
 use App\Models\DemandNoticeCategory;
 use App\Models\DemandNoticeCategoryItem;
 use App\Models\DemandNoticeItem;
+use App\Models\Individual;
+use App\Models\Property;
+use App\Models\Shop;
+use App\Models\Signage;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -35,15 +41,78 @@ class DemandNoticeController extends Controller
         $requestData = $request->validated();
         $requestData['demand_notice_number'] = 'DN-' . date('Y') . '-' . date('md') . '-' . rand(1000, 9999);
         $requestData['generated_by'] = $request->user()->id;
-        $user = User::where('unique_id', $requestData['user_id'])->first();
-        if (!$user) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'User not found.'
-            ]);
-        }
+        // $user = User::where('unique_id', $requestData['user_id'])->first();
+        // if (!$user) {
+        //     return response()->json([
+        //         'status' => 'error',
+        //         'message' => 'User not found.'
+        //     ]);
+        // }
         //check that demand notice hasn't been geneated before
-        $requestData['user_id'] = $user->id;
+        $requestData['user_id'] = $request->user()->id;
+        if ($requestData['entity_type'] == 'shop') {
+            $shop = Shop::where('shop_id', $requestData['entity_id'])->first();
+            if (!$shop) {
+                return response()->json([
+                    'status' => 'error',
+                    'message'=> 'Shop not found',
+                ], 404);
+            }
+            $model_type = 'App\Models\Shop';
+        }
+        if ($requestData['entity_type'] == 'vehicle') {
+            $vehicle = CommercialVehicle::where('vehicle_id', $requestData['entity_id'])->first();
+            if (!$vehicle) {
+                return response()->json([
+                    'status' => 'error',
+                    'message'=> 'Commercial Vehicle not found.',
+                ], 404);
+            }
+            $model_type = 'App\Models\CommercialVehicle';
+        }
+        if ($requestData['entity_type'] == 'property') {
+            $property = Property::where('property_id', $requestData['entity_id'])->first();
+            if (!$property) {
+                return response()->json([
+                    'status' => 'error',
+                    'message'=> 'Property not found.',
+                ], 404);
+            }
+            $model_type = 'App\Models\Property';
+        }
+        if ($requestData['entity_type'] == 'signage') {
+            $signage = Signage::where('signage_id', $requestData['entity_id'])->first();
+            if (!$signage) {
+                return response()->json([
+                    'status' => 'error',
+                    'message'=> 'Signage not found.',
+                ], 404);
+            }
+            $model_type = 'App\Models\Signage';
+        }
+        if ($requestData['entity_type'] == 'individual') {
+            $individual = Individual::where('individual_id', $requestData['entity_id'])->first();
+            if (!$individual) {
+                return response()->json([
+                    'status' => 'error',
+                    'message'=> 'Individual not found.',
+                ], 404);
+            }
+            $model_type = 'App\Models\Individual';
+        }
+    
+        if ($requestData['entity_type'] == 'individual') {
+            $cooperate = Cooperate::where('cooperate_id', $requestData['entity_id'])->first();
+            if (!$cooperate) {
+                return response()->json([
+                    'status' => 'error',
+                    'message'=> 'Cooperate not found.',
+                ], 404);
+            }
+            $model_type = 'App\Models\Cooperate';
+        }
+        $requestData['model_type'] = $model_type;
+
         $demand_notice = DemandNotice::create($requestData);
         $demand_notice_category_items = DemandNoticeCategoryItem::where('demand_notice_category_id', $requestData['demand_notice_category_id'])->get();
         foreach ($demand_notice_category_items as $demand_notice_category_item) {
