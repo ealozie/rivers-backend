@@ -24,6 +24,21 @@ class MonifyWebhookController extends Controller
         $logFile = fopen(storage_path('logs/monify_payment_webhook2.log'), 'a');
         fwrite($logFile, $requestData2 . "\n");
         fclose($logFile);
+
+        $setting = AppSetting::where('key', 'MONIFY_SECRET_KEY')->first();
+        $secret_key = $setting->value;
+        $signature = $_SERVER['HTTP_MONNIFY_SIGNATURE'];
+        $signature = $request->header('HTTP_MONNIFY_SIGNATURE');
+        if ($request->hasHeader('HTTP_MONNIFY_SIGNATURE')) {
+            $computed_signature = hash_hmac('sha512', $requestData, $secret_key);
+            if ($computed_signature == $signature) {
+                $requestObject = json_decode($requestData);
+                ProcessISWPaymentTransaction::dispatch($requestObject);
+                return response()->json();
+            }
+
+        }
+        //$computedHash = hash_hmac('sha512', $raw_request, $SECRET_KEY);
         //FacadesLog::info($requestData);
     }
 

@@ -119,9 +119,10 @@ class PaymentController extends Controller
             if ($signature == $request->header('X-Interswitch-Signature')) {
                 $requestObject = json_decode($requestData);
                 ProcessISWPaymentTransaction::dispatch($requestObject);
+                return response()->json();
             }
         }
-        return response()->json();
+        
     }
 
     /**
@@ -131,13 +132,14 @@ class PaymentController extends Controller
     {
         $validateData = $request->validate([
             'amount' => 'required',
+            'payment_gateway' => 'required',
         ]);
         $user = $request->user();
         try {
             $payment = new Payment();
             $payment->user_id = $user->id;
             $payment->reference_number = 'ref_smcpt_'.mt_rand(11111, 99999).date('dY').mt_rand(11, 99);
-            $payment->payment_gateway = 'InterSwitch';
+            $payment->payment_gateway = $validateData['payment_gateway'];
             $payment->amount = $validateData['amount'];
             $payment->save();
             return response()->json([
