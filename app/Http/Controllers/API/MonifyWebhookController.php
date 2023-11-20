@@ -19,7 +19,7 @@ class MonifyWebhookController extends Controller
      */
     public function transaction_completion(Request $request)
     {
-        //$requestData = $request->all();
+        $requestData1 = $request->all();
         $requestDataContent = $request->getContent();
         $setting = AppSetting::where('key', 'MONIFY_SECRET_KEY')->first();
         $secret_key = $setting->value;
@@ -33,11 +33,11 @@ class MonifyWebhookController extends Controller
         //     $logFile = fopen(storage_path('logs/monipoint_payment_webhook.log'), 'a');
         // fwrite($logFile, $computed_signature . "\n");
         // fclose($logFile);
-        // $logFile = fopen(storage_path('logs/monipoint_payment_webhook.log'), 'a');
-        // fwrite($logFile, $signature . "\n");
-        // fclose($logFile);
+        $logFile = fopen(storage_path('logs/monipoint_payment_webhook.log'), 'a');
+        fwrite($logFile, $requestData1 . "\n");
+        fclose($logFile);
         $logFile1 = fopen(storage_path('logs/monipoint_data_payment_webhook.log'), 'a');
-        fwrite($logFile1, $requestData['eventData']['transactionReference'] . "\n");
+        fwrite($logFile1, $requestData->eventData->product . "\n");
         fclose($logFile1);
             if ($computed_signature == $signature) {
                 $payment_ref = $requestData['eventData']['product']['reference'];
