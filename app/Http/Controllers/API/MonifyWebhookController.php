@@ -37,7 +37,7 @@ class MonifyWebhookController extends Controller
         // fwrite($logFile, $signature . "\n");
         // fclose($logFile);
         $logFile1 = fopen(storage_path('logs/monipoint_data_payment_webhook.log'), 'a');
-        fwrite($logFile1, $requestData . "\n");
+        fwrite($logFile1, $requestData['eventData']['transactionReference'] . "\n");
         fclose($logFile1);
             if ($computed_signature == $signature) {
                 $payment_ref = $requestData['eventData']['product']['reference'];
