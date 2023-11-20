@@ -181,6 +181,11 @@ class PaymentController extends Controller
                     'status' => 'success',
                     'message' => 'Transaction was succesful.'
                 ]);
+            } else if ($payment->transaction_status == 'PAID') {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Transaction was succesful.'
+                ]);
             } else {
                 return response()->json([
                     'status' => 'error',

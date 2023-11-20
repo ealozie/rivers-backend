@@ -197,5 +197,6 @@ Route::prefix('v1')->group(function () {
     Route::post('/monify/refund-completion', [MonifyWebhookController::class, 'refund_completion']);
     Route::post('/monify/disbursement', [MonifyWebhookController::class, 'disbursement']);
     Route::post('/monify/transaction-completed', [MonifyWebhookController::class, 'settlement']);
+    Route::post('/monify/transaction-completed', [MonifyWebhookController::class, 'settlement']);
     //Route::apiResource('users', UserController::class);
 });

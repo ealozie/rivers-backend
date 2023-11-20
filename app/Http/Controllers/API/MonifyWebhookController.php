@@ -4,6 +4,9 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\AppSetting;
+use App\Models\Payment;
+use App\Models\TicketAgent;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 /**
@@ -20,26 +23,44 @@ class MonifyWebhookController extends Controller
         //$requestData2 = $request->getContent();
         $setting = AppSetting::where('key', 'MONIFY_SECRET_KEY')->first();
         $secret_key = $setting->value;
-        $signature1 = $_SERVER['HTTP_MONNIFY_SIGNATURE'];
+        //$signature = $_SERVER['HTTP_MONNIFY_SIGNATURE'];
+        try {
+            $payment_ref = $requestData['eventData']['product']['reference'];
+        $payment = Payment::where('reference_number', $payment_ref)->first();
+        if ($payment) {
+            $payment->transaction_id = $requestData['eventData']['transactionReference'];
+            $payment->transaction_date = $requestData['eventData']['paidOn'];
+            $payment->transaction_status = $requestData['eventData']['paymentStatus'];
+            $payment->transaction_status = $requestData['eventData']['paymentStatus'];
+            $payment->payer_name = $requestData['eventData']['customer']['name'];
+            $payment->payer_address = $requestData['eventData']['customer']['email'];
+            $payment->save();
+            $ticket_agent = TicketAgent::where('user_id', $payment->user_id)->first();
+                $amount = $requestData['eventData']['amountPaid'];
+            if (!$payment->is_credited) {
+                $ticket_agent->increment('wallet_balance', $amount);
+                $payment->is_credited = true;
+                $payment->save();
+            }
 
-        $signature2 = $request->header('HTTP_MONNIFY_SIGNATURE');
-        $logFile3 = fopen(storage_path('logs/monify_payment_webhook3.log'), 'a');
-        fwrite($logFile3, $signature1 . "\n");
-        fclose($logFile3);
-        $logFile4 = fopen(storage_path('logs/monify_payment_webhook4.log'), 'a');
-        fwrite($logFile4, $signature2 . "\n");
-        fclose($logFile4);
-        // if ($request->hasHeader('HTTP_MONNIFY_SIGNATURE')) {
+        }
+        } catch (Exception $e) {
+            $logFile = fopen(storage_path('logs/monipont_payment_webhook.log'), 'a');
+        fwrite($logFile, $e->getMessage() . "\n");
+        fclose($logFile);
+        FacadesLog::info($requestData);
+        }
+        //$signature2 = $request->header('HTTP_MONNIFY_SIGNATURE');
+        // if ($signature) {
         //     $computed_signature = hash_hmac('sha512', $requestData, $secret_key);
         //     if ($computed_signature == $signature) {
         //         $requestObject = json_decode($requestData);
-        //         ProcessISWPaymentTransaction::dispatch($requestObject);
         //         return response()->json();
         //     }
 
         // }
         //return json_decode($requestData, true);
-        return response()->json();
+        //return response()->json();
         //$computedHash = hash_hmac('sha512', $raw_request, $SECRET_KEY);
         //FacadesLog::info($requestData);
     }
