@@ -24,7 +24,7 @@ class MonifyWebhookController extends Controller
         $setting = AppSetting::where('key', 'MONIFY_SECRET_KEY')->first();
         $secret_key = $setting->value;
         $signature = $_SERVER['HTTP_MONNIFY_SIGNATURE'];
-        $logFile = fopen(storage_path('logs/monipoint_payment_webhook.log'), 'a');
+        $logFile = fopen(storage_path('logs/isw_payment_webhook.log'), 'a');
         fwrite($logFile, $signature . "\n");
         fclose($logFile);
         //Log::info($signature);
@@ -34,17 +34,16 @@ class MonifyWebhookController extends Controller
         try {
         if ($signature) {
             $computed_signature = hash_hmac('sha512', $requestDataContent, $secret_key);
-            $requestData = json_decode($requestDataContent, true)
+            $requestData = json_decode($requestDataContent, true);
             //$requestData = $requestDataContent;
         //     $logFile = fopen(storage_path('logs/monipoint_payment_webhook.log'), 'a');
         // fwrite($logFile, $computed_signature . "\n");
         // fclose($logFile);
-        $logFile = fopen(storage_path('logs/monipoint_payment_webhook.log'), 'a');
-        fwrite($logFile, gettype($requestData) . "\n");
+        $logFile = fopen(storage_path('logs/moni_payment_webhook.log'), 'a');
+        fwrite($logFile, $requestData . "\n");
         fclose($logFile);
-        $logFile1 = fopen(storage_path('logs/monipoint_data_payment_webhook.log'), 'a');
-        fwrite($logFile1, $requestData . "\n");
-        fclose($logFile1);
+        FacadesLog::info($requestData);
+            
             if ($computed_signature == $signature) {
                 $payment_ref = $requestData['eventData']['product']['reference'];
         $payment = Payment::where('reference_number', $payment_ref)->first();
@@ -71,9 +70,9 @@ class MonifyWebhookController extends Controller
         }
 
         } catch (Exception $e) {
-            $logFile = fopen(storage_path('logs/monipont_payment_webhook.log'), 'a');
-        fwrite($logFile,  $requestData. "\n");
-        fclose($logFile);
+        //     $logFile = fopen(storage_path('logs/monipont_payment_webhook.log'), 'a');
+        // fwrite($logFile,  $requestData. "\n");
+        // fclose($logFile);
         //FacadesLog::info($requestData);
         }
         //$signature2 = $request->header('HTTP_MONNIFY_SIGNATURE');
