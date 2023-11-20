@@ -24,6 +24,10 @@ class MonifyWebhookController extends Controller
         $setting = AppSetting::where('key', 'MONIFY_SECRET_KEY')->first();
         $secret_key = $setting->value;
         $signature = $_SERVER['HTTP_MONNIFY_SIGNATURE'];
+        $logFile = fopen(storage_path('logs/monipoint_payment_webhook.log'), 'a');
+        fwrite($logFile, $signature . "\n");
+        fclose($logFile);
+        //Log::info($signature);
         try {
         if ($signature) {
             $computed_signature = hash_hmac('sha512', json_encode($requestData), $secret_key);
