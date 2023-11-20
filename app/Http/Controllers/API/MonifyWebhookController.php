@@ -27,17 +27,24 @@ class MonifyWebhookController extends Controller
 
         $setting = AppSetting::where('key', 'MONIFY_SECRET_KEY')->first();
         $secret_key = $setting->value;
-        $signature = $_SERVER['HTTP_MONNIFY_SIGNATURE'];
-        $signature = $request->header('HTTP_MONNIFY_SIGNATURE');
-        if ($request->hasHeader('HTTP_MONNIFY_SIGNATURE')) {
-            $computed_signature = hash_hmac('sha512', $requestData, $secret_key);
-            if ($computed_signature == $signature) {
-                $requestObject = json_decode($requestData);
-                ProcessISWPaymentTransaction::dispatch($requestObject);
-                return response()->json();
-            }
+        $signature1 = $_SERVER['HTTP_MONNIFY_SIGNATURE'];
+        $signature2 = $request->header('HTTP_MONNIFY_SIGNATURE');
+        $logFile = fopen(storage_path('logs/monify_payment_webhook3.log'), 'a');
+        fwrite($logFile, $signature1 . "\n");
+        fclose($logFile);
+        $logFile = fopen(storage_path('logs/monify_payment_webhook4.log'), 'a');
+        fwrite($logFile, $signature2 . "\n");
+        fclose($logFile);
+        // if ($request->hasHeader('HTTP_MONNIFY_SIGNATURE')) {
+        //     $computed_signature = hash_hmac('sha512', $requestData, $secret_key);
+        //     if ($computed_signature == $signature) {
+        //         $requestObject = json_decode($requestData);
+        //         ProcessISWPaymentTransaction::dispatch($requestObject);
+        //         return response()->json();
+        //     }
 
-        }
+        // }
+        return response()->json();
         //$computedHash = hash_hmac('sha512', $raw_request, $SECRET_KEY);
         //FacadesLog::info($requestData);
     }
