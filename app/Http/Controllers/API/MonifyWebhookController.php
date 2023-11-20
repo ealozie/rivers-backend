@@ -26,7 +26,7 @@ class MonifyWebhookController extends Controller
         $signature = $_SERVER['HTTP_MONNIFY_SIGNATURE'];
         try {
         if ($signature) {
-            $computed_signature = hash_hmac('sha512', $requestData, $secret_key);
+            $computed_signature = hash_hmac('sha512', json_encode($requestData), $secret_key);
             if ($computed_signature == $signature) {
                 $payment_ref = $requestData['eventData']['product']['reference'];
         $payment = Payment::where('reference_number', $payment_ref)->first();
