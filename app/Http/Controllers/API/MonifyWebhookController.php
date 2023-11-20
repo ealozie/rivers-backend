@@ -36,9 +36,9 @@ class MonifyWebhookController extends Controller
         // $logFile = fopen(storage_path('logs/monipoint_payment_webhook.log'), 'a');
         // fwrite($logFile, $signature . "\n");
         // fclose($logFile);
-        // $logFile1 = fopen(storage_path('logs/monipoint_data_payment_webhook.log'), 'a');
-        // fwrite($logFile1, gettype($requestData) . "\n");
-        // fclose($logFile1);
+        $logFile1 = fopen(storage_path('logs/monipoint_data_payment_webhook.log'), 'a');
+        fwrite($logFile1, gettype($requestData) . "\n");
+        fclose($logFile1);
             if ($computed_signature == $signature) {
                 $payment_ref = $requestData['eventData']['product']['reference'];
         $payment = Payment::where('reference_number', $payment_ref)->first();
@@ -66,9 +66,9 @@ class MonifyWebhookController extends Controller
 
         } catch (Exception $e) {
             $logFile = fopen(storage_path('logs/monipont_payment_webhook.log'), 'a');
-        fwrite($logFile, $e->getMessage() . "\n");
+        fwrite($logFile,  $requestData. "\n");
         fclose($logFile);
-        FacadesLog::info($requestData);
+        //FacadesLog::info($requestData);
         }
         //$signature2 = $request->header('HTTP_MONNIFY_SIGNATURE');
         
