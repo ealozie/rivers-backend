@@ -25,7 +25,10 @@ class MonifyWebhookController extends Controller
         $secret_key = $setting->value;
         //$signature = $_SERVER['HTTP_MONNIFY_SIGNATURE'];
         try {
-            $payment_ref = $requestData['eventData']['product']['reference'];
+        if ($signature) {
+            $computed_signature = hash_hmac('sha512', $requestData, $secret_key);
+            if ($computed_signature == $signature) {
+                $payment_ref = $requestData['eventData']['product']['reference'];
         $payment = Payment::where('reference_number', $payment_ref)->first();
         if ($payment) {
             $payment->transaction_id = $requestData['eventData']['transactionReference'];
@@ -44,6 +47,11 @@ class MonifyWebhookController extends Controller
             }
 
         }
+                return response()->json([], 200);
+            }
+
+        }
+
         } catch (Exception $e) {
             $logFile = fopen(storage_path('logs/monipont_payment_webhook.log'), 'a');
         fwrite($logFile, $e->getMessage() . "\n");
@@ -51,14 +59,7 @@ class MonifyWebhookController extends Controller
         FacadesLog::info($requestData);
         }
         //$signature2 = $request->header('HTTP_MONNIFY_SIGNATURE');
-        // if ($signature) {
-        //     $computed_signature = hash_hmac('sha512', $requestData, $secret_key);
-        //     if ($computed_signature == $signature) {
-        //         $requestObject = json_decode($requestData);
-        //         return response()->json();
-        //     }
-
-        // }
+        
         //return json_decode($requestData, true);
         //return response()->json();
         //$computedHash = hash_hmac('sha512', $raw_request, $SECRET_KEY);
