@@ -23,7 +23,7 @@ class MonifyWebhookController extends Controller
         //$requestData2 = $request->getContent();
         $setting = AppSetting::where('key', 'MONIFY_SECRET_KEY')->first();
         $secret_key = $setting->value;
-        //$signature = $_SERVER['HTTP_MONNIFY_SIGNATURE'];
+        $signature = $_SERVER['HTTP_MONNIFY_SIGNATURE'];
         try {
         if ($signature) {
             $computed_signature = hash_hmac('sha512', $requestData, $secret_key);
