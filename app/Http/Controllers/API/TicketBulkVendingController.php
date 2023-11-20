@@ -303,6 +303,7 @@ class TicketBulkVendingController extends Controller
         
         if ($request->has('plate_number')) {
             $query_request = $request->get('plate_number');
+
             $ticket_response = TicketBulkVending::where('plate_number', $query_request)->paginate($per_page);
         }
         if ($request->has('ticket_category_id')) {
@@ -324,6 +325,7 @@ class TicketBulkVendingController extends Controller
                 'message' => 'Invalid request.'
             ]);
         }
-        return TicketBulkVendingCollection::collection($ticket_response);
+
+        return TicketBulkVendingResource::collection($ticket_response);
     }
 }
