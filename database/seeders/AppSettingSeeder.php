@@ -44,10 +44,12 @@ class AppSettingSeeder extends Seeder
             // "VANSO_SENDER_ID" => 'QuickChop',
             // "VANSO_USERNAME" => 'NG.105.0220',
             // "VANSO_PASSWORD" => 'Axt0KWfC',
-            "MONIFY_API_KEY" => 'MK_TEST_J1Q5YWHF4D',
-            "MONIFY_SECRET_KEY" => '0QDZPWN21RR6GGH1P8KU9KXL1GYAXJ5Y',
-            "MONIFY_BASE_URL" => 'https://sandbox.monnify.com',
-            "MONIFY_WALLET_ACCOUNT" => '2789334947',
+            // "MONIFY_API_KEY" => 'MK_TEST_J1Q5YWHF4D',
+            // "MONIFY_SECRET_KEY" => '0QDZPWN21RR6GGH1P8KU9KXL1GYAXJ5Y',
+            // "MONIFY_BASE_URL" => 'https://sandbox.monnify.com',
+            // "MONIFY_WALLET_ACCOUNT" => '2789334947',
+            "MONIFY_CONTRACT_CODE" => '3294886386',
+            "MONIFY_MODE" => 'TEST',
         ];
 
         //AppSetting::truncate();
