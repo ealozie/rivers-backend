@@ -34,19 +34,10 @@ class MonifyWebhookController extends Controller
         try {
         if ($signature) {
             $computed_signature = hash_hmac('sha512', $requestDataContent, $secret_key);
-            $logFile = fopen(storage_path('logs/monipoint_payment_webhook.log'), 'a');
-        fwrite($logFile, $computed_signature . "\n");
-        fclose($logFile);
-        $logFile1 = fopen(storage_path('logs/monipoint_payment_webhook.log'), 'a');
-        fwrite($logFile1, $signature . "\n");
-        fclose($logFile1);
             $requestData = json_decode($requestDataContent, true);
-            //$requestData = $requestDataContent;
-        //     $logFile = fopen(storage_path('logs/monipoint_payment_webhook.log'), 'a');
-        // fwrite($logFile, $computed_signature . "\n");
-        // fclose($logFile);
-        // 
-        //Working code
+
+                if ($computed_signature == $signature) {
+                    //Working code
         $payment_ref = $requestData['eventData']['product']['reference'];
         $payment = Payment::where('reference_number', $payment_ref)->first();
         if ($payment) {
@@ -67,33 +58,34 @@ class MonifyWebhookController extends Controller
         }
         return response()->json();
         //Ends working code
-        $logFile = fopen(storage_path('logs/moni_payment_webhook.log'), 'a');
-        fwrite($logFile, $requestData . "\n");
-        fclose($logFile);
-        FacadesLog::info($requestData);
+                }
+                 
+        // $logFile = fopen(storage_path('logs/moni_payment_webhook.log'), 'a');
+        // fwrite($logFile, $requestData . "\n");
+        // fclose($logFile);
+        // FacadesLog::info($requestData);
             
-            if ($computed_signature == $signature) {
-                $payment_ref = $requestData['eventData']['product']['reference'];
-        $payment = Payment::where('reference_number', $payment_ref)->first();
-        if ($payment) {
-            $payment->transaction_id = $requestData['eventData']['transactionReference'];
-            $payment->transaction_date = $requestData['eventData']['paidOn'];
-            $payment->transaction_status = $requestData['eventData']['paymentStatus'];
-            $payment->transaction_status = $requestData['eventData']['paymentStatus'];
-            $payment->payer_name = $requestData['eventData']['customer']['name'];
-            $payment->payer_address = $requestData['eventData']['customer']['email'];
-            $payment->save();
-            $ticket_agent = TicketAgent::where('user_id', $payment->user_id)->first();
-                $amount = $requestData['eventData']['amountPaid'];
-            if (!$payment->is_credited) {
-                $ticket_agent->increment('wallet_balance', $amount);
-                $payment->is_credited = true;
-                $payment->save();
-            }
+        //     if ($computed_signature == $signature) {
+        //         $payment_ref = $requestData['eventData']['product']['reference'];
+        // $payment = Payment::where('reference_number', $payment_ref)->first();
+        // if ($payment) {
+        //     $payment->transaction_id = $requestData['eventData']['transactionReference'];
+        //     $payment->transaction_date = $requestData['eventData']['paidOn'];
+        //     $payment->transaction_status = $requestData['eventData']['paymentStatus'];
+        //     $payment->transaction_status = $requestData['eventData']['paymentStatus'];
+        //     $payment->payer_name = $requestData['eventData']['customer']['name'];
+        //     $payment->payer_address = $requestData['eventData']['customer']['email'];
+        //     $payment->save();
+        //     $ticket_agent = TicketAgent::where('user_id', $payment->user_id)->first();
+        //         $amount = $requestData['eventData']['amountPaid'];
+        //     if (!$payment->is_credited) {
+        //         $ticket_agent->increment('wallet_balance', $amount);
+        //         $payment->is_credited = true;
+        //         $payment->save();
+        //     }
 
-        }
-                return response()->json([], 200);
-            }
+        //}
+            //}
 
         }
 
