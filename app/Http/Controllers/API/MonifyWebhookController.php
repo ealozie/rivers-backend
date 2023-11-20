@@ -34,6 +34,12 @@ class MonifyWebhookController extends Controller
         try {
         if ($signature) {
             $computed_signature = hash_hmac('sha512', $requestDataContent, $secret_key);
+            $logFile = fopen(storage_path('logs/monipoint_payment_webhook.log'), 'a');
+        fwrite($logFile, $computed_signature . "\n");
+        fclose($logFile);
+        $logFile1 = fopen(storage_path('logs/monipoint_payment_webhook.log'), 'a');
+        fwrite($logFile1, $signature . "\n");
+        fclose($logFile1);
             $requestData = json_decode($requestDataContent, true);
             //$requestData = $requestDataContent;
         //     $logFile = fopen(storage_path('logs/monipoint_payment_webhook.log'), 'a');
