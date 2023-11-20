@@ -32,6 +32,7 @@ use App\Http\Controllers\API\LogoutController;
 use App\Http\Controllers\API\LogoutTokenValidationController;
 use App\Http\Controllers\API\MaritalStatusController;
 use App\Http\Controllers\API\MarketNameController;
+use App\Http\Controllers\API\MonifyWebhookController;
 use App\Http\Controllers\API\NationalityController;
 use App\Http\Controllers\API\OccupationController;
 use App\Http\Controllers\API\PaymentController;
@@ -191,5 +192,10 @@ Route::prefix('v1')->group(function () {
     Route::post('liveness-results', [AWSImageRecognitionController::class, 'liveness_results'])->middleware('auth:sanctum');
     Route::post('user-identity-confirmation', [UserConfirmationController::class, 'initial_user_identity_confirmation']);
     Route::post('user-identity-token-confirmation', [UserConfirmationController::class, 'user_identity_token_confirmation']);
+    /*Monify webhook begins*/
+    Route::post('/monify/transaction-completion', [MonifyWebhookController::class, 'transaction_completion']);
+    Route::post('/monify/refund-completion', [MonifyWebhookController::class, 'refund_completion']);
+    Route::post('/monify/disbursement', [MonifyWebhookController::class, 'disbursement']);
+    Route::post('/monify/transaction-completed', [MonifyWebhookController::class, 'settlement']);
     //Route::apiResource('users', UserController::class);
 });

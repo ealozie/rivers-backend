@@ -8,6 +8,7 @@ use App\Http\Requests\ShopUpdateRequest;
 use App\Http\Resources\ShopResource;
 use App\Models\Shop;
 use App\Models\User;
+use Illuminate\Http\Request;
 
 /**
  * @tags Shop Service
