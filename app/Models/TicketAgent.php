@@ -16,6 +16,8 @@ class TicketAgent extends Model
         'wallet_balance',
         'agent_status',
         'discount',
+        'can_fund_wallet',
+        'can_transfer_wallet_fund'
     ];
 
 

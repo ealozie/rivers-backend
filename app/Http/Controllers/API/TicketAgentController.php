@@ -37,6 +37,7 @@ class TicketAgentController extends Controller
             'discount' => 'required',
             'agent_status' => 'required',
             'can_transfer_wallet_fund' => 'required',
+            'can_fund_wallet' => 'required',
             'agent_ticket_categories' => 'required|array|min:1',
         ]);
         $agent = TicketAgent::where('user_id', $validatedData['user_id'])->first();
