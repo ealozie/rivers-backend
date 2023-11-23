@@ -16,6 +16,8 @@ class TicketEnforcementResource extends JsonResource
     {
         return [
             'plate_number' => $this->plate_number,
+            'phone_number' => $this->phone_number,
+            'enforcement_source' => $this->enforcement_source,
             'ticket_category' => $this->ticket_category->category_name ?? '',
             'agent' => $this->ticket_agent->user->name ?? '',
             'longitude' => $this->longitude,
