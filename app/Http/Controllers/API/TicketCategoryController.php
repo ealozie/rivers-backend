@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\TicketCategoryStoreRequest;
+use App\Http\Requests\TicketCategoryUpdateRequest;
 use App\Http\Resources\TicketCategoryResource;
 use App\Models\TicketCategory;
 use App\Models\TicketVending;
@@ -60,7 +61,7 @@ class TicketCategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(TicketCategoryUpdateRequest $request, string $id)
     {
         $ticket_category = TicketCategory::findOrFail($id);
         $requestData = $request->validated();
