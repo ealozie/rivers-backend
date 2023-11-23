@@ -98,7 +98,7 @@ class PaymentController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Payments retrieved successfully.',
-            'total_number_of_records' => $total_property,
+            'total_number_of_records' => (int) $total_property,
             'data' => PaymentResource::collection($property)
         ]);
     }
