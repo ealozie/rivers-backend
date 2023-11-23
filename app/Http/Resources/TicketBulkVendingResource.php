@@ -16,17 +16,32 @@ class TicketBulkVendingResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            // 'plate_number' => $this->plate_number,
+            // 'ticket_category' => $this->ticket_category->category_name,
+            // 'ticket_amount' => number_format($this->ticket_amount, 2),
+            // 'discount' => $this->agent_discount . '%',
+            // 'amount' => number_format($this->amount, 2),
+            // 'number_of_tickets' => $this->total_tickets,
+            // 'ticket_status' => $this->status,
+            // 'expire_at' => date('h:ia', strtotime($this->expired_at)),
+            // 'expire_at_time' => Carbon::parse($this->expired_at)->diffForHumans(),
+            // 'created_at' => (string) $this->created_at,
+            // 'time_created' => $this->created_at->diffForHumans(),
+
+            'id' => $this->id,
             'plate_number' => $this->plate_number,
-            'ticket_category' => $this->ticket_category->category_name,
+            'ticket_category' => $this->ticket_category->category_name ?? '',
             'ticket_amount' => number_format($this->ticket_amount, 2),
-            'discount' => $this->agent_discount . '%',
             'amount' => number_format($this->amount, 2),
-            'number_of_tickets' => $this->total_tickets,
-            'ticket_status' => $this->status,
+            'agent_discount' => $this->agent_discount . '%',
+            'agent' => $this->user->name ?? '',
+            'status' => $this->status,
+            'total_tickets' => $this->total_tickets,
+            'remaining_tickets' => $this->remaining_tickets,
+            'ticket_status' => $this->ticket_status,
             'expire_at' => date('h:ia', strtotime($this->expired_at)),
             'expire_at_time' => Carbon::parse($this->expired_at)->diffForHumans(),
             'created_at' => (string) $this->created_at,
-            'time_created' => $this->created_at->diffForHumans(),
         ];
     }
 }

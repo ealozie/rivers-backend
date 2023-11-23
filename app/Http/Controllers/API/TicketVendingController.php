@@ -13,6 +13,7 @@ use App\Models\TicketCategory;
 use App\Models\TicketVending;
 use App\Models\User;
 use App\Traits\SendSMS;
+use Axiom\Rules\LocationCoordinates;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -74,13 +75,16 @@ class TicketVendingController extends Controller
      * Store a resource.
      *
      * Authorization header is required to be set to Bearer `<token>` <br> And only ticket agent can vend ticket.
+     * 
+     * `geo_location_coordinates` is optional but if provided. The given value should be a comma-separated set of latitude and longitude coordinates. Example `4.6604761,7.9411649`.
      */
     public function store(Request $request)
     {
         $requestData = $request->validate([
             'plate_number' => 'required|string',
             'phone_number' => 'required|string',
-            'ticket_category_id' => 'required|string'
+            'ticket_category_id' => 'required|string',
+            'geo_location_coordinates' => ['sometimes', new LocationCoordinates],
         ]);
         $phone_number = $requestData['phone_number'];
         $ticket_category_id = $requestData['ticket_category_id'];
@@ -154,6 +158,12 @@ class TicketVendingController extends Controller
             $ticket_vending->ticket_agent_id = $ticket_agent->id;
             $ticket_vending->user_id = $user->id;
             $ticket_vending->phone_number = $phone_number;
+            if (isset($request->geo_location_coordinates)) {
+                $coodinates = explode(",",$request->geo_location_coordinates);
+                $ticket_vending->latitude = $coodinates[0];
+                $ticket_vending->longitude = $coodinates[1];
+            }
+            
             $ticket_vending->expired_at = $ticket_category->expired_at;
             $ticket_vending->ticket_status = 'active';
             $ticket_vending->ticket_reference_number = date('isYd');
@@ -381,7 +391,7 @@ class TicketVendingController extends Controller
     public function search(Request $request)
     {
         $per_page = 20;
-        
+
         if ($request->has('plate_number')) {
             $query_request = $request->get('plate_number');
             $ticket_response = TicketVending::where('plate_number', $query_request)->paginate($per_page);
@@ -407,7 +417,7 @@ class TicketVendingController extends Controller
             $date_to = $request->get('date_to');
             $ticket_response = TicketVending::whereBetween('created_at', [$date_from, $date_to])->paginate($per_page);
         }
-        if (!isset($ticket_response)){
+        if (!isset($ticket_response)) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Invalid request.'

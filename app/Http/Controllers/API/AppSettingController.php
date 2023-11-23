@@ -86,6 +86,13 @@ class AppSettingController extends Controller
             "VANSO_SENDER_ID" => 'required|string',
             "VANSO_USERNAME" => 'required|string',
             "VANSO_PASSWORD" => 'required|string',
+            "MONIFY_API_KEY" => 'required|string',
+            "MONIFY_SECRET_KEY" => 'required|string',
+            "MONIFY_BASE_URL" => 'required|string',
+            "MONIFY_WALLET_ACCOUNT" => 'required|string',
+            "MONIFY_CONTRACT_CODE" => 'required|string',
+            "MONIFY_MODE" => 'required|string|in:TEST,LIVE',
+            "ALLOW_LOCATION_TRACKING" => 'required|boolean'
         ]);
         foreach ($validatedData as $key => $value) {
             $app_setting = AppSetting::where('key', $key)->first();

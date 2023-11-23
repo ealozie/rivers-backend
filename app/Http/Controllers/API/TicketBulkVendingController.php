@@ -63,10 +63,11 @@ class TicketBulkVendingController extends Controller
             ],
             ], 200);
         }
+       // return $ticket_bulk_vending;
         return response()->json([
             'status' => 'success',
             'data' => [
-                'ticket_bulk_vending_data' => new TicketBulkVendingCollection($ticket_bulk_vending),
+                'ticket_bulk_vending_data' => TicketBulkVendingResource::collection($ticket_bulk_vending),
                 'total_number_of_records' => (int) $total_number_of_records
             ]
         ]);
@@ -228,22 +229,6 @@ class TicketBulkVendingController extends Controller
             'message' => 'Ticket vending retrieved successfully.',
             'data' => new TicketBulkVendingResource($ticket_bulk_vending),
         ], 200);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 
     /**

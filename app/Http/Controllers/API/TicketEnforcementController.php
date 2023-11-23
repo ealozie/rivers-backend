@@ -8,6 +8,7 @@ use App\Http\Resources\TicketVendingResource;
 use App\Models\TicketAgent;
 use App\Models\TicketEnforcement;
 use App\Models\TicketVending;
+use Axiom\Rules\LocationCoordinates;
 use Illuminate\Http\Request;
 
 /**
@@ -98,12 +99,17 @@ class TicketEnforcementController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     * 
+     * `geo_location_coordinates` is optional but if provided. The given value should be a comma-separated set of latitude and longitude coordinates. Example `4.6604761,7.9411649`.
      */
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'plate_number' => 'required|string',
-            'ticket_category_id' => 'sometimes|integer'
+            'plate_number' => 'sometimes|string',
+            'phone_number' => 'sometimes|string',
+            'enforcement_source' => 'required|in:plate_number,phone_number',
+            'ticket_category_id' => 'sometimes|integer',
+            'geo_location_coordinates' => ['sometimes', new LocationCoordinates],
         ]);
         $user = $request->user();
         $ticket_agent = TicketAgent::where('user_id', $user->id)->first();
@@ -114,18 +120,40 @@ class TicketEnforcementController extends Controller
             ], 403);
         }
         //Get records from TicketVending by plate number
-        $ticket_vending = TicketVending::ofToday()->where('plate_number', $validatedData['plate_number'])->latest()->get();
-        if ($request->has('ticket_category_id')) {
+        if ($request->enforcement_source == 'plate_number' && isset($validatedData['plate_number'])) {
+            $ticket_vending = TicketVending::ofToday()->where('plate_number', $validatedData['plate_number'])->latest()->get();
+        } else if ($request->enforcement_source == 'phone_number' && isset($validatedData['phone_number'])) {
+            $ticket_vending = TicketVending::ofToday()->where('phone_number', $validatedData['phone_number'])->latest()->get();
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Invalid request',
+            ], 500);
+        }
+
+        if ($request->has('ticket_category_id') && $request->has('phone_number')) {
+            $ticket_vending = TicketVending::ofToday()->where('phone_number', $validatedData['phone_number'])->where('ticket_category_id', $validatedData['ticket_category_id'])->latest()->get();
+        }
+
+        if ($request->has('ticket_category_id') && $request->has('plate_number')) {
             $ticket_vending = TicketVending::ofToday()->where('plate_number', $validatedData['plate_number'])->where('ticket_category_id', $validatedData['ticket_category_id'])->latest()->get();
         }
+
         $status = 'failed';
         if (count($ticket_vending)) {
             $status = 'success';
         }
         try {
             $ticket_enforcement = new TicketEnforcement();
-            $ticket_enforcement->plate_number = $validatedData['plate_number'];
+            $ticket_enforcement->plate_number = $request->plate_number;
+            $ticket_enforcement->phone_number = $request->phone_number;
             $ticket_enforcement->ticket_agent_id = $ticket_agent->id;
+            $ticket_enforcement->enforcement_source = $request->enforcement_source;
+            if (isset($request->geo_location_coordinates)) {
+                $coodinates = explode(",",$request->geo_location_coordinates);
+                $ticket_enforcement->latitude = $coodinates[0];
+                $ticket_enforcement->longitude = $coodinates[1];
+            }
             $ticket_enforcement->ticket_category_id = $validatedData['ticket_category_id'] ?? 0;
             $ticket_enforcement->response = count($ticket_vending) ? json_encode(TicketVendingResource::collection($ticket_vending)) : json_encode($ticket_vending);
             $ticket_enforcement->status = $status;
@@ -137,7 +165,15 @@ class TicketEnforcementController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
-        $total_enforcements_today = TicketEnforcement::ofToday()->where('plate_number', $validatedData['plate_number'])->count();
+
+        if ($request->has('plate_number')) {
+            $total_enforcements_today = TicketEnforcement::ofToday()->where('plate_number', $validatedData['plate_number'])->count();
+        }
+
+        if ($request->has('phone_number')) {
+            $total_enforcements_today = TicketEnforcement::ofToday()->where('phone_number', $validatedData['phone_number'])->count();
+        }
+
         if ($status == 'failed') {
             return response()->json([
                 'status' => 'error',

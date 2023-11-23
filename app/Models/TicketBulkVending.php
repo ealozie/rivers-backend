@@ -13,4 +13,9 @@ class TicketBulkVending extends Model
     {
         return $this->belongsTo(TicketCategory::class, 'ticket_category_id');
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

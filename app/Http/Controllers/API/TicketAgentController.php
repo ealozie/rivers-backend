@@ -46,7 +46,14 @@ class TicketAgentController extends Controller
         }
         $validatedData['added_by'] = $request->user()->id;
         $validatedData['wallet_balance'] = 0;
-        $agent = TicketAgent::create($validatedData);
+        try {
+            $agent = TicketAgent::create($validatedData);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
         $user = User::find($validatedData['user_id']);
         $user->assignRole('agent');
         foreach ($validatedData['agent_ticket_categories'] as $category) {

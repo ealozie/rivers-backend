@@ -56,6 +56,7 @@ use App\Http\Controllers\API\TicketAgentTypeController;
 use App\Http\Controllers\API\TicketAgentWalletController;
 use App\Http\Controllers\API\TicketBulkVendingController;
 use App\Http\Controllers\API\TicketCategoryController;
+use App\Http\Controllers\API\TicketEnforcementComplianceController;
 use App\Http\Controllers\API\TicketEnforcementController;
 use App\Http\Controllers\API\TicketVendingController;
 use App\Http\Controllers\API\TitleController;
@@ -182,7 +183,8 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('ticket-enforcements', TicketEnforcementController::class)->middleware('auth:sanctum');
     Route::get('ticket-enforcements-search', [TicketEnforcementController::class, 'search'])->middleware('auth:sanctum');
     Route::get('ticket-agent-enforcements/{agent_id}', [TicketEnforcementController::class, 'ticket_agent_enforcements'])->middleware('auth:sanctum');
-    Route::get('ticket-categories', TicketCategoryController::class);
+    Route::apiResource('ticket-categories', TicketCategoryController::class);
+    Route::get('ticket-enforcement-compliance', TicketEnforcementComplianceController::class);
     Route::post('vehicle-enumeration-verifications', VehicleEnumerationVerificationController::class)->middleware('auth:sanctum');
     Route::get('ticket-agent-categories', TicketAgentCategoryController::class)->middleware('auth:sanctum');
     Route::get('ticket-agent-types', TicketAgentTypeController::class)->middleware('auth:sanctum');

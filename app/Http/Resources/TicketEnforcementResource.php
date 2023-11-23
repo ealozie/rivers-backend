@@ -18,6 +18,8 @@ class TicketEnforcementResource extends JsonResource
             'plate_number' => $this->plate_number,
             'ticket_category' => $this->ticket_category->category_name ?? '',
             'agent' => $this->ticket_agent->user->name ?? '',
+            'longitude' => $this->longitude,
+            'latitude' => $this->latitude,
             'response' => json_decode($this->response),
             'created_at' => (string) $this->created_at,
             'status' => $this->status
