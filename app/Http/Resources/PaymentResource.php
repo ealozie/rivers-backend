@@ -20,6 +20,8 @@ class PaymentResource extends JsonResource
             'transaction_id' => $this->transaction_id,
             'reference_number' => $this->reference_number,
             'transaction_date' => $this->transaction_date,
+            'transaction_status' => $this->transaction_status,
+            'transaction_response' => $this->transaction_response,
             'payer_name' => $this->payer_name,
             'merchant_reference' => $this->merchant_reference,
             'retrieval_reference_number' => $this->retrieval_reference_number,
