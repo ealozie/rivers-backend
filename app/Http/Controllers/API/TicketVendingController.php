@@ -153,6 +153,7 @@ class TicketVendingController extends Controller
             $ticket_vending->plate_number = $plate_number;
             $ticket_vending->ticket_category_id = $ticket_category_id;
             $ticket_vending->amount = $ticket_price;
+            $ticket_vending->discounted_price = $ticket_price;
             $ticket_vending->ticket_amount = $ticket_actual_price;
             $ticket_vending->agent_discount = $ticket_agent->discount;
             $ticket_vending->ticket_agent_id = $ticket_agent->id;
