@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\AppSetting;
 use App\Models\Payment;
 use App\Models\TicketAgent;
+use App\Models\TicketAgentWallet;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -54,6 +55,18 @@ class MonifyWebhookController extends Controller
                 $ticket_agent->increment('wallet_balance', $amount);
                 $payment->is_credited = true;
                 $payment->save();
+
+                // Add wallet information
+                $ticket_agent_wallet = new TicketAgentWallet();
+            $ticket_agent_wallet->ticket_agent_id = $ticket_agent->id;
+            $ticket_agent_wallet->user_id = $payment->id;
+            $ticket_agent_wallet->amount = $amount;
+            $ticket_agent_wallet->transaction_type = 'credit';
+            $ticket_agent_wallet->transaction_status = 'active';
+            $ticket_agent_wallet->added_by = $payment->id;
+            $ticket_agent_wallet->transaction_reference_number = $payment->transaction_id;
+            $ticket_agent_wallet->save();
+                //End wallet
             }
         }
         return response()->json();
