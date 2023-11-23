@@ -25,7 +25,7 @@ class TicketCategoryUpdateRequest extends FormRequest
             'category_name' => 'required|string',
             'amount' => 'required|numeric',
             'category_status' => 'required|string|in:active,inactive',
-            'expired_at' => 'required|date|date_format:H:i:s',
+            'expired_at' => 'required|date_format:H:i:s',
             'allow_multiple_ticket_purchase' => 'required|boolean',
         ];
     }
