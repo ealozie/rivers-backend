@@ -53,7 +53,7 @@ class AppSettingSeeder extends Seeder
             "ALLOW_LOCATION_TRACKING" => 'true',
         ];
 
-        AppSetting::truncate();
+        //AppSetting::truncate();
         foreach ($default_settings as $key => $value) {
             AppSetting::create([
                 'key' => $key,

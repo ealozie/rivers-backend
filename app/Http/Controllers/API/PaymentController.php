@@ -65,17 +65,29 @@ class PaymentController extends Controller
 
     /**
      * Get Payments by User ID or User Unique ID.
+     *
+     * Additional Query parameter are `limit` and `offset`. <br>
      */
-    public function show_by_user_id(string $user_id_or_unique_id)
+    public function show_by_user_id(Request $request, string $user_id_or_unique_id)
     {
-        $user = User::where('id', $user_id_or_unique_id)->orWhere('unique_id', $user_id_or_unique_id)->first();
+        $limit = 10;
+        $offset = 0;
+
+        if ($request->has('limit')) {
+            $limit = $request->get('limit');
+        }
+        if ($request->has('offset')) {
+            $offset = $request->get('offset');
+        }
+
+        $user = User::where('unique_id', $user_id_or_unique_id)->first();
         if (!$user) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'User ID not found.',
             ], 404);
         }
-        $property = Payment::where('user_id', $user->id)->get();
+        $property = Payment::where('user_id', $user->id)->latest()->offset($offset)->limit($limit)->get();;
         if (!count($property)) {
             return response()->json([
                 'status' => 'error',
