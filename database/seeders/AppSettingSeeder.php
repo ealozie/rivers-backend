@@ -50,7 +50,7 @@ class AppSettingSeeder extends Seeder
             "MONIFY_WALLET_ACCOUNT" => '2789334947',
             "MONIFY_CONTRACT_CODE" => '3294886386',
             "MONIFY_MODE" => 'TEST',
-            "ALLOW_LOCATION_TRACKING" => true
+            "ALLOW_LOCATION_TRACKING" => 'true',
         ];
 
         AppSetting::truncate();
