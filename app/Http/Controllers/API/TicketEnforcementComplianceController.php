@@ -38,13 +38,13 @@ class TicketEnforcementComplianceController extends Controller
         //return $ticket_enforcements;
         foreach ($ticket_enforcements as $enforcement) {
             if ($enforcement->enforcement_source == 'plate_number') {
-                $ticket_vending = TicketVending::where('plate_number', $enforcement->plate_number)->whereDate('created_at', $ticket_date)->first();
+                $ticket_vending = TicketVending::where('plate_number', $enforcement->plate_number)->whereDate('created_at', $ticket_date)->where('ticket_category_id', $enforcement->ticket_category_id)->first();
                 if (!$ticket_vending) {
                     $ticket_ids_that_does_not_exist[] = $enforcement->id;
                 }
             }
             if ($enforcement->enforcement_source == 'phone_number') {
-                $ticket_vending = TicketVending::where('phone_number', $enforcement->phone_number)->whereDate('created_at', $ticket_date)->first();
+                $ticket_vending = TicketVending::where('phone_number', $enforcement->phone_number)->whereDate('created_at', $ticket_date)->where('ticket_category_id', $enforcement->ticket_category_id)->first();
                 if (!$ticket_vending) {
                     $ticket_ids_that_does_not_exist[] = $enforcement->id;
                 }
