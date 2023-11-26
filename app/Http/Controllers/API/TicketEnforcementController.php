@@ -131,13 +131,13 @@ class TicketEnforcementController extends Controller
             ], 500);
         }
 
-        if ($request->has('ticket_category_id') && $request->has('phone_number')) {
-            $ticket_vending = TicketVending::ofToday()->where('phone_number', $validatedData['phone_number'])->where('ticket_category_id', $validatedData['ticket_category_id'])->latest()->get();
-        }
+        // if ($request->has('ticket_category_id') && $request->has('phone_number')) {
+        //     $ticket_vending = TicketVending::ofToday()->where('phone_number', $validatedData['phone_number'])->where('ticket_category_id', $validatedData['ticket_category_id'])->latest()->get();
+        // }
 
-        if ($request->has('ticket_category_id') && $request->has('plate_number')) {
-            $ticket_vending = TicketVending::ofToday()->where('plate_number', $validatedData['plate_number'])->where('ticket_category_id', $validatedData['ticket_category_id'])->latest()->get();
-        }
+        // if ($request->has('ticket_category_id') && $request->has('plate_number')) {
+        //     $ticket_vending = TicketVending::ofToday()->where('plate_number', $validatedData['plate_number'])->where('ticket_category_id', $validatedData['ticket_category_id'])->latest()->get();
+        // }
 
         $status = 'failed';
         if (count($ticket_vending)) {
@@ -154,7 +154,8 @@ class TicketEnforcementController extends Controller
                 $ticket_enforcement->latitude = $coodinates[0];
                 $ticket_enforcement->longitude = $coodinates[1];
             }
-            $ticket_enforcement->ticket_category_id = $validatedData['ticket_category_id'] ?? 0;
+            //$ticket_enforcement->ticket_category_id = $validatedData['ticket_category_id'] ?? 0;
+            $ticket_enforcement->ticket_category_id = 0;
             $ticket_enforcement->response = count($ticket_vending) ? json_encode(TicketVendingResource::collection($ticket_vending)) : json_encode($ticket_vending);
             $ticket_enforcement->status = $status;
             $ticket_enforcement->save();

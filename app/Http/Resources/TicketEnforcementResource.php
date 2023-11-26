@@ -24,7 +24,7 @@ class TicketEnforcementResource extends JsonResource
             'latitude' => $this->latitude,
             'response' => json_decode($this->response),
             'created_at' => (string) $this->created_at,
-            'status' => $this->status
+            'status' => $this->status,
         ];
     }
 }

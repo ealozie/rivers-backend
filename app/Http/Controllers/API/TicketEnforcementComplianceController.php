@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\TicketEnforcementComplianceResource;
 use App\Http\Resources\TicketEnforcementResource;
+use App\Http\Resources\TicketVendingResource;
 use App\Models\TicketEnforcement;
 use App\Models\TicketVending;
 use Illuminate\Http\Request;
@@ -49,12 +51,14 @@ class TicketEnforcementComplianceController extends Controller
                 if ($ticket_vending) {
                     $ticket_ids_that_does_not_exist[] = [
                         'id' => $enforcement->id,
-                        'status' => 'YES'
+                        'status' => 'YES',
+                        'enforcement_source' => 'plate_number',
                     ];
                 } else {
                     $ticket_ids_that_does_not_exist[] = [
                         'id' => $enforcement->id,
-                        'status' => 'NO'
+                        'status' => 'NO',
+                        'enforcement_source' => 'plate_number',
                     ];
                 }
             }
@@ -63,28 +67,40 @@ class TicketEnforcementComplianceController extends Controller
                 if ($ticket_vending) {
                     $ticket_ids_that_does_not_exist[] = [
                         'id' => $enforcement->id,
-                        'status' => 'YES'
+                        'status' => 'YES',
+                        'enforcement_source' => 'phone_number',
                     ];
                 } else {
                     $ticket_ids_that_does_not_exist[] = [
                         'id' => $enforcement->id,
-                        'status' => 'NO'
+                        'status' => 'NO',
+                        'enforcement_source' => 'phone_number',
                     ];
                 }
             }
         }
         //return $ticket_ids_that_does_not_exist;
         $enforcement_data = [];
-        
         if (count($ticket_ids_that_does_not_exist)) {
             foreach ($ticket_ids_that_does_not_exist as $item) {
-                return $item;
-                $enforcement = TicketEnforcement::where('id', $item['id'])->get();
+                //return $item;
+                $enforcement = TicketEnforcement::where('id', $item['id'])->first();
+                //return $enforcement;
+                $enforcement->vending_status = $item['status'];
+                if ($enforcement->enforcement_source == 'phone_number') {
+                    $ticket_vendings = TicketVending::where('phone_number', $enforcement->phone_number)->whereDate('created_at', $ticket_date)->get();
+                }
+                if ($enforcement->enforcement_source == 'plate_number') {
+                    $ticket_vendings = TicketVending::where('plate_number', $enforcement->plate_number)->whereDate('created_at', $ticket_date)->get();
+                }
+                $enforcement->ticket_vendings = TicketVendingResource::collection($ticket_vendings);
+                $enforcement_data[] = $enforcement;
             }
-            $response_data = TicketEnforcementResource::collection($enforcement_data);
+            $response_data = TicketEnforcementComplianceResource::collection($enforcement_data);
         } else {
            $response_data = []; 
         }
+        //return $response_data;
         return response()->json([
             'status' => 'success',
             'message' => 'Ticket enforcement compliance fetched successfully.',
