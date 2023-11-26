@@ -51,8 +51,9 @@ class AppSettingSeeder extends Seeder
             // "MONIFY_CONTRACT_CODE" => '3294886386',
             // "MONIFY_MODE" => 'TEST',
             // "ALLOW_LOCATION_TRACKING" => 'true',
-            "ALLOW_LOCATION_TRACKING_VENDING" => 'true',
-            "ALLOW_LOCATION_TRACKING_VALIDATE" => 'true',
+            // "ALLOW_LOCATION_TRACKING_VENDING" => 'true',
+            // "ALLOW_LOCATION_TRACKING_VALIDATE" => 'true',
+            "SHOW_ANNOUCEMENT" => 'true',
         ];
 
         //AppSetting::truncate();
