@@ -18,6 +18,7 @@ class TicketVendingResource extends JsonResource
         return [
             'id' => $this->id,
             'plate_number' => $this->plate_number,
+            'owner_name' => $this->owner_name,
             'ticket_category' => $this->ticket_category->category_name ?? '',
             'amount' => number_format($this->ticket_amount, 2),
             'discounted_amount' => number_format($this->amount, 2),

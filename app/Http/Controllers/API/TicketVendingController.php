@@ -84,6 +84,7 @@ class TicketVendingController extends Controller
             'plate_number' => 'required|string',
             'phone_number' => 'required|string',
             'ticket_category_id' => 'required|string',
+            'owner_name' => 'required|string',
             'geo_location_coordinates' => ['sometimes', new LocationCoordinates],
         ]);
         $phone_number = $requestData['phone_number'];
@@ -154,6 +155,7 @@ class TicketVendingController extends Controller
             $ticket_vending->ticket_category_id = $ticket_category_id;
             $ticket_vending->amount = $ticket_price;
             $ticket_vending->discounted_price = $ticket_price;
+            $ticket_vending->owner_name = $requestData['owner_name'];
             $ticket_vending->ticket_amount = $ticket_actual_price;
             $ticket_vending->agent_discount = $ticket_agent->discount;
             $ticket_vending->ticket_agent_id = $ticket_agent->id;
