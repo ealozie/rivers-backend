@@ -92,8 +92,10 @@ class AppSettingController extends Controller
             "MONIFY_WALLET_ACCOUNT" => 'required|string',
             "MONIFY_CONTRACT_CODE" => 'required|string',
             "MONIFY_MODE" => 'required|string|in:TEST,LIVE',
-            "ALLOW_LOCATION_TRACKING" => 'required|boolean'
-        ]);
+            "ALLOW_LOCATION_TRACKING_VENDING" => 'required|string',
+            "ALLOW_LOCATION_TRACKING_VALIDATE" => 'required|string',
+            "SHOW_ANNOUCEMENT" => 'required|string',
+            ]);
         foreach ($validatedData as $key => $value) {
             $app_setting = AppSetting::where('key', $key)->first();
             if ($app_setting) {
