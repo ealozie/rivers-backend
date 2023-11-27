@@ -89,7 +89,8 @@ class TicketBulkVendingController extends Controller
             'plate_number' => 'required|string',
             'phone_number' => 'required|string',
             'ticket_category_id' => 'sometimes|required|integer',
-            'number_of_tickets' => 'required|integer|min:1'
+            'number_of_tickets' => 'required|integer|min:1',
+            'owner_name' => 'required|string',
         ]);
         $plate_number = strtoupper($validatedData['plate_number']);
         $phone_number = $validatedData['phone_number'];
@@ -168,6 +169,7 @@ class TicketBulkVendingController extends Controller
             $ticket_bulk_vending->ticket_amount = $ticket_actual_price;
             $ticket_bulk_vending->agent_discount = $ticket_agent->discount;
             $ticket_bulk_vending->ticket_agent_id = $ticket_agent->id;
+            $ticket_bulk_vending->owner_name = $validatedData['owner_name'];
             $ticket_bulk_vending->user_id = $user->id;
             $ticket_bulk_vending->remaining_tickets = $number_of_tickets;
             $ticket_bulk_vending->total_tickets = $number_of_tickets;

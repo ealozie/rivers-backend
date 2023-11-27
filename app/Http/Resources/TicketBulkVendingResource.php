@@ -36,6 +36,7 @@ class TicketBulkVendingResource extends JsonResource
             'agent_discount' => $this->agent_discount . '%',
             'agent' => $this->user->name ?? '',
             'status' => $this->status,
+            'owner_name' => $this->owner_name,
             'total_tickets' => $this->total_tickets,
             'remaining_tickets' => $this->remaining_tickets,
             'ticket_status' => $this->ticket_status,
