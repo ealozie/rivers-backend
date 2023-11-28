@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Http\Controllers\CheckForExpiredTickets;
+use App\Http\Controllers\TicketBulkVendingProcess;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -15,6 +16,7 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         $schedule->call(new CheckForExpiredTickets)->everyTenSeconds();
+        $schedule->call(new TicketBulkVendingProcess)->everyTenSeconds();
     }
 
     /**

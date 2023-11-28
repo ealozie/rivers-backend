@@ -164,6 +164,7 @@ class TicketBulkVendingController extends Controller
             }
             $ticket_bulk_vending = new TicketBulkVending();
             $ticket_bulk_vending->plate_number = $plate_number;
+            $ticket_bulk_vending->phone_number = $phone_number;
             $ticket_bulk_vending->ticket_category_id = $response_data['category_id'];
             $ticket_bulk_vending->amount = $ticket_price;
             $ticket_bulk_vending->ticket_amount = $ticket_actual_price;
@@ -203,11 +204,11 @@ class TicketBulkVendingController extends Controller
                     'ticket' => new TicketBulkVendingResource($ticket_bulk_vending),
                 ]
             ], 200);
-        } catch (\Throwable $th) {
+        } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'An error occurred while processing your request. Please try again.',
-                'data' => $th->getMessage()
+                'data' => $e->getMessage()
             ], 500);
         }
     }
@@ -281,7 +282,7 @@ class TicketBulkVendingController extends Controller
     /**
      * Advanced Search in resource.
      *
-     * Query paramters `plate_number` or `ticket_category_id`.<br>
+     * Query paramters `plate_number`, `phone_number` or `ticket_category_id`.<br>
      * Additonal Query paramters `ticket_agent_id`, `date_from and date_to`
      */
     public function search(Request $request)
@@ -291,20 +292,25 @@ class TicketBulkVendingController extends Controller
         if ($request->has('plate_number')) {
             $query_request = $request->get('plate_number');
 
-            $ticket_response = TicketBulkVending::where('plate_number', $query_request)->paginate($per_page);
+            $ticket_response = TicketBulkVending::where('plate_number', $query_request)->latest()->paginate($per_page);
+        }
+        if ($request->has('phone_number')) {
+            $query_request = $request->get('phone_number');
+
+            $ticket_response = TicketBulkVending::where('phone_number', $query_request)->latest()->paginate($per_page);
         }
         if ($request->has('ticket_category_id')) {
             $query_request = $request->get('ticket_category_id');
-            $ticket_response = TicketBulkVending::where('ticket_category_id', $query_request)->paginate($per_page);
+            $ticket_response = TicketBulkVending::where('ticket_category_id', $query_request)->latest()->paginate($per_page);
         }
         if ($request->has('ticket_agent_id')) {
             $query_request = $request->get('ticket_agent_id');
-            $ticket_response = TicketBulkVending::where('ticket_agent_id', $query_request)->paginate($per_page);
+            $ticket_response = TicketBulkVending::where('ticket_agent_id', $query_request)->latest()->paginate($per_page);
         }
         if ($request->has('date_from') && $request->has('date_to')) {
             $date_from = $request->get('date_from');
             $date_to = $request->get('date_to');
-            $ticket_response = TicketBulkVending::whereBetween('created_at', [$date_from, $date_to])->paginate($per_page);
+            $ticket_response = TicketBulkVending::whereBetween('created_at', [$date_from, $date_to])->latest()->paginate($per_page);
         }
         if (!isset($ticket_response)){
             return response()->json([
