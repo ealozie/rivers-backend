@@ -53,7 +53,7 @@ class TicketAgentController extends Controller
         }
         $validatedData['added_by'] = $request->user()->id;
         $validatedData['wallet_balance'] = 0;
-        $validatedData['agent_status'] = 'pending';
+        $validatedData['agent_status'] = 'inactive';
         if (isset($validatedData['super_agent_id'])) {
             $user = User::find($validatedData['super_agent_id']);
             if (!$user->hasRole('super_agent')) {

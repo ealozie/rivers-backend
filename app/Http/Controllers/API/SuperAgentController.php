@@ -13,6 +13,9 @@ use Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
+/**
+ * @tags Super Agents Service
+ */
 class SuperAgentController extends Controller
 {
     /**
@@ -31,53 +34,19 @@ class SuperAgentController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'first_name' => 'required',
-            'surname' => 'required',
-            'email' => 'required|email|unique:users,email',
-            'phone_number' => 'required|unique:users,phone_number',
+            'user_id' => 'required|exists:users,id',
+            'agent_type' => 'required',
             'discount' => 'required',
             'agent_ticket_categories' => 'required|array|min:1',
         ]);
-        $api_key = "j7uIbrpMCgLbmiMSHBDNu";
-        $email = $validatedData['email'];
-        $url = "https://apps.emaillistverify.com/api/verifyEmail?secret=" . $api_key . "&email=" . $email;
-        $response = Http::get($url);
-        if ($response->failed()) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Connection to email verification service failed',
-            ], 500);
-        }
-        if ($response->body() != 'ok') {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Invalid email address',
-                'data' => $response->body(),
-            ], 422);
-        }
+        
 
-        $user = new User();
-        $user->name = $validatedData['first_name'] . ' ' . $validatedData['surname'];
-        $user->email = $validatedData['email'];
-        $user->email_verified_at = now();
-        $user->phone_number_verified_at = now();
-        //Generate a random password
-        $password = 123456;
-        $user->phone_number = $validatedData['phone_number'];
-        $user->role = 'super_agent';
-        $user->status = 1;
-        $user->password = Hash::make($password);
-        $user->phone_number_verification_code =
-            mt_rand(111111, 999999);
-        $user_unique_id  = '9' . date('hi') . mt_rand(11111, 99999);
-        $user->unique_id = $user_unique_id;
-        $user->save();
+        $user = User::find($validatedData['user_id']);
         $user->assignRole('super_agent');
-
         $validatedData['added_by'] = $request->user()->id;
         $validatedData['user_id'] = $user->id;
         $validatedData['wallet_balance'] = 0;
-        $validatedData['agent_status'] = 'pending';
+        $validatedData['agent_status'] = 'inactive';
         $validatedData['can_transfer_wallet_fund'] = 1;
         $validatedData['can_fund_wallet'] = 1;
         $validatedData['agent_type'] = 'super_agent';
@@ -175,6 +144,48 @@ class SuperAgentController extends Controller
                 'message' => 'Ticket agent not found.'
             ], 404);
         }
+        
+    }
+
+    /**
+     * Restore to super agent or assign as super agent.
+     */
+    public function restore_super_agent(string $id)
+    {
+        $validatedData = $request->validate([
+            'discount' => 'somtimes|numeric',
+            'agent_ticket_categories' => 'sometimes|array|min:1',
+        ]);
+        $ticket_agent = TicketAgent::find($agent->id);
+        if ($ticket_agent) {
+            TicketAgentCategory::where('ticket_agent_id', $agent->id)
+                ->delete();
+            $user = User::find($agent->user_id);
+            $user->role = 'super_agent';
+            $user->save();
+            $user->roles()->detach();
+            $agent->discount = $validatedData['discount'];
+            $agent->agent_type = 'super_agent';
+            $agent->super_agent_id = null;
+            $agent->save();
+            $user->assignRole('super_agent');
+        } else {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Ticket agent not found.'
+            ], 200);
+        }
+
+        foreach ($validatedData['agent_ticket_categories'] as $category) {
+            $ticket_agent_category = new TicketAgentCategory();
+            $ticket_agent_category->ticket_agent_id = $agent->id;
+            $ticket_agent_category->ticket_category_id = $category;
+            $ticket_agent_category->discount = 0;
+            $ticket_agent_category->added_by = $request->user()->id;
+            $ticket_agent_category->status = 'active';
+            $ticket_agent_category->save();
+        }
+        return new TicketAgentListResource($ticket_agent);
         
     }
 }

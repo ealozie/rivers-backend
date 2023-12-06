@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Audit;
 use Illuminate\Http\Request;
 
+/**
+ * @tags Audit Trail Service
+ */
 class AuditTrailController extends Controller
 {
     /**
