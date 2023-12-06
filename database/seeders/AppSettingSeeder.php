@@ -53,7 +53,9 @@ class AppSettingSeeder extends Seeder
             // "ALLOW_LOCATION_TRACKING" => 'true',
             // "ALLOW_LOCATION_TRACKING_VENDING" => 'true',
             // "ALLOW_LOCATION_TRACKING_VALIDATE" => 'true',
-            "SHOW_ANNOUCEMENT" => 'true',
+            //"SHOW_ANNOUCEMENT" => 'true',
+            "ANNOUCEMENT_HEADING" => 'You are welcome to our ticketing application',
+            "ENABLE_SUPER_AGENT" => 'true',
         ];
 
         //AppSetting::truncate();

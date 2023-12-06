@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
+use App\Models\TicketAgent;
 use App\Models\User;
 use App\Traits\SendSMS;
 use Illuminate\Http\Request;
@@ -31,7 +32,18 @@ class LoginController extends Controller
             'password' => ['required'],
         ]);
         if (Auth::attempt($credentials)) {
+            //check if the user is an agent and is account is enabled.
             $user = Auth::user();
+            if (Auth::user()->hasRole('agent')) {
+                $ticket_agent = TicketAgent::where('user_id', $user->id)->first();
+                if ($ticket_agent->agent_status != 'active' ) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Account has been placed on hold.'
+                    ], 401);
+                }
+            }
+            
             $token = $user->createToken('igr_system_auth_token')->plainTextToken;
             $user->update([
                 'last_login_at' => now()

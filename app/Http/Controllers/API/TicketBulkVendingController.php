@@ -54,6 +54,14 @@ class TicketBulkVendingController extends Controller
             }
         }
 
+        if ($user->hasRole('super_agent')) {
+            $sub_agents = TicketAgent::where('super_agent_id', $request->user()->id)->pluck('user_id')->toArray();
+            $ticket_bulk_vending = TicketBulkVending::whereIn('user_id', $sub_agents)->latest()->paginate($per_page);
+            if ($request->has('query') && $request->get('query') == 'all') {
+                $ticket_bulk_vending = TicketBulkVending::whereIn('user_id', $sub_agents)->latest()->get();
+            }
+        }
+
         if (!count($ticket_bulk_vending)) {
             return response()->json([
                 'status' => 'success',
@@ -63,7 +71,6 @@ class TicketBulkVendingController extends Controller
             ],
             ], 200);
         }
-       // return $ticket_bulk_vending;
         return response()->json([
             'status' => 'success',
             'data' => [
@@ -71,11 +78,6 @@ class TicketBulkVendingController extends Controller
                 'total_number_of_records' => (int) $total_number_of_records
             ]
         ]);
-        // if (!count($ticket_bulk_vending)) {
-        //     return [];
-        // }
-        // $ticket_bulk_collection = new TicketBulkVendingCollection($ticket_bulk_vending);
-        // return $ticket_bulk_collection;
     }
 
     /**
@@ -119,6 +121,13 @@ class TicketBulkVendingController extends Controller
                 'status' => 'error',
                 'message' => 'You are not allowed to process tickets. Contact the administrator for assistance.',
             ], 403);
+        }
+
+        if ($ticket_agent->agent_status != 'active' ) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Account has been placed on hold.'
+            ], 401);
         }
 
         //Check if agent is allowed to vend ticket
@@ -194,7 +203,8 @@ class TicketBulkVendingController extends Controller
             $ticket_agent_wallet->save();
             //Send SMS to user
             $mobile_number = ltrim($phone_number, "0");
-            $message = "Your ticket has been successfully processed. A total of " . $number_of_tickets . " ticket(s) has been processed for " . $plate_number . " for the next {$number_of_tickets} day(s). Thank you.";
+            $owner_name = $validatedData['owner_name'];
+            $message = "Hello {$owner_name}, your ticket has been successfully processed. A total of " . $number_of_tickets . " ticket(s) has been processed for " . $plate_number . " for the next {$number_of_tickets} day(s).";
             $this->send_sms_process_message("+234" . $mobile_number, $message);
             return response()->json([
                 'status' => 'success',

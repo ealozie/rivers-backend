@@ -52,6 +52,14 @@ class TicketVendingController extends Controller
             }
             $total_number_of_records = TicketVending::count();
         }
+        if ($user->hasRole('super_agent')) {
+            $sub_agents = TicketAgent::where('super_agent_id', $request->user()->id)->pluck('user_id')->toArray();
+            $ticket_vending = TicketVending::latest()->offset($offset)->limit($limit)->whereIn('user_id', $sub_agents)->get();
+            if ($request->has('query') && $request->get('query') == 'all') {
+                $ticket_vending = TicketVending::whereIn('user_id', $sub_agents)->latest()->get();
+            }
+            $total_number_of_records = TicketVending::whereIn('user_id', $sub_agents)->count();
+        }
 
         if (!count($ticket_vending)) {
             return response()->json([
@@ -85,8 +93,14 @@ class TicketVendingController extends Controller
             'phone_number' => 'required|string',
             'ticket_category_id' => 'required|string',
             'owner_name' => 'required|string',
+            'quantity' => 'sometimes|numeric',
             'geo_location_coordinates' => ['sometimes', new LocationCoordinates],
         ]);
+        if (isset($requestData['quantity'])) {
+            $quantity = $requestData['quantity'];
+        } else {
+           $quantity = 1; 
+        }
         $phone_number = $requestData['phone_number'];
         $ticket_category_id = $requestData['ticket_category_id'];
         $plate_number = $requestData['plate_number'];
@@ -99,6 +113,13 @@ class TicketVendingController extends Controller
                 'status' => 'error',
                 'message' => 'You are not allowed to process tickets. Contact the administrator for assistance.',
             ], 403);
+        }
+
+        if ($ticket_agent->agent_status != 'active' ) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Account has been placed on hold.'
+            ], 401);
         }
 
         //Check if category accept multiple and if agent has purchased for that day.
@@ -128,11 +149,11 @@ class TicketVendingController extends Controller
 
         //Check if agent has enough balance
         //Check if agent has discount for this ticket then calculate the ticket price
-        $ticket_price = $ticket_category->amount;
-        $ticket_actual_price = $ticket_category->amount;
+        $ticket_price = $ticket_category->amount * $quantity;
+        $ticket_actual_price = $ticket_category->amount * $quantity;
         if ($ticket_agent->discount) {
             $price = $ticket_price - ($ticket_price * $ticket_agent->discount / 100);
-            $ticket_price = round($price);
+            $ticket_price = round($price) * $quantity;
         }
 
         if ($ticket_agent->wallet_balance < $ticket_price) {
@@ -154,6 +175,7 @@ class TicketVendingController extends Controller
             $ticket_vending->plate_number = $plate_number;
             $ticket_vending->ticket_category_id = $ticket_category_id;
             $ticket_vending->amount = $ticket_price;
+            $ticket_vending->quantity = $quantity;
             $ticket_vending->discounted_price = $ticket_price;
             $ticket_vending->owner_name = $requestData['owner_name'];
             $ticket_vending->ticket_amount = $ticket_actual_price;
@@ -189,7 +211,8 @@ class TicketVendingController extends Controller
             $ticket_category_name = $ticket_category->category_name;
             $amount = number_format($ticket_actual_price, 2);
             $expires_at = date('h:ia', strtotime($ticket_category->expired_at));
-            $message = "Hello, your {$ticket_category_name} ticket purchase for {$plate_number} (N{$amount}) was successful. Expires at {$expires_at}. Thank you.";
+            $owner_name = $requestData['owner_name'];
+            $message = "Hello {$owner_name}, your {$ticket_category_name} ticket purchase for {$plate_number} (N{$amount}) was successful. Expires at {$expires_at}. Thank you.";
             // $message = "Hello, your ticket has been successfully purchased. Your ticket reference number is " . $ticket_vending->ticket_reference_number . ". Thank you for using AKSG-IRS.";
             //return $mobile_number;
             $this->send_sms_process_message("+234" . $mobile_number, $message);
@@ -251,6 +274,8 @@ class TicketVendingController extends Controller
      */
     public function ticket_statistics(Request $request)
     {
+        Carbon::setWeekStartsAt(Carbon::SUNDAY);
+
         $user = $request->user();
         $tickets_today = TicketVending::where('user_id', $user->id)->whereDate('created_at', Carbon::today())->count();
         $tickets_today_amount = TicketVending::where('user_id', $user->id)->whereDate('created_at', Carbon::today())->sum('ticket_amount');
@@ -300,6 +325,8 @@ class TicketVendingController extends Controller
      */
     public function ticket_total_statistics(Request $request)
     {
+        Carbon::setWeekStartsAt(Carbon::SUNDAY);
+
         $tickets_today = TicketVending::whereDate('created_at', Carbon::today())->count();
         $tickets_today_amount = TicketVending::whereDate('created_at', Carbon::today())->sum('ticket_amount');
 

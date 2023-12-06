@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\TicketAgentResource;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Hash;
 
 /**
  * @tags User Service
@@ -32,7 +33,7 @@ class UserController extends Controller
             'status' => 'success',
             'data' => [
                 'user' => new UserResource($user),
-                'agent' => new TicketAgentResource($user->agent)
+                'agent' => $user->agent ? new TicketAgentResource($user->agent) : ''
             ],
         ]);
     }
@@ -42,7 +43,51 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'first_name' => 'required',
+            'surname' => 'required',
+            'email' => 'required|email|unique:users,email',
+            'phone_number' => 'required|unique:users,phone_number',
+        ]);
+        // $api_key = "j7uIbrpMCgLbmiMSHBDNu";
+        // $email = $validatedData['email'];
+        // $url = "https://apps.emaillistverify.com/api/verifyEmail?secret=" . $api_key . "&email=" . $email;
+        // $response = Http::get($url);
+        // if ($response->failed()) {
+        //     return response()->json([
+        //         'status' => 'error',
+        //         'message' => 'Connection to email verification service failed',
+        //     ], 500);
+        // }
+        // if ($response->body() != 'ok') {
+        //     return response()->json([
+        //         'status' => 'error',
+        //         'message' => 'Invalid email address',
+        //         'data' => $response->body(),
+        //     ], 422);
+        // }
+
+        $user = new User();
+        $user->name = $validatedData['first_name'] . ' ' . $validatedData['surname'];
+        $user->email = $validatedData['email'];
+        $user->email_verified_at = now();
+        $user->phone_number_verified_at = now();
+        //Generate a random password
+        $password = 123456;
+        $user->phone_number = $validatedData['phone_number'];
+        $user->role = 'individual';
+        $user->status = 1;
+        $user->password = Hash::make($password);
+        $user->phone_number_verification_code =
+            mt_rand(111111, 999999);
+        $user_unique_id  = '9' . date('hi') . mt_rand(11111, 99999);
+        $user->unique_id = $user_unique_id;
+        $user->save();
+        return response()->json([
+            'status' => 'success',
+            'message' => 'User successfully created.',
+            'data' => $user,
+        ]);
     }
 
     /**
@@ -55,7 +100,7 @@ class UserController extends Controller
             'status' => 'success',
             'data' => [
                 'user' => new UserResource($user),
-                'agent' => new TicketAgentResource($user->agent)
+                'agent' => $user->agent ? new TicketAgentResource($user->agent) : ''
             ],
         ]);
     }

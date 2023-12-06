@@ -27,6 +27,7 @@ class TicketVendingResource extends JsonResource
             'ticket_reference_number' => $this->ticket_reference_number,
             'longitude' => $this->longitude,
             'latitude' => $this->latitude,
+            'quantity' => $this->quantity,
             'ticket_status' => $this->ticket_status,
             'expire_at' => date('h:ia', strtotime($this->expired_at)),
             'expire_at_time' => Carbon::parse($this->expired_at)->diffForHumans(),

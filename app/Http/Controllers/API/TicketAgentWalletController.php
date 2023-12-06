@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TicketAgentWalletResource;
+use App\Models\TicketAgent;
 use App\Models\TicketAgentWallet;
 use Illuminate\Http\Request;
 
@@ -30,6 +31,16 @@ class TicketAgentWalletController extends Controller
             $ticket_agent_wallet = TicketAgentWallet::paginate($per_page);
             if ($request->has('query') && $request->get('query') == 'all') {
                 $ticket_agent_wallet = TicketAgentWallet::latest()->get();
+            }
+            return TicketAgentWalletResource::collection($ticket_agent_wallet);
+        }
+
+        if ($user->hasRole('super_agent')) {
+            $per_page = 20;
+            $sub_agents = TicketAgent::where('super_agent_id', $request->user()->id)->pluck('user_id')->toArray();
+            $ticket_agent_wallet = TicketAgentWallet::whereIn('user_id', $sub_agents)->paginate($per_page);
+            if ($request->has('query') && $request->get('query') == 'all') {
+                $ticket_agent_wallet = TicketAgentWallet::whereIn('user_id', $sub_agents)->latest()->get();
             }
             return TicketAgentWalletResource::collection($ticket_agent_wallet);
         }

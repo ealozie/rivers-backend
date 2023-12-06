@@ -48,6 +48,19 @@ class TicketEnforcementController extends Controller
             ]);
         }
 
+        if ($user->hasRole('super_agent')) {
+            $sub_agents = TicketAgent::where('super_agent_id', $request->user()->id)->pluck('id')->toArray();
+            $ticket_enforcements = TicketEnforcement::whereIn('ticket_agent_id', $sub_agents)->latest()->offset($offset)->limit($limit)->get();
+            $total_number_of_records = TicketEnforcement::whereIn('ticket_agent_id', $sub_agents)->count();
+            return response()->json([
+                'status' => 'success',
+                'data' => [
+                    'ticket_enforcement_data' => TicketEnforcementResource::collection($ticket_enforcements),
+                    'total_number_of_records' => (int) $total_number_of_records
+                ]
+            ]);
+        }
+
         $ticket_agent = TicketAgent::where('user_id', $user->id)->first();
 
         if (!$ticket_agent) {

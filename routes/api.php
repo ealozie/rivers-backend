@@ -5,6 +5,7 @@ use App\Http\Controllers\API\AgencyController;
 use App\Http\Controllers\API\AppSettingController;
 use App\Http\Controllers\API\AssessmentController;
 use App\Http\Controllers\API\AssessmentYearController;
+use App\Http\Controllers\API\AuditTrailController;
 use App\Http\Controllers\API\BloodGroupController;
 use App\Http\Controllers\API\BusinessCategoryController;
 use App\Http\Controllers\API\BusinessLevelController;
@@ -49,6 +50,7 @@ use App\Http\Controllers\API\ShopController;
 use App\Http\Controllers\API\SignageController;
 use App\Http\Controllers\API\SpouseController;
 use App\Http\Controllers\API\StateController;
+use App\Http\Controllers\API\SuperAgentController;
 use App\Http\Controllers\API\TicketAgentCategoryController;
 use App\Http\Controllers\API\TicketAgentController;
 use App\Http\Controllers\API\TicketAgentStatusController;
@@ -134,7 +136,7 @@ Route::prefix('v1')->group(function () {
     Route::get('shops-by-user-id/{user_id_or_unique_id}', [ShopController::class, 'show_by_user_id'])->middleware('auth:sanctum');
     Route::apiResource('signage', SignageController::class)->middleware('auth:sanctum');
     Route::get('signage-by-user-id/{user_id_or_unique_id}', [SignageController::class, 'show_by_user_id'])->middleware('auth:sanctum');
-
+    Route::get('audit-trails', AuditTrailController::class)->middleware('auth:sanctum');
     Route::apiResource('assessments', AssessmentController::class)->middleware('auth:sanctum')->only(['index', 'store', 'show', 'destroy']);
     Route::get('assessments-search', [AssessmentController::class, 'search'])->middleware('auth:sanctum');
     Route::get('assessments-by-user-id/{user_id_or_unique_id}', [AssessmentController::class, 'show_by_user_id'])->middleware('auth:sanctum');
@@ -164,7 +166,7 @@ Route::prefix('v1')->group(function () {
     Route::get('payments-by-user-id/{user_id_or_unique_id}', [PaymentController::class, 'show_by_user_id'])->middleware('auth:sanctum');
     Route::get('payments-by-reference-number/{reference_number}', [PaymentController::class, 'show_by_reference_number'])->middleware('auth:sanctum');
     Route::apiResource('property-uses', PropertyUseController::class)->only(['index']);
-    Route::apiResource('users', UserController::class)->middleware('auth:sanctum')->only(['index', 'show']);
+    Route::apiResource('users', UserController::class)->middleware('auth:sanctum')->only(['index', 'show', 'store']);
     Route::get('user/email-phone-number', [UserController::class, 'email_phone_number'])->middleware('auth:sanctum');
     Route::post('user-verification', [UserController::class, 'user_verification']);
     Route::apiResource('ticket-vending', TicketVendingController::class)->middleware('auth:sanctum')->only(['index', 'store', 'show']);
@@ -178,6 +180,8 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('vehicle-manufacturers', VehicleManufacturerController::class)->middleware('auth:sanctum')->only(['index', 'show']);
     Route::apiResource('vehicle-categories', VehicleCategoryController::class)->middleware('auth:sanctum')->only(['index']);
     Route::apiResource('ticket-agents', TicketAgentController::class)->middleware('auth:sanctum')->only(['store', 'show', 'index', 'update']);
+    Route::apiResource('super-agents', SuperAgentController::class)->middleware('auth:sanctum')->only(['store', 'show', 'index', 'update']);
+    Route::post('change-agent-super-agent/{agent_id}', [TicketAgentController::class, 'change_agent_super_agent'])->middleware('auth:sanctum');
     Route::get('ticket-agents-wallet-transactions/{agent_id}', [TicketAgentController::class, 'ticket_agent_transactions'])->middleware('auth:sanctum');
     Route::apiResource('ticket-agent-wallet-transactions', TicketAgentWalletController::class)->middleware('auth:sanctum')->only(['show', 'index']);
     Route::apiResource('ticket-enforcements', TicketEnforcementController::class)->middleware('auth:sanctum');

@@ -17,7 +17,8 @@ class RoleSeeder extends Seeder
             'agent',
             'owner',
             'individual',
-            'cooperate'
+            'cooperate',
+            'super_agent',
         ];
 
 

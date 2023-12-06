@@ -49,7 +49,8 @@ class TicketBulkVendingProcess extends Controller
                 $ticket_category_name = $ticket_category->category_name;
                 $amount = number_format($vending->ticket_amount, 2);
                 $expires_at = date('h:ia', strtotime($ticket_category->expired_at));
-                $message = "Hello, your {$ticket_category_name} ticket purchase for {$plate_number} (N{$amount}) was successful. Expires at {$expires_at}. Thank you.";
+                $owner_name = $vending->owner_name;
+                $message = "Hello {$owner_name}, your {$ticket_category_name} ticket purchase for {$plate_number} (N{$amount}) was successful. Expires at {$expires_at}.";
                 // $message = "Hello, your ticket has been successfully purchased. Your ticket reference number is " . $ticket_vending->ticket_reference_number . ". Thank you for using AKSG-IRS.";
                 //return $mobile_number;
                 $this->send_sms_process_message("+234" . $mobile_number, $message);

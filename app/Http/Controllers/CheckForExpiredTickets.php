@@ -32,7 +32,8 @@ class CheckForExpiredTickets extends Controller
                 $amount = number_format($ticket_category->amount, 2);
                 $plate_number = $ticket_vending->plate_number;
                 $expires_at = date('h:ia', strtotime($ticket_category->expired_at));
-                $message = "Hello, your {$category_name} ticket purchase for {$plate_number} (N{$amount}) expired, {$expires_at}. Thank you.";
+                $owner_name = $ticket_vending->owner_name;
+                $message = "Hello {$owner_name}, your {$category_name} ticket purchase for {$plate_number} (N{$amount}) expired, {$expires_at}.";
                 $this->send_sms_process_message("+234" . $mobile_number, $message);
             }
         }
