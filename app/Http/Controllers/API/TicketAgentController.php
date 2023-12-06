@@ -197,9 +197,36 @@ class TicketAgentController extends Controller
         TicketAgentCategory::where('ticket_agent_id', $agent->id)
                 ->delete();
         $agent->super_agent_id = $super_agent->user_id;
+        $agent->discount = $super_agent->discount;
+        $agent->save();
+        $super_agent_categories = TicketAgentCategory::where('ticket_agent_id', $super_agent->id)->get();
+            foreach ($super_agent_categories as $category) {
+                $ticket_agent_category = new TicketAgentCategory();
+                $ticket_agent_category->ticket_agent_id = $agent->id;
+                $ticket_agent_category->ticket_category_id = $category->ticket_category_id;
+                $ticket_agent_category->discount = 0;
+                //$ticket_agent_category->super_agent_id = $super_agent->user_id;
+                $ticket_agent_category->added_by = $request->user()->id;
+                $ticket_agent_category->status = 'active';
+                $ticket_agent_category->save();
+            }
+        return response()->json(['status' => 'success', 'message' => "Agent's super agent has been successfully changed."]);
+    }
+
+    /**
+     * Remove agent from super agent.
+     */
+    public function remove_agent_super_agent(Request $request, $agent_id)
+    {
+        $agent = TicketAgent::find($agent_id);
+        if (!$agent) {
+            return response()->json(['status' => 'error', 'message' => 'Agent ID not found.']);
+        }
+        TicketAgentCategory::where('ticket_agent_id', $agent->id)
+                ->delete();
+        $agent->super_agent_id = null;
         $agent->discount = 0;
         $agent->save();
-        return response()->json(['status' => 'success', 'message' => "Agent's super agent has been successfully changed."]);
-
+        return response()->json(['status' => 'success', 'message' => "Agent has been successfully removed."]);
     }
 }

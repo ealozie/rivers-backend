@@ -182,7 +182,8 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('ticket-agents', TicketAgentController::class)->middleware('auth:sanctum')->only(['store', 'show', 'index', 'update']);
     Route::apiResource('super-agents', SuperAgentController::class)->middleware('auth:sanctum')->only(['store', 'show', 'index', 'update']);
     Route::patch('restore-assign-super-agent/{id}', [SuperAgentController::class, 'restore_super_agent'])->middleware('auth:sanctum');
-    Route::post('change-agent-super-agent/{agent_id}', [TicketAgentController::class, 'change_agent_super_agent'])->middleware('auth:sanctum');
+    Route::patch('change-agent-super-agent/{agent_id}', [TicketAgentController::class, 'change_agent_super_agent'])->middleware('auth:sanctum');
+    Route::patch('remove-agent-from-super-agent/{agent_id}', [TicketAgentController::class, 'remove_agent_super_agent'])->middleware('auth:sanctum');
     Route::get('ticket-agents-wallet-transactions/{agent_id}', [TicketAgentController::class, 'ticket_agent_transactions'])->middleware('auth:sanctum');
     Route::apiResource('ticket-agent-wallet-transactions', TicketAgentWalletController::class)->middleware('auth:sanctum')->only(['show', 'index']);
     Route::apiResource('ticket-enforcements', TicketEnforcementController::class)->middleware('auth:sanctum');
