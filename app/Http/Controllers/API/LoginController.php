@@ -39,11 +39,11 @@ class LoginController extends Controller
                 if ($ticket_agent->agent_status != 'active' ) {
                     return response()->json([
                         'status' => 'error',
-                        'message' => 'Account has been placed on hold.'
+                        'message' => 'Account is currently inactive.'
                     ], 401);
                 }
             }
-            
+            $user->tokens()->delete();
             $token = $user->createToken('igr_system_auth_token')->plainTextToken;
             $user->update([
                 'last_login_at' => now()
@@ -64,4 +64,5 @@ class LoginController extends Controller
             ], 401);
         }
     }
+
 }

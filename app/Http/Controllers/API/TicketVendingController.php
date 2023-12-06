@@ -371,6 +371,93 @@ class TicketVendingController extends Controller
     }
 
     /**
+     * Today's Ticket Collection Statistics.
+     */
+    public function today_collection()
+    {
+        //Carbon::setWeekStartsAt(Carbon::MONDAY);;
+        $tickets_today_amount = TicketVending::whereDate('created_at', Carbon::today())->sum('ticket_amount');
+        $ticket_categories = TicketCategory::where('category_status', 'active')->get();
+        $today_collection = [];
+        foreach ($ticket_categories as $key => $category) {
+            $tickets_today_amount_in_category = TicketVending::whereDate('created_at', Carbon::today())->where('ticket_category_id', $category->id)->sum('ticket_amount');
+            $today_collection[$key]['id'] = $key+1;
+            $today_collection[$key]['category_name'] = $category->category_name;
+            $today_collection[$key]['ticket_amount'] = $tickets_today_amount_in_category;
+            $today_collection[$key]['percentage'] = number_format($tickets_today_amount_in_category/$tickets_today_amount*0.01, 2) . '%';
+        }
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Retrieved successfully.',
+            'type' => 'today',
+            'data' => $today_collection
+        ]);
+    }
+
+    /**
+     * Weekly's Ticket Collection Statistics.
+     */
+    public function weekly_collection()
+    {
+        Carbon::setWeekStartsAt(Carbon::MONDAY);
+        $now = Carbon::now();
+        $tickets_today_amount = TicketVending::whereBetween("created_at", [
+            $now->startOfWeek()->format('Y-m-d'),
+            $now->endOfWeek()->format('Y-m-d')
+        ])->sum('ticket_amount');
+        $ticket_categories = TicketCategory::where('category_status', 'active')->get();
+        $today_collection = [];
+        foreach ($ticket_categories as $key => $category) {
+            $tickets_today_amount_in_category = TicketVending::whereBetween("created_at", [
+            $now->startOfWeek()->format('Y-m-d'),
+            $now->endOfWeek()->format('Y-m-d')
+        ])->where('ticket_category_id', $category->id)->sum('ticket_amount');
+            //return $tickets_today_amount_in_category;
+            $today_collection[$key]['id'] = $key+1;
+            $today_collection[$key]['category_name'] = $category->category_name;
+            $today_collection[$key]['ticket_amount'] = $tickets_today_amount_in_category;
+            $today_collection[$key]['percentage'] = $tickets_today_amount ? number_format($tickets_today_amount_in_category/$tickets_today_amount*0.01, 2) . '%' : 0 .'%';
+        }
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Retrieved successfully.',
+            'type' => 'weekly',
+            'data' => $today_collection
+        ]);
+    }
+
+    /**
+     * Monthly's Ticket Collection Statistics.
+     */
+    public function monthly_collection()
+    {
+        //Carbon::setWeekStartsAt(Carbon::MONDAY);
+        $tickets_today_amount = TicketVending::whereBetween("created_at", [
+            Carbon::now()->startOfMonth(),
+            Carbon::now()->endOfMonth()
+        ])->sum('ticket_amount');
+        $ticket_categories = TicketCategory::where('category_status', 'active')->get();
+        $today_collection = [];
+        foreach ($ticket_categories as $key => $category) {
+            $tickets_today_amount_in_category = TicketVending::whereBetween("created_at", [
+            Carbon::now()->startOfMonth(),
+            Carbon::now()->endOfMonth()
+        ])->where('ticket_category_id', $category->id)->sum('ticket_amount');
+            //return $tickets_today_amount_in_category;
+            $today_collection[$key]['id'] = $key+1;
+            $today_collection[$key]['category_name'] = $category->category_name;
+            $today_collection[$key]['ticket_amount'] = $tickets_today_amount_in_category;
+            $today_collection[$key]['percentage'] = $tickets_today_amount ? number_format($tickets_today_amount_in_category/$tickets_today_amount*0.01, 2) . '%' : 0 .'%';
+        }
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Retrieved successfully.',
+            'type' => 'monthly',
+            'data' => $today_collection
+        ]);
+    }
+
+    /**
      * Get Tickets by Agent ID resource.
      *
      * Authorization header is required to be set to Bearer `<token>` <br>

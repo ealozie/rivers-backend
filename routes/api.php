@@ -172,6 +172,9 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('ticket-vending', TicketVendingController::class)->middleware('auth:sanctum')->only(['index', 'store', 'show']);
     Route::get('ticket-vending-search', [TicketVendingController::class, 'search'])->middleware('auth:sanctum');
     Route::get('ticket-vending-statistics', [TicketVendingController::class, 'ticket_statistics'])->middleware('auth:sanctum');
+    Route::get('ticket-vending-today-collection', [TicketVendingController::class, 'today_collection'])->middleware('auth:sanctum');
+    Route::get('ticket-vending-weekly-collection', [TicketVendingController::class, 'weekly_collection'])->middleware('auth:sanctum');
+    Route::get('ticket-vending-monthly-collection', [TicketVendingController::class, 'monthly_collection'])->middleware('auth:sanctum');
     Route::get('ticket-total-vending-statistics', [TicketVendingController::class, 'ticket_total_statistics'])->middleware('auth:sanctum');
     Route::get('ticket-vending-by-agent-id/{ticket_agent_id}', [TicketVendingController::class, 'tickets_by_agent'])->middleware('auth:sanctum');
     Route::get('ticket-bulk-vending-by-agent-id/{ticket_agent_id}', [TicketBulkVendingController::class, 'tickets_by_agent'])->middleware('auth:sanctum');
