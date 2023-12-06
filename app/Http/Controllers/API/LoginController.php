@@ -43,7 +43,7 @@ class LoginController extends Controller
                     ], 401);
                 }
             }
-            $user->tokens()->delete();
+            //$user->tokens()->delete();
             $token = $user->createToken('igr_system_auth_token')->plainTextToken;
             $user->update([
                 'last_login_at' => now()
