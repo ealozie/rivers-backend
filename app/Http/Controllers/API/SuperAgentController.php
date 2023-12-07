@@ -157,7 +157,7 @@ class SuperAgentController extends Controller
     /**
      * Restore to super agent or assign as super agent.
      */
-    public function restore_super_agent(string $id)
+    public function restore_super_agent(Request $request, string $id)
     {
         $validatedData = $request->validate([
             'discount' => 'somtimes|numeric',
