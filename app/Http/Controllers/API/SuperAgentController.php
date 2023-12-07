@@ -56,7 +56,7 @@ class SuperAgentController extends Controller
         $validatedData['agent_status'] = 'inactive';
         $validatedData['can_transfer_wallet_fund'] = 1;
         $validatedData['can_fund_wallet'] = 1;
-        $validatedData['agent_type'] = 'super_agent';
+        $validatedData['agent_type'] = 'Super Agent';
         try {
             $agent = TicketAgent::create($validatedData);
         } catch (\Exception $e) {
