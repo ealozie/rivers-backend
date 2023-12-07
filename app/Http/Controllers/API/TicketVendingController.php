@@ -274,7 +274,7 @@ class TicketVendingController extends Controller
      */
     public function ticket_statistics(Request $request)
     {
-        Carbon::setWeekStartsAt(Carbon::SUNDAY);
+        Carbon::setWeekStartsAt(Carbon::MONDAY);
 
         $user = $request->user();
         $tickets_today = TicketVending::where('user_id', $user->id)->whereDate('created_at', Carbon::today())->count();
@@ -325,7 +325,7 @@ class TicketVendingController extends Controller
      */
     public function ticket_total_statistics(Request $request)
     {
-        Carbon::setWeekStartsAt(Carbon::SUNDAY);
+        Carbon::setWeekStartsAt(Carbon::MONDAY);
 
         $tickets_today = TicketVending::whereDate('created_at', Carbon::today())->count();
         $tickets_today_amount = TicketVending::whereDate('created_at', Carbon::today())->sum('ticket_amount');
