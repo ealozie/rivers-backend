@@ -134,14 +134,14 @@ class SuperAgentController extends Controller
     {
         $ticket_agent = TicketAgent::find($id);
         if ($ticket_agent) {
-            TicketAgentCategory::where('ticket_agent_id', $agent->id)
+            TicketAgentCategory::where('ticket_agent_id', $ticket_agent->id)
                 ->delete();
             $user = User::find($ticket_agent->user_id);
             $user->role = 'individual';
             $user->save();
             $user->roles()->detach();
-            $agent->discount = 0;
-            $agent->save();
+            $ticket_agent->discount = 0;
+            $ticket_agent->save();
         TicketAgent::where('super_agent_id', $user->id)->update([
             'super_agent_id' => null
         ]);
