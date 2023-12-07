@@ -54,8 +54,9 @@ class AppSettingSeeder extends Seeder
             // "ALLOW_LOCATION_TRACKING_VENDING" => 'true',
             // "ALLOW_LOCATION_TRACKING_VALIDATE" => 'true',
             //"SHOW_ANNOUCEMENT" => 'true',
-            "ANNOUCEMENT_HEADING" => 'You are welcome to our ticketing application',
-            "ENABLE_SUPER_AGENT" => 'true',
+            //"ANNOUCEMENT_HEADING" => 'You are welcome to our ticketing application',
+            //"ENABLE_SUPER_AGENT" => 'true',
+            "ANNOUCEMENT_URL" => 'https://abiaeticket.com/annoucement',
         ];
 
         //AppSetting::truncate();
