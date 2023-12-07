@@ -163,18 +163,18 @@ class SuperAgentController extends Controller
             'discount' => 'somtimes|numeric',
             'agent_ticket_categories' => 'sometimes|array|min:1',
         ]);
-        $ticket_agent = TicketAgent::find($agent->id);
+        $ticket_agent = TicketAgent::find($id);
         if ($ticket_agent) {
-            TicketAgentCategory::where('ticket_agent_id', $agent->id)
+            TicketAgentCategory::where('ticket_agent_id', $ticket_agent->id)
                 ->delete();
-            $user = User::find($agent->user_id);
+            $user = User::find($ticket_agent->user_id);
             $user->role = 'super_agent';
             $user->save();
             $user->roles()->detach();
-            $agent->discount = $validatedData['discount'];
-            $agent->agent_type = 'super_agent';
-            $agent->super_agent_id = null;
-            $agent->save();
+            $ticket_agent->discount = $validatedData['discount'];
+            $ticket_agent->agent_type = 'Super Agent';
+            $ticket_agent->super_agent_id = null;
+            $ticket_agent->save();
             $user->assignRole('super_agent');
         } else {
             return response()->json([
@@ -185,7 +185,7 @@ class SuperAgentController extends Controller
 
         foreach ($validatedData['agent_ticket_categories'] as $category) {
             $ticket_agent_category = new TicketAgentCategory();
-            $ticket_agent_category->ticket_agent_id = $agent->id;
+            $ticket_agent_category->ticket_agent_id = $ticket_agent->id;
             $ticket_agent_category->ticket_category_id = $category;
             $ticket_agent_category->discount = 0;
             $ticket_agent_category->added_by = $request->user()->id;
