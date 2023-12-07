@@ -23,9 +23,10 @@ class SuperAgentController extends Controller
      */
     public function index()
     {
-        //$per_page = 20;
-        $super_agents = User::role('super_agent')->get();
-        return UserResource::collection($super_agents);
+        $per_page = 20;
+        $super_agents_ids = User::role('super_agent')->pluck('id')->toArray();
+        $ticket_agents = TicketAgent::whereIn('user_id', $super_agents_ids)->paginate($per_page);
+        return TicketAgentListResource::collection($ticket_agents);
     }
 
     /**
