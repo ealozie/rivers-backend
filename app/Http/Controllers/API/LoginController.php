@@ -36,6 +36,11 @@ class LoginController extends Controller
             $user = Auth::user();
             if (Auth::user()->hasRole('agent')) {
                 $ticket_agent = TicketAgent::where('user_id', $user->id)->first();
+                if (!$ticket_agent) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'You are not an agent.'], 404);
+                }
                 if ($ticket_agent->agent_status != 'active' ) {
                     return response()->json([
                         'status' => 'error',

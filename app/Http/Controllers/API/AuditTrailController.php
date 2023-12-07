@@ -28,5 +28,9 @@ class AuditTrailController extends Controller
                 'data' => $audit_trails,
             ]);
         }
+        return response()->json([
+            'status' => 'error',
+            'message' => 'User not permittted.',
+        ]);
     }
 }
