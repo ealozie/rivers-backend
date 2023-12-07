@@ -136,7 +136,7 @@ class SuperAgentController extends Controller
         if ($ticket_agent) {
             TicketAgentCategory::where('ticket_agent_id', $agent->id)
                 ->delete();
-            $user = User::find($agent->user_id);
+            $user = User::find($ticket_agent->user_id);
             $user->role = 'individual';
             $user->save();
             $user->roles()->detach();
