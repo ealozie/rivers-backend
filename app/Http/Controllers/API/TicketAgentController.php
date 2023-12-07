@@ -144,7 +144,7 @@ class TicketAgentController extends Controller
             return response()->json(['status' => 'error', 'message' => 'Agent ID not found.']);
         }
         $agent->update($validatedData);
-        $super_user = User::where('unique_id', $validatedData['super_agent_id']);
+        $super_user = User::where('unique_id', $validatedData['super_agent_id'])->first();
             if (!$super_user->hasRole('super_agent')) {
                     return response()->json([
                         'status' => 'error',
@@ -155,7 +155,7 @@ class TicketAgentController extends Controller
         TicketAgentCategory::where('ticket_agent_id', $agent->id)
                 ->delete();
         if (isset($validatedData['super_agent_id'])) {
-            $super_user = User::where('unique_id', $validatedData['super_agent_id']);
+            $super_user = User::where('unique_id', $validatedData['super_agent_id'])->first();
             $super_agent = TicketAgent::where('user_id', $super_user->id)->first();
             $super_agent_categories = TicketAgentCategory::where('ticket_agent_id', $super_agent->id)->get();
             foreach ($super_agent_categories as $category) {
