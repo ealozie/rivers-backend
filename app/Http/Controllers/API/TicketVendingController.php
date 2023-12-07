@@ -53,7 +53,7 @@ class TicketVendingController extends Controller
             $total_number_of_records = TicketVending::count();
         }
         if ($user->hasRole('super_agent')) {
-            $sub_agents = TicketAgent::where('super_agent_id', $request->user()->id)->pluck('user_id')->toArray();
+            $sub_agents = TicketAgent::where('super_agent_id', $request->user()->id)->orWhere('user_id', $request->user()->id)->pluck('user_id')->toArray();
             $ticket_vending = TicketVending::latest()->offset($offset)->limit($limit)->whereIn('user_id', $sub_agents)->get();
             if ($request->has('query') && $request->get('query') == 'all') {
                 $ticket_vending = TicketVending::whereIn('user_id', $sub_agents)->latest()->get();
