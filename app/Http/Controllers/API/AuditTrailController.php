@@ -17,7 +17,7 @@ class AuditTrailController extends Controller
     public function __invoke(Request $request)
     {
         $user = $request->user();
-        if (!$user->hasRole('admin')) {
+        if ($user->hasRole('admin')) {
             $per_page = 20;
             $audit_trails = Audit::paginate($per_page);
             if ($request->has('query') && $request->get('query') == 'all') {
