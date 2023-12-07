@@ -132,7 +132,7 @@ class SuperAgentController extends Controller
      */
     public function destroy(string $id)
     {
-        $ticket_agent = TicketAgent::find($agent->id);
+        $ticket_agent = TicketAgent::find($id);
         if ($ticket_agent) {
             TicketAgentCategory::where('ticket_agent_id', $agent->id)
                 ->delete();
