@@ -168,9 +168,10 @@ class SuperAgentController extends Controller
             TicketAgentCategory::where('ticket_agent_id', $ticket_agent->id)
                 ->delete();
             $user = User::find($ticket_agent->user_id);
+            $user->roles()->detach();
             $user->role = 'super_agent';
             $user->save();
-            $user->roles()->detach();
+            
             $ticket_agent->discount = $validatedData['discount'];
             $ticket_agent->agent_type = 'Super Agent';
             $ticket_agent->super_agent_id = null;
