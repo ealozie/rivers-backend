@@ -88,7 +88,7 @@ class SuperAgentController extends Controller
     public function update(Request $request, string $id)
     {
         $validatedData = $request->validate([
-            'discount' => 'somtimes|numeric',
+            'discount' => 'sometimes|numeric',
             'agent_status' => 'sometimes|string',
             'can_transfer_wallet_fund' => 'sometimes|boolean',
             'can_fund_wallet' => 'sometimes|boolean',
