@@ -19,10 +19,21 @@ class TicketCategoryResource extends JsonResource
             'name' => $this->category_name,
             'amount' => $this->amount,
             'status' => $this->category_status,
-            'allow_multiple_ticket_purchase' => $this->allow_multiple_ticket_purchase ? true : false,
+            'allow_multiple_ticket_purchase' => $this->check_status($this->allow_multiple_ticket_purchase),
+            'allow_multiple_quantity' => $this->check_status($this->allow_multiple_quantity),
             'duration_in_days' => $this->duration,
             'expired_at' => $this->expired_at,
-            'created_at' => $this->created_at,
+            'created_at' => (string) $this->created_at,
         ];
+    }
+
+    public function check_status($value)
+    {
+        if ($value == 1) {
+            return true;
+        } else {
+            return false;
+        }
+        
     }
 }
