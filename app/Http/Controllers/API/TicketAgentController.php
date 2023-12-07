@@ -74,7 +74,7 @@ class TicketAgentController extends Controller
         
         try {
             $agent = TicketAgent::create($validatedData);
-            $user = User::where('unique_id', $validatedData['user_id']);
+            $user = User::where('unique_id', $validatedData['user_id'])->first();
             $user->assignRole('agent');
             $user->role = 'agent';
             $user->save();
@@ -157,6 +157,9 @@ class TicketAgentController extends Controller
         if (isset($validatedData['super_agent_id'])) {
             $super_user = User::where('unique_id', $validatedData['super_agent_id'])->first();
             $super_agent = TicketAgent::where('user_id', $super_user->id)->first();
+            $agent->super_agent_id = $super_user->id;
+            $agent->discount = $super_agent->discount;
+            $agent->save();
             $super_agent_categories = TicketAgentCategory::where('ticket_agent_id', $super_agent->id)->get();
             foreach ($super_agent_categories as $category) {
                 $ticket_agent_category = new TicketAgentCategory();
