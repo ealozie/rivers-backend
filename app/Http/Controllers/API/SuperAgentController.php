@@ -160,8 +160,8 @@ class SuperAgentController extends Controller
     public function restore_super_agent(Request $request, string $id)
     {
         $validatedData = $request->validate([
-            'discount' => 'somtimes|numeric',
-            'agent_ticket_categories' => 'sometimes|array|min:1',
+            'discount' => 'required|numeric',
+            'agent_ticket_categories' => 'required|array|min:1',
         ]);
         $ticket_agent = TicketAgent::find($id);
         if ($ticket_agent) {
