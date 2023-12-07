@@ -11,6 +11,7 @@ use App\Models\TicketAgentCategory;
 use App\Models\TicketAgentWallet;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * @tags Ticket Agents Service
