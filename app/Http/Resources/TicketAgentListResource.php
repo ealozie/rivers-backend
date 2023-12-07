@@ -27,7 +27,7 @@ class TicketAgentListResource extends JsonResource
             'added_by' => $this->added_by_user->name ?? '',
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'super_agent' => $this->super_agent_id ? $this->super_agent->name : null,
+            'super_agent_id' => $this->super_agent_id,
         ];
     }
 
