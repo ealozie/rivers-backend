@@ -169,7 +169,7 @@ class TicketBulkVendingController extends Controller
             $ticket_actual_price = $ticket_category->amount;
             if ($ticket_agent->discount) {
             $price = $ticket_price - ($ticket_price * ($ticket_agent->discount/100));
-            $ticket_price = round($price) * $quantity;
+            $ticket_price = round($price);
             }
             $ticket_bulk_vending = new TicketBulkVending();
             $ticket_bulk_vending->plate_number = $plate_number;

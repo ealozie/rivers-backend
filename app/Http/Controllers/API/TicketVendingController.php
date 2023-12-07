@@ -152,10 +152,10 @@ class TicketVendingController extends Controller
         $ticket_price = $ticket_category->amount * $quantity;
         $ticket_actual_price = $ticket_category->amount * $quantity;
         if ($ticket_agent->discount) {
-            $price = $ticket_price - ($ticket_price * ($ticket_agent->discount/100));
+            $discount_value = $ticket_category->amount * ($ticket_agent->discount/100); 
+            $price = $ticket_category->amount - $discount_value;
             $ticket_price = round($price) * $quantity;
         }
-
         if ($ticket_agent->wallet_balance < $ticket_price) {
             return response()->json([
                 'status' => 'error',
