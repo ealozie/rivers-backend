@@ -38,8 +38,8 @@ class TicketAgentController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'super_agent_id' => 'sometimes|exists:users,id',
+            'user_id' => 'required|exists:users,unique_id',
+            'super_agent_id' => 'sometimes|exists:users,unique_id',
             'agent_type' => 'required',
             'discount' => 'required',
             'agent_status' => 'required',
@@ -48,7 +48,8 @@ class TicketAgentController extends Controller
             'agent_ticket_categories' => 'required|array|min:1',
             //'role' => 'required|in:agent'
         ]);
-        $agent = TicketAgent::where('user_id', $validatedData['user_id'])->first();
+        $user = User::where('unique_id', $validatedData['user_id'])->first();
+        $agent = TicketAgent::where('user_id', $user->id)->first();
         if ($agent) {
             return response()->json(['status' => 'success', 'message' => 'User is already an agent.']);
         }
@@ -56,24 +57,24 @@ class TicketAgentController extends Controller
         $validatedData['wallet_balance'] = 0;
         $validatedData['agent_status'] = 'inactive';
         if (isset($validatedData['super_agent_id'])) {
-            $user = User::find($validatedData['super_agent_id']);
-            if (!$user->hasRole('super_agent')) {
+            $super_user = User::where('unique_id', $validatedData['super_agent_id']);
+            if (!$super_user->hasRole('super_agent')) {
                     return response()->json([
                         'status' => 'error',
                         'message' => 'Agent is not a super agent.',
                 ], 500);
             }
-            $super_agent = TicketAgent::where('user_id', $validatedData['super_agent_id'])->first();
+            $super_agent = TicketAgent::where('user_id', $super_user->id)->first();
             $validatedData['can_transfer_wallet_fund'] = 0;
             $validatedData['can_fund_wallet'] = 0;
             $validatedData['discount'] = $super_agent->discount;
-            $validatedData['super_agent_id'] = $validatedData['super_agent_id'];
+            $validatedData['super_agent_id'] = $super_user->id;
             $validatedData['added_by'] = $request->user()->id;
         }
         
         try {
             $agent = TicketAgent::create($validatedData);
-            $user = User::find($validatedData['user_id']);
+            $user = User::where('unique_id', $validatedData['user_id']);
             $user->assignRole('agent');
             $user->role = 'agent';
             $user->save();
@@ -86,7 +87,8 @@ class TicketAgentController extends Controller
         //$user = User::find($validatedData['user_id']);
         //$user->assignRole($validatedData['role']);
         if (isset($validatedData['super_agent_id'])) {
-            $super_agent = TicketAgent::where('user_id', $validatedData['super_agent_id'])->first();
+            $super_user = User::where('unique_id', $validatedData['super_agent_id']);
+            $super_agent = TicketAgent::where('user_id', $super_user->id)->first();
             $super_agent_categories = TicketAgentCategory::where('ticket_agent_id', $super_agent->id)->get();
             foreach ($super_agent_categories as $category) {
                 $ticket_agent_category = new TicketAgentCategory();

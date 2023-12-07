@@ -35,14 +35,20 @@ class SuperAgentController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'user_id' => 'required|exists:users,id',
+            'user_id' => 'required|exists:users,unique_id',
             'agent_type' => 'required',
             'discount' => 'required',
             'agent_ticket_categories' => 'required|array|min:1',
         ]);
         
 
-        $user = User::find($validatedData['user_id']);
+        $user = User::where('unique_id', $validatedData['user_id'])->first();
+        if (!$user) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User not found.',
+            ]);
+        }
         $user->assignRole('super_agent');
         $validatedData['added_by'] = $request->user()->id;
         $validatedData['user_id'] = $user->id;
