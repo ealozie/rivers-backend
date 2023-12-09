@@ -95,6 +95,9 @@ class AppSettingController extends Controller
             "ALLOW_LOCATION_TRACKING_VENDING" => 'required|string',
             "ALLOW_LOCATION_TRACKING_VALIDATE" => 'required|string',
             "SHOW_ANNOUCEMENT" => 'required|string',
+            "ANNOUCEMENT_HEADING" => 'required|string',
+            "ENABLE_SUPER_AGENT" => 'required|string',
+            "ANNOUCEMENT_URL" => 'required|string',
             ]);
         foreach ($validatedData as $key => $value) {
             $app_setting = AppSetting::where('key', $key)->first();
