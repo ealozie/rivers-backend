@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('demand_notice_categories', function (Blueprint $table) {
-            $table->integer('enforcement_duration');
+            $table->integer('enforcement_duration')->nullable();
             $table->text('html_content')->nullable();
             $table->string('status')->default('active');
             $table->foreignId('added_by')->nullable();
