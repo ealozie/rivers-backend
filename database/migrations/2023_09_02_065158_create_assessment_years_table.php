@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Schema::create('assessment_years', function (Blueprint $table) {
-        //     $table->id();
-        //     $table->string('year');
-        //     $table->foreignId('added_by');
-        //     $table->timestamps();
-        // });
+        Schema::create('assessment_years', function (Blueprint $table) {
+            $table->id();
+            $table->string('year');
+            $table->foreignId('added_by');
+            $table->timestamps();
+        });
     }
 
     /**
