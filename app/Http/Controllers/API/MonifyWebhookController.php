@@ -155,14 +155,15 @@ class MonifyWebhookController extends Controller
            //  $bank_response = Http::withHeaders([
            // 'Authorization' => "Bearer $access_token", 
            //  ])->get($base_url.$bank_list);
+           //  return $bank_response->object();
             $transaction_response = Http::withHeaders([
             'Authorization' => "Bearer $access_token",
             ])->post("$base_url.$settlement_endpoint", [
             'amount' => 200,
             'reference' => $reference,
             'narrative' => 'Ticket',
-            'destinationBankCode' => '50515',
-            'destinationAccountNumber' => '5423959840',
+            'destinationBankCode' => '033',
+            'destinationAccountNumber' => '2159397116',
             'currency' => 'NGN',
             'sourceAccountNumber' => '8049776383'
             ]);
