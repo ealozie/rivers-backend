@@ -59,7 +59,7 @@ class AppSettingSeeder extends Seeder
             "ANNOUCEMENT_URL" => 'https://abiaeticket.com/annoucement',
         ];
 
-        //AppSetting::truncate();
+        AppSetting::truncate();
         foreach ($default_settings as $key => $value) {
             AppSetting::create([
                 'key' => $key,
