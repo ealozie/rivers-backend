@@ -9,6 +9,7 @@ use App\Models\TicketAgent;
 use App\Models\TicketAgentWallet;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 /**
  * @tags Monify Webhook Service
@@ -137,6 +138,38 @@ class MonifyWebhookController extends Controller
      */
     public function settlement(Request $request)
     {
-        // code...
+        $base_url = 'https://api.monnify.com';
+        $bank_list = '/api/v1/banks';
+        $auth_endpoint = '/api/v1/auth/login';
+
+        $settlement_endpoint = '/api/v2/disbursements/single';
+        $api_key = 'MK_PROD_QVNTGFBC82';
+        $client_secret = 'MRZUBUHKMBNY1LXGDKXLA8XYZFE9BJY6';
+        $token = base64_encode("$api_key:$client_secret");
+        $reference = 'ref_smcpt_'.mt_rand(11111, 99999).date('dY').mt_rand(11, 99);
+        $login_response = Http::withHeaders([
+           'Authorization' => "Basic $token", 
+        ])->post($base_url.$auth_endpoint);
+        if ($login_response->ok()) {
+           $access_token = $login_response->object()->responseBody->accessToken;
+           //  $bank_response = Http::withHeaders([
+           // 'Authorization' => "Bearer $access_token", 
+           //  ])->get($base_url.$bank_list);
+            $transaction_response = Http::withHeaders([
+            'Authorization' => "Bearer $access_token",
+            ])->post("$base_url.$settlement_endpoint", [
+            'amount' => 200,
+            'reference' => $reference,
+            'narrative' => 'Ticket',
+            'destinationBankCode' => '50515',
+            'destinationAccountNumber' => '5423959840',
+            'currency' => 'NGN',
+            'sourceAccountNumber' => '8049776383'
+            ]);
+            return $transaction_response->object();
+            //return $bank_response->object();
+        }
+                
+
     }
 }
