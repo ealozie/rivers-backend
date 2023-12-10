@@ -49,24 +49,9 @@ class UserController extends Controller
             'surname' => 'required',
             'email' => 'required|email|unique:users,email',
             'phone_number' => 'required|unique:users,phone_number',
+            'local_government_area_id' => 'required|exists:local_government_areas,id',
         ]);
-        // $api_key = "j7uIbrpMCgLbmiMSHBDNu";
-        // $email = $validatedData['email'];
-        // $url = "https://apps.emaillistverify.com/api/verifyEmail?secret=" . $api_key . "&email=" . $email;
-        // $response = Http::get($url);
-        // if ($response->failed()) {
-        //     return response()->json([
-        //         'status' => 'error',
-        //         'message' => 'Connection to email verification service failed',
-        //     ], 500);
-        // }
-        // if ($response->body() != 'ok') {
-        //     return response()->json([
-        //         'status' => 'error',
-        //         'message' => 'Invalid email address',
-        //         'data' => $response->body(),
-        //     ], 422);
-        // }
+       
 
         $user = new User();
         $user->name = $validatedData['first_name'] . ' ' . $validatedData['surname'];
