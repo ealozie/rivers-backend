@@ -24,18 +24,19 @@ class ShopStoreRequest extends FormRequest
         return [
             'name' => 'required',
             'zone' => 'sometimes|string',
-            'shop_number' => 'sometimes|string',
+            'number' => 'nullable',
+            'location_type' => 'required|in:market,street',
             'location' => 'sometimes|string',
-            'market_name_id' => 'required|exists:market_names,id',
-            'street_name' => 'sometimes|string',
-            'street_number' => 'sometimes|string',
-            'city' => 'sometimes|string',
+            'market_name_id' => 'nullable|exists:market_names,id',
+            'street_name' => 'nullable',
+            'street_number' => 'nullable',
+            'city' => 'nullable',
             'local_government_area_id' => 'required|exists:local_government_areas,id',
             'business_category_id' => 'required|exists:business_categories,id',
             'business_sub_category_id' => 'required|exists:business_sub_categories,id',
             'classification_id' => 'required|exists:classifications,id',
             'user_id' => 'required|exists:users,id',
-            'notes' => 'sometimes|string',
+            'notes' => 'nullable',
         ];
     }
 }

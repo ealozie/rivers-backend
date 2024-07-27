@@ -13,11 +13,12 @@ return new class extends Migration
     {
         Schema::create('shops', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('shop_number')->nullable();
-            $table->string('zone')->nullable();
+            $table->string('name', 50);
+            $table->string('number', 50)->nullable();
+            $table->string('zone', 50)->nullable();
             $table->string('location')->nullable();
-            $table->foreignId('market_name_id');
+            $table->string('location_type')->nullable();
+            $table->foreignId('market_name_id')->nullable();
             $table->string('street_name')->nullable();
             $table->string('street_number')->nullable();
             $table->string('city')->nullable();
@@ -29,7 +30,6 @@ return new class extends Migration
             $table->string('status')->default('active');
             $table->text('notes')->nullable();
             $table->foreignId('added_by')->nullable();
-
             $table->timestamps();
         });
     }

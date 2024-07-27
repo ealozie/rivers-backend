@@ -35,7 +35,25 @@ class ShopController extends Controller
     {
         $validatedData = $request->validated();
         $validatedData['shop_id'] = '3' . date('hi') . mt_rand(11111, 99999);
-        $shop = Shop::firstOrCreate($validatedData);
+        $user_id = $validatedData['user_id'];
+        $user = User::where('unique_id', $user_id)->first();
+        if (!$user) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User ID not found.',
+            ], 404);
+        }
+        $validatedData['user_id'] = $user->id;
+        $validatedData['added_by'] = $request->user()->id;
+        try {
+            $shop = Shop::create($validatedData);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Shop not added.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
         return response()->json([
             'status' => 'success',
             'message' => 'Shop added successfully.',
@@ -142,7 +160,7 @@ class ShopController extends Controller
             $query_request = $request->get('classification_id');
             $individual_registrations = Shop::with('user')->where('classification_id', $query_request)->paginate($per_page);
         }
-        
+
         if ($request->has('shop_id')) {
             $query_request = $request->get('shop_id');
              $individual_registrations = Shop::with('user')->where('shop_id', $query_request)->paginate($per_page);

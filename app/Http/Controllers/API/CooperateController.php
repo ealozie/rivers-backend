@@ -13,6 +13,7 @@ use App\Traits\SendSMS;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 /**
@@ -49,6 +50,7 @@ class CooperateController extends Controller
         $validatedData = $request->validated();
 
         try {
+            DB::beginTransaction();
             //Validate the user Email address
             // $api_key = "j7uIbrpMCgLbmiMSHBDNu";
             // $email = $validatedData['email'];
@@ -99,6 +101,7 @@ class CooperateController extends Controller
             $validatedData['cooperate_id'] = '2' . date('hi') . mt_rand(11111, 99999);
             $cooperate = Cooperate::create($validatedData);
             $user->assignRole('cooperate');
+            DB::commit();
             return response()->json([
                 'status' => 'success',
                 'data' => [
@@ -108,6 +111,7 @@ class CooperateController extends Controller
                 ]
             ]);
         } catch (\Exception $e) {
+            DB::rollBack();
             return response()->json([
                 'status' => 'error',
                 'message' => 'Cooperate registration failed',
