@@ -35,6 +35,16 @@ class PropertyController extends Controller
     public function store(PropertyStoreRequest $request)
     {
         $validatedData = $request->validated();
+        if (isset($validatedData['user_id'])) {
+            $user = User::where('unique_id', $validatedData['user_id'])->first();
+            if (!$user) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'User ID not found.',
+                ], 404);
+            }
+            $validatedData['user_id'] = $user->id;
+        }
         try {
             $validatedData['property_id'] = '4' . date('hi') . mt_rand(11111, 99999);
             $property = Property::create($validatedData);
@@ -157,7 +167,7 @@ class PropertyController extends Controller
             $query_request = $request->get('is_connected_to_power');
             $individual_registrations = Property::with('user')->where('is_connected_to_power', $query_request)->paginate($per_page);
         }
-        
+
         if ($request->has('property_id')) {
             $query_request = $request->get('property_id');
              $individual_registrations = Property::with('user')->where('property_id', $query_request)->paginate($per_page);
