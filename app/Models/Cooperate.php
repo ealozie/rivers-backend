@@ -22,6 +22,16 @@ class Cooperate extends Model
         return $this->belongsTo(BusinessType::class);
     }
 
+    public function local_government_area()
+    {
+        return $this->belongsTo(LocalGovernmentArea::class);
+    }
+
+    public function state()
+    {
+        return $this->belongsTo(State::class);
+    }
+
     public function settlement_type()
     {
         return $this->belongsTo(SettlementType::class);

@@ -81,7 +81,8 @@ class UserConfirmationController extends Controller
                 'message' => 'Invalid token provided.'
             ], 404);
         }
-
+        $user->phone_number_verified_at = now();
+        $user->save();
         $token = $user->createToken('igr_system_auth_token')->plainTextToken;
         $user->update([
                 'last_login_at' => now()

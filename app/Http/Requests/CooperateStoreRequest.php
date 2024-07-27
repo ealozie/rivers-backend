@@ -44,6 +44,12 @@ class CooperateStoreRequest extends FormRequest
             'picture_path' => 'nullable|string',
             'has_signage' => 'nullable|boolean',
             'notes' => 'nullable|string',
+            'city' => 'nullable',
+            'street_name' => 'required|string',
+            'street_number' => 'nullable',
+            'landmark' => 'nullable',
+            'local_government_area_id' => 'required|exists:local_government_areas,id',
+
         ];
     }
 }
