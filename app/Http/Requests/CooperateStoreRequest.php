@@ -40,7 +40,7 @@ class CooperateStoreRequest extends FormRequest
             'business_level_id' => 'required|exists:business_levels,id',
             'demand_notice_category_id' => 'required|exists:demand_notice_categories,id',
             'number_of_staff' => 'required|integer',
-            'monthly_turnover' => 'required|numeric',
+            'monthly_turnover' => 'required|string',
             'picture_path' => 'nullable|string',
             'has_signage' => 'nullable|boolean',
             'notes' => 'nullable|string',

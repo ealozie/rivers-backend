@@ -12,12 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('cooperates', function (Blueprint $table) {
-            // $table->string('street_number', 20)->nullable()->after('user_id');
-            // $table->string('street_name', 50)->nullable()->after('user_id');
-            // $table->string('city', 20)->nullable()->after('user_id');
-            // $table->string('landmark', 50)->nullable()->after('user_id');
-            // $table->foreignId('local_government_area_id')->after('user_id')->nullable();
-            // $table->foreignId('state_id')->after('user_id')->nullable();
+            $table->string('street_number', 20)->nullable()->after('user_id');
+            $table->string('street_name', 50)->nullable()->after('user_id');
+            $table->string('city', 20)->nullable()->after('user_id');
+            $table->string('landmark', 50)->nullable()->after('user_id');
+            $table->foreignId('local_government_area_id')->after('user_id')->nullable();
+            $table->foreignId('state_id')->after('user_id')->nullable();
         });
     }
 
