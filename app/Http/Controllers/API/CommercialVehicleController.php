@@ -35,6 +35,22 @@ class CommercialVehicleController extends Controller
             $validatedData['added_by'] = Auth::id();
         }
         $validatedData['status'] = 'pending';
+        $driver = User::where('unique_id', $validatedData['driver_id'])->first();
+        if (!$driver) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Driver ID not found.',
+            ], 404);
+        }
+        $user = User::where('unique_id', $validatedData['user_id'])->first();
+        if (!$user) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User ID not found.',
+            ], 404);
+        }
+        $validatedData['user_id'] = $user->id;
+        $validatedData['driver_id'] = $driver->id;
         try {
             if ($request->hasFile('driver_license_image')) {
                 $path = $request->file('driver_license_image')->store('commercial_vehicles', 'public');
@@ -150,7 +166,7 @@ class CommercialVehicleController extends Controller
     public function search(Request $request)
     {
         $per_page = 20;
-        
+
         if ($request->has('vehicle_id')) {
             $query_request = $request->get('vehicle_id');
             $individual_registrations = CommercialVehicle::where('vehicle_id', $query_request)->paginate($per_page);
@@ -179,7 +195,7 @@ class CommercialVehicleController extends Controller
             $query_request = $request->get('engine_number');
             $individual_registrations = CommercialVehicle::where('engine_number', $query_request)->paginate($per_page);
         }
-     
+
         if ($request->has('date_from') && $request->has('date_to')) {
             $date_from = $request->get('date_from');
             $date_to = $request->get('date_to');

@@ -23,7 +23,7 @@ class CommercialVehicleStoreRequest extends FormRequest
     {
         //create validation rules for the request
         return [
-            'user_id' => 'required|exists:users,id',
+            'user_id' => 'required',
             'plate_number' => 'required|string',
             'vehicle_category_id' => 'required|exists:vehicle_categories,id',
             'vehicle_manufacturer_id' => 'required|exists:vehicle_manufacturers,id',
@@ -31,17 +31,17 @@ class CommercialVehicleStoreRequest extends FormRequest
             'chassis_number' => 'required',
             'engine_number' => 'required',
             'ticket_category_id' => 'required|exists:ticket_categories,id',
-            'capacity' => 'sometimes|string',
-            'routes' => 'sometimes|string',
-            'driver_id' => 'sometimes|exists:users,id',
-            'driver_license_number' => 'sometimes|string',
-            'driver_license_expiry_date' => 'sometimes|date',
+            'capacity' => 'nullable',
+            'routes' => 'nullable',
+            'driver_id' => 'required',
+            'driver_license_number' => 'nullable',
+            'driver_license_expiry_date' => 'nullable',
             'driver_license_image' => 'sometimes|mimes:jpeg,jpg,png|max:2048',
             'permit_renewal_count' => 'sometimes|integer',
             'permit_number' => 'sometimes|string',
             'permit_expiry_date' => 'sometimes|string',
             'permit_image' => 'sometimes|mimes:jpeg,jpg,png|max:2048',
-            'note' => 'sometimes|string',
+            'note' => 'nullable',
         ];
     }
 }
