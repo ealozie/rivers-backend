@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Http;
 use App\Http\Resources\TicketVendingCollection;
 use App\Http\Resources\TicketVendingResource;
 use App\Models\CommercialVehicle;
@@ -206,6 +207,25 @@ class TicketVendingController extends Controller
             $ticket_agent_wallet->added_by = $user->id;
             $ticket_agent_wallet->transaction_reference_number = $ticket_vending->ticket_reference_number;
             $ticket_agent_wallet->save();
+
+            //Log to Central system
+            $endpoint = 'https://rgw.awtom8.africa/abia/sandbox/v1/createTicket';
+            $response = Http::withHeaders([
+                'X-IBM-Client-Id' => '106f21c85cfc154060a0ddb15ec28d4b'
+            ])->post($endpoint, [
+                'productCode' => $ticket_category->category_name,
+                'plateNumber' => $ticket_vending->plate_number,
+                'taxPayerPhone' => ltrim($phone_number, "0"),
+                'taxPayerName' => $ticket_vending->owner_name,
+                'agentEmail' => 'ciresmain@gmail.com',
+                'description' => 'Ticket Purchase',
+                'paymentMethod' => 'Pay Cash',
+                'paymentPeriod' => '1Day',
+                'taxPayerEmail' => 'test@abiaeticket.com'
+            ]);
+            return $response->object();
+
+
             //Send SMS to user
             $mobile_number = ltrim($phone_number, "0");
             $ticket_category_name = $ticket_category->category_name;

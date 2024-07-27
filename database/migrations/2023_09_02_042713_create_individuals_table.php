@@ -28,7 +28,7 @@ return new class extends Migration
             $table->integer('number_of_kids')->nullable();
             $table->date('date_of_birth')->nullable();
             $table->foreignId('blood_group_id');
-            $table->foreignId('geno_type_id');
+            $table->foreignId('geno_type_id')->nullable();
             $table->foreignId('state_id');
             $table->foreignId('local_government_area_id');
             $table->foreignId('occupation_id');
