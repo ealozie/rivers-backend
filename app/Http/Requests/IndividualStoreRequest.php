@@ -45,8 +45,8 @@ class IndividualStoreRequest extends FormRequest
             'income_range' => 'required',
             'street_number' => 'sometimes|string',
             'street_name' => 'sometimes|string',
-            'city' => 'nullable|string',
-            'landmark' => 'sometimes|string',
+            'city' => 'nullable',
+            'landmark' => 'nullable',
 
         ];
     }
