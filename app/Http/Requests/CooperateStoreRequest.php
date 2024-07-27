@@ -48,6 +48,7 @@ class CooperateStoreRequest extends FormRequest
             'street_name' => 'required|string',
             'street_number' => 'nullable',
             'landmark' => 'nullable',
+            'state_id' => 'required|exists:states,id',
             'local_government_area_id' => 'required|exists:local_government_areas,id',
 
         ];
