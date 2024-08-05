@@ -32,7 +32,7 @@ class IndividualStoreRequest extends FormRequest
             'title_id' => 'required|exists:titles,id',
             'surname' => 'required|string',
             'first_name' => 'required|string',
-            'middle_name' => 'required|string',
+            'middle_name' => 'nullable',
             'gender' => 'required|string',
             'marital_status_id' => 'required|exists:marital_statuses,id',
             'number_of_kids' => 'required|integer',
