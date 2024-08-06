@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('assessments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable();
             $table->foreignId('revenue_item_id');
             $table->foreignId('agency_id');
             $table->string('full_name');

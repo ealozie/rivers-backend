@@ -161,14 +161,89 @@ class AssessmentController extends Controller
     {
         $validatedData = $request->validated();
         $auth_user = $request->user();
-        $user = User::where('unique_id', $validatedData['user_id'])->first();
         $validatedData['status'] = 'pending';
         $validatedData['user_id'] = $user->id;
         $validatedData['payment_status'] = 'pending';
         $validatedData['added_by'] = $auth_user->id ?? 0;
         $validatedData['assessment_reference'] = 'ASSESSMENT-' . time() . '-' . rand(1000, 9999);
         $validatedData['entity_id'] = $validatedData['assessment_entity_id'];
-        $assessment = Assessment::create($validatedData);
+        $entity_id = $validatedData['assessment_entity_id'];
+        $entity_type = $validatedData['entity_type'];
+
+        if ($entity_type == 'property') {
+            $property = Property::where('property_id', $entity_id)->first();
+            if ($property) {
+                $assessment = $property->assessments()->create($validatedData);
+            } else {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Property not found',
+                ], 404);
+            }
+            
+        }
+
+        if ($entity_type == 'shop') {
+            $shop = Shop::where('shop_id', $entity_id)->first();
+            if ($shop) {
+                $assessment = $shop->assessments()->create($validatedData);
+            } else {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Shop not found',
+                ], 404);
+            }
+            
+        }
+
+        if ($entity_type == 'individual') {
+            $individual = Individual::where('individual_id', $entity_id)->first();
+            if ($individual) {
+                $assessment = $individual->assessments()->create($validatedData);
+            } else {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Individual not found',
+                ], 404);
+            }
+        }
+
+        if ($entity_type == 'cooperate') {
+            $cooperate = Cooperate::where('cooperate_id', $entity_id)->first();
+            if ($cooperate) {
+                $assessment = $cooperate->assessments()->create($validatedData);
+            } else {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Cooperate not found',
+                ], 404);
+            } 
+        }
+
+        if ($entity_type == 'signage') {
+            $signage = Signage::where('signage_id', $entity_id)->first();
+            if ($signage) {
+                $assessment = $signage->assessments()->create($validatedData);
+            } else {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Signage not found',
+                ], 404);
+            } 
+        }
+
+        if ($entity_type == 'vehicle') {
+            $vehicle = CommercialVehicle::where('signage_id', $entity_id)->first();
+            if ($vehicle) {
+                $assessment = $vehicle->assessments()->create($validatedData);
+            } else {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Vehicle not found',
+                ], 404);
+            } 
+        }
+        
         return new AssessmentResource($assessment);
     }
 

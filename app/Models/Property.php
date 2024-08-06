@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Model;
 
 class Property extends Model
@@ -50,6 +51,11 @@ class Property extends Model
     public function state()
     {
         return $this->belongsTo(State::class);
+    }
+
+    public function assessments(): MorphMany
+    {
+        return $this->morphMany(Assessment::class, 'assessmentable');
     }
 
 }

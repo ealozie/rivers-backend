@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Model;
 
 class Cooperate extends Model
@@ -54,5 +55,10 @@ class Cooperate extends Model
     public function demand_notice_category()
     {
         return $this->belongsTo(DemandNoticeCategory::class);
+    }
+
+    public function assessments(): MorphMany
+    {
+        return $this->morphMany(Assessment::class, 'assessmentable');
     }
 }

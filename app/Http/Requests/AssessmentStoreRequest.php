@@ -22,7 +22,6 @@ class AssessmentStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => 'required|exists:users,unique_id',
             'full_name' => 'required|string',
             'phone_number' => 'required|string',
             'email' => 'required|email',
@@ -32,6 +31,7 @@ class AssessmentStoreRequest extends FormRequest
             'amount' => 'required|numeric',
             'assessment_year_id' => 'required|exists:assessment_years,id',
             'assessment_entity_id' => 'required',
+            'entity_type' => 'required|in:vehicle,shop,individual,cooperate,signage,property'
             'due_date' => 'required|date',
         ];
     }

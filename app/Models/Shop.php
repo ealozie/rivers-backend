@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Model;
 
 class Shop extends Model
@@ -35,8 +36,14 @@ class Shop extends Model
     {
         return $this->belongsTo(MarketName::class);
     }
+
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function assessments(): MorphMany
+    {
+        return $this->morphMany(Assessment::class, 'assessmentable');
     }
 }

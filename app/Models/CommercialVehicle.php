@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Model;
 
 class CommercialVehicle extends Model
@@ -34,4 +35,11 @@ class CommercialVehicle extends Model
     {
         return $this->belongsTo(TicketCategory::class);
     }
+
+    public function assessments(): MorphMany
+    {
+        return $this->morphMany(Assessment::class, 'assessmentable');
+    }
+
+
 }

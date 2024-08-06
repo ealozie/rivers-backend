@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Model;
 
 class Signage extends Model
@@ -39,5 +40,10 @@ class Signage extends Model
     public function added_by_user()
     {
         return $this->belongsTo(User::class, 'added_by');
+    }
+
+    public function assessments(): MorphMany
+    {
+        return $this->morphMany(Assessment::class, 'assessmentable');
     }
 }
