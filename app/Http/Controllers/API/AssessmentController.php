@@ -162,7 +162,6 @@ class AssessmentController extends Controller
         $validatedData = $request->validated();
         $auth_user = $request->user();
         $validatedData['status'] = 'pending';
-        $validatedData['user_id'] = $user->id;
         $validatedData['payment_status'] = 'pending';
         $validatedData['added_by'] = $auth_user->id ?? 0;
         $validatedData['assessment_reference'] = 'ASSESSMENT-' . time() . '-' . rand(1000, 9999);
@@ -243,7 +242,7 @@ class AssessmentController extends Controller
                 ], 404);
             } 
         }
-        
+
         return new AssessmentResource($assessment);
     }
 
