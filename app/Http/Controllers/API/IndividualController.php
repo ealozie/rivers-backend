@@ -13,6 +13,7 @@ use App\Traits\SendSMS;
 use Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 /**
@@ -65,7 +66,7 @@ class IndividualController extends Controller
         //         'data' => $response->body(),
         //     ], 422);
         // }
-
+        DB::beginTransaction();
         $user = new User();
         $user->name = $validatedData['first_name'] . ' ' . $validatedData['surname'];
         $user->email = $validatedData['email'];
@@ -94,6 +95,8 @@ class IndividualController extends Controller
         $validatedData['email_address'] = $validatedData['email'];
         $individual = Individual::create($validatedData);
         $user->assignRole('individual');
+        DB::commit();
+
         return response()->json([
             'status' => 'success',
             'data' => [

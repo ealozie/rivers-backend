@@ -34,20 +34,20 @@ class LoginController extends Controller
         if (Auth::attempt($credentials)) {
             //check if the user is an agent and is account is enabled.
             $user = Auth::user();
-            if (Auth::user()->hasRole('agent')) {
-                $ticket_agent = TicketAgent::where('user_id', $user->id)->first();
-                if (!$ticket_agent) {
-                    return response()->json([
-                        'status' => 'error',
-                        'message' => 'You are not an agent.'], 404);
-                }
-                if ($ticket_agent->agent_status != 'active' ) {
-                    return response()->json([
-                        'status' => 'error',
-                        'message' => 'Account is currently inactive.'
-                    ], 401);
-                }
-            }
+            // if (Auth::user()->hasRole('agent')) {
+            //     $ticket_agent = TicketAgent::where('user_id', $user->id)->first();
+            //     if (!$ticket_agent) {
+            //         return response()->json([
+            //             'status' => 'error',
+            //             'message' => 'You are not an agent.'], 404);
+            //     }
+            //     if ($ticket_agent->agent_status != 'active' ) {
+            //         return response()->json([
+            //             'status' => 'error',
+            //             'message' => 'Account is currently inactive.'
+            //         ], 401);
+            //     }
+            // }
             $user->tokens()->delete();
             $token = $user->createToken('igr_system_auth_token')->plainTextToken;
             $user->update([

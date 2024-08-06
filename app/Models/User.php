@@ -53,15 +53,10 @@ class User extends Authenticatable implements Auditable
         'password' => 'hashed',
     ];
 
-    public function agent()
-    {
-        return $this->hasOne(TicketAgent::class);
-    }
-
-    public function residential_address()
-    {
-        return $this->hasOne(Residential::class);
-    }
+    // public function agent()
+    // {
+    //     return $this->hasOne(TicketAgent::class);
+    // }
 
     // public function canAccessPanel(Panel $panel): bool
     // {
