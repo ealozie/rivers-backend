@@ -273,12 +273,9 @@ class AssessmentController extends Controller
     public function update(AssessmentUpdateRequest $request, string $id)
     {
         $validatedData = $request->validated();
-        $auth_user = $request->user();
-        $user = User::find($validatedData['user_id']);
         $validatedData['full_name'] = $user->name;
         $validatedData['email'] = $user->email;
         $validatedData['phone_number'] = $user->phone_number;
-        $validatedData['added_by'] = $auth_user->id ?? 0;
         $assessment = Assessment::find($id);
         $assessment->update($validatedData);
         return new AssessmentResource($assessment);
@@ -291,6 +288,7 @@ class AssessmentController extends Controller
     {
         $assessment = Assessment::find($id);
         $assessment->status = 'cancelled';
+        $assessment->save();
         return response()->json(['status' => 'success', 'message' => 'Assessment Cancelled successfully',], 200);
     }
 
