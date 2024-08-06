@@ -33,7 +33,7 @@ class ProcessISWPaymentTransaction implements ShouldQueue
         
         //TRANSACTION.COMPLETED
         if ($this->requestObject->event === 'TEST.STOP') {
-            logger('We finally made it in here')
+            logger('We finally made it in here');
             logger("UUID: ". $this->requestObject->uuid);
             logger($this->requestObject->data);
             // $payment = new Payment();
@@ -53,6 +53,5 @@ class ProcessISWPaymentTransaction implements ShouldQueue
             // $payment->payment_gateway = "InterSwitch";
             // $payment->save();
         }
-        $payment = new Payment();
     }
 }
