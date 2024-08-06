@@ -31,7 +31,7 @@ class AssessmentStoreRequest extends FormRequest
             'amount' => 'required|numeric',
             'assessment_year_id' => 'required|exists:assessment_years,id',
             'assessment_entity_id' => 'required',
-            'entity_type' => 'required|in:vehicle,shop,individual,cooperate,signage,property'
+            'entity_type' => 'required|in:vehicle,shop,individual,cooperate,signage,property',
             'due_date' => 'required|date',
         ];
     }
