@@ -247,6 +247,46 @@ class AssessmentController extends Controller
     }
 
     /**
+     * Get Assessments by Entity Unique 10 digit ID.
+     */
+    public function assessment_by_entity_id(string $entity_id)
+    {
+        $assessment = Assessment::where('entity_id', $entity_id)->get();
+        if (!count($assessment)) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Assessment not found.',
+            ], 404);
+        }
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Assessment retrieved successfully.',
+            'data' => AssessmentResource::collection($assessment)
+        ]);
+    }
+
+    /**
+     * Assessments payment status verification by entity ID.
+     */
+    public function assessment_payment_verification(string $entity_id)
+    {
+        $status = false;
+        $assessment = Assessment::where('entity_id', $entity_id)
+        ->where('payment_status', 'pending')
+        ->get();
+        if (count($assessment)) {
+            $status = true;
+        }
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Assessment retrieved successfully.',
+            'data' => [
+                'payment_status' => $status,
+            ]
+        ]);
+    }
+
+    /**
      * Get Assessment By Reference or Receipt number.
      */
     public function show_by_reference_number(string $reference_number)
