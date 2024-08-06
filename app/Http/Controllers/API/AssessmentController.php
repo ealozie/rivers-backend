@@ -36,7 +36,7 @@ class AssessmentController extends Controller
      */
     public function index()
     {
-        $assessments = Assessment::paginate();
+        $assessments = Assessment::all();
         return AssessmentResource::collection($assessments);
     }
 
@@ -164,7 +164,7 @@ class AssessmentController extends Controller
         $validatedData['status'] = 'pending';
         $validatedData['payment_status'] = 'pending';
         $validatedData['added_by'] = $auth_user->id ?? 0;
-        $validatedData['assessment_reference'] = 'ASSESSMENT-' . time() . '-' . rand(1000, 9999);
+        $validatedData['assessment_reference'] = time() . rand(1000, 9999);
         $validatedData['entity_id'] = $validatedData['assessment_entity_id'];
         $entity_id = $validatedData['assessment_entity_id'];
         $entity_type = $validatedData['entity_type'];
