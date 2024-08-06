@@ -132,7 +132,9 @@ class PaymentController extends Controller
             //verify this signature with the one sent in the header
             if ($signature == $request->header('X-Interswitch-Signature')) {
                 $requestObject = json_decode($requestData);
+                FacadesLog::info('We arrived here');
                 ProcessISWPaymentTransaction::dispatch($requestObject);
+                FacadesLog::info('We Are good to move from here');
                 return response()->json();
             }
         }
