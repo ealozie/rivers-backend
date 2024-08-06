@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('assessments', function (Blueprint $table) {
-            //$table->nullableMorphs('assessmentable');
+        Schema::table('individuals', function (Blueprint $table) {
+            $table->foreignId('residence_state_id')->nullable()->after('state_id');
+            $table->foreignId('residence_local_government_area_id')->nullable()->after('local_government_area_id');
         });
     }
 
@@ -21,7 +22,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('assessments', function (Blueprint $table) {
+        Schema::table('individuals', function (Blueprint $table) {
             //
         });
     }

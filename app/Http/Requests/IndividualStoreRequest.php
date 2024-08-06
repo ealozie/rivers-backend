@@ -41,6 +41,8 @@ class IndividualStoreRequest extends FormRequest
             'geno_type_id' => 'nullable|exists:geno_types,id',
             'state_id' => 'required|exists:states,id',
             'local_government_area_id' => 'required|exists:local_government_areas,id',
+            'residence_local_government_area_id' => 'required|exists:local_government_areas,id',
+            'residence_state_id' => 'required|exists:states,id',
             'occupation_id' => 'required|exists:occupations,id',
             'income_range' => 'required',
             'street_number' => 'sometimes|string',

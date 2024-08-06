@@ -57,6 +57,7 @@ class AppSettingSeeder extends Seeder
             "ANNOUCEMENT_HEADING" => 'You are welcome to our ticketing application',
             "ENABLE_SUPER_AGENT" => 'true',
             "ANNOUCEMENT_URL" => 'https://abiaeticket.com/annoucement',
+            'ENFORCE_PAYMENT' => 'true',
         ];
 
         AppSetting::truncate();

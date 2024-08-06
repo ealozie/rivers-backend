@@ -42,6 +42,11 @@ class Individual extends Model
         return $this->belongsTo(LocalGovernmentArea::class);
     }
 
+    public function residence_local_government_area()
+    {
+        return $this->belongsTo(LocalGovernmentArea::class, 'residence_local_government_area_id');
+    }
+
     public function demand_notice_category()
     {
         return $this->belongsTo(DemandNoticeCategory::class);
@@ -60,6 +65,11 @@ class Individual extends Model
     public function state()
     {
         return $this->belongsTo(State::class);
+    }
+
+    public function residence_state()
+    {
+        return $this->belongsTo(State::class, 'residence_state_id');
     }
 
     public function assessments(): MorphMany

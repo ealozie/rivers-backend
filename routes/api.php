@@ -140,11 +140,11 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('assessments', AssessmentController::class)->middleware('auth:sanctum')->only(['index', 'store', 'show', 'destroy']);
     Route::get('assessments-search', [AssessmentController::class, 'search'])->middleware('auth:sanctum');
     Route::get('assessments-by-user-id/{user_id_or_unique_id}', [AssessmentController::class, 'show_by_user_id'])->middleware('auth:sanctum');
-    // Route::get('assessments-by-reference-number/{reference_number}', [AssessmentController::class, 'show_by_reference_number'])->middleware('auth:sanctum');
-    // Route::get('assessments-by-entity-id/{entity_id}', [AssessmentController::class, 'assessment_by_entity_id'])->middleware('auth:sanctum');
-    // Route::get('assessments-payment-verification/{entity_id}', [AssessmentController::class, 'assessment_payment_verification'])->middleware('auth:sanctum');
-    // Route::get('assessments-by-phone-number/{phone_number}', [AssessmentController::class, 'show_by_phone_number'])->middleware('auth:sanctum');
-    // Route::post('assessment-entity-validation', [AssessmentController::class, 'validate_assessment_entity_id']);
+    Route::get('assessments-by-reference-number/{reference_number}', [AssessmentController::class, 'show_by_reference_number'])->middleware('auth:sanctum');
+    Route::get('assessments-by-entity-id/{entity_id}', [AssessmentController::class, 'assessment_by_entity_id'])->middleware('auth:sanctum');
+    Route::get('assessments-payment-verification/{entity_id}', [AssessmentController::class, 'assessment_payment_verification'])->middleware('auth:sanctum');
+    Route::get('assessments-by-phone-number/{phone_number}', [AssessmentController::class, 'show_by_phone_number'])->middleware('auth:sanctum');
+    Route::post('assessment-entity-validation', [AssessmentController::class, 'validate_assessment_entity_id']);
     Route::post('bulk-assessments-with-id', [AssessmentController::class, 'bulk_assessment_store'])->middleware('auth:sanctum');
     Route::post('bulk-assessments-without-id', [AssessmentController::class, 'bulk_assessment_without_id_store'])->middleware('auth:sanctum');
     Route::get('assessment/{identifier}', [AssessmentController::class, 'indentifier']);
