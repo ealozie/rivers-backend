@@ -24,8 +24,8 @@ class LoginController extends Controller
      */
     public function __invoke(Request $request)
     {
-        // $message = "Hello Emmanuel,\n this is a test sms. Let me know if your received it.\n Thank you";
-        // $this->send_sms_process_message("+2348034325030", $message);
+        // $message = "Hello Emmanuel, this is a test sms. Let me know if your received it. Thank you";
+        // $this->send_sms_process_message("+2348036494588", $message);
 
         $credentials = $request->validate([
             'phone_number' => ['required'],

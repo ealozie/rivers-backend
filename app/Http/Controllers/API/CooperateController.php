@@ -90,7 +90,7 @@ class CooperateController extends Controller
             $phone_number = $user->phone_number;
             $mobile_number = ltrim($phone_number, "0");
             $name = $validatedData['business_name'];
-            $message = "Hello {$name},\nYour phone number verification code is " . $user->phone_number_verification_code;
+            $message = "Hello {$name}, your phone number verification code is " . $user->phone_number_verification_code;
             $this->send_sms_process_message("+234" . $mobile_number, $message);;
             $validatedData['user_id'] = $user->id;
             $validatedData['demand_notice_category_id'] = 0;
