@@ -120,6 +120,7 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('forgot-password', ForgotPasswordController::class)->only(['store', 'update']);
     Route::apiResource('individuals', IndividualController::class);
     Route::get('individuals-search', [IndividualController::class, 'search']);
+    Route::get('individuals-entity-id/{entity_id}', [IndividualController::class, 'show_entity_id']);
     //Route::apiResource('residential-address', ResidentialController::class);
     Route::apiResource('spouse', SpouseController::class);
     Route::apiResource('shops', ShopController::class)->middleware('auth:sanctum');

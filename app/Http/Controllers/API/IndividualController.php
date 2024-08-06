@@ -122,6 +122,23 @@ class IndividualController extends Controller
     }
 
     /**
+     * Display the specified resource using the entity id.
+     *
+     * The entity id is the individual 10 digit number.
+     */
+    public function show_entity_id(string $entity_id)
+    {
+        $individual = Individual::where('individual_id', $entity_id)->first();
+        if (!$individual) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Individual not found',
+            ], 404);
+        }
+        return new IndividualResource($individual);
+    }
+
+    /**
      * Update the specified resource in storage.
      */
     public function update(IndividualUpdateRequest $request, string $id)
