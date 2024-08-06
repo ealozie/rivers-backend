@@ -30,23 +30,28 @@ class ProcessISWPaymentTransaction implements ShouldQueue
     public function handle(): void
     {
         //Check before creating.
-        if ($this->requestObject->event === 'TRANSACTION.COMPLETED') {
-            $payment = new Payment();
-            $payment->uuid = $this->requestObject->uuid;
-            $payment->transaction_date = $this->requestObject->data->transactionDate;
-            $payment->amount = $this->requestObject->data->amount;
-            $payment->bank_code = $this->requestObject->data->bankCode;
-            $payment->reference_number = $this->requestObject->data->paymentReference;
-            $payment->payment_channel = $this->requestObject->data->channel;
-            $payment->transaction_status = $this->requestObject->data->responseCode;
-            $payment->transaction_response = $this->requestObject->data->responseDescription;
-            $payment->retrieval_reference_number = $this->requestObject->data->retrievalReferenceNumber;
-            $payment->payment_id = $this->requestObject->data->paymentId;
-            $payment->merchant_customer_id = $this->requestObject->data->merchantCustomerId;
-            $payment->merchant_reference = $this->requestObject->data->merchantReference;
-            $payment->payer_name = $this->requestObject->data->merchantCustomerName;
-            $payment->payment_gateway = "InterSwitch";
-            $payment->save();
+        
+        //TRANSACTION.COMPLETED
+        if ($this->requestObject->event === 'TEST.STOP') {
+            logger('We finally made it in here')
+            logger("UUID: ". $this->requestObject->uuid);
+            logger($this->requestObject->data);
+            // $payment = new Payment();
+            // $payment->uuid = $this->requestObject->uuid;
+            // $payment->transaction_date = $this->requestObject->data->transactionDate;
+            // $payment->amount = $this->requestObject->data->amount;
+            // $payment->bank_code = $this->requestObject->data->bankCode;
+            // $payment->reference_number = $this->requestObject->data->paymentReference;
+            // $payment->payment_channel = $this->requestObject->data->channel;
+            // $payment->transaction_status = $this->requestObject->data->responseCode;
+            // $payment->transaction_response = $this->requestObject->data->responseDescription;
+            // $payment->retrieval_reference_number = $this->requestObject->data->retrievalReferenceNumber;
+            // $payment->payment_id = $this->requestObject->data->paymentId;
+            // $payment->merchant_customer_id = $this->requestObject->data->merchantCustomerId;
+            // $payment->merchant_reference = $this->requestObject->data->merchantReference;
+            // $payment->payer_name = $this->requestObject->data->merchantCustomerName;
+            // $payment->payment_gateway = "InterSwitch";
+            // $payment->save();
         }
         $payment = new Payment();
     }
