@@ -150,10 +150,8 @@ class PaymentController extends Controller
             'amount' => 'required',
             'payment_gateway' => 'required',
         ]);
-        $user = auth()->user();
         try {
             $payment = new Payment();
-            $payment->user_id = $user->id;
             $payment->reference_number = 'ref_smcpt_'.mt_rand(11111, 99999).date('dY').mt_rand(11, 99);
             $payment->payment_gateway = $validateData['payment_gateway'];
             $payment->amount = $validateData['amount'];
@@ -162,7 +160,6 @@ class PaymentController extends Controller
             'status' => 'success',
             'data' => [
                 'payment_reference_number' => $payment->reference_number,
-                'user' => $user
             ]
         ], 200);
         } catch (\Exception $e) {
