@@ -28,7 +28,7 @@ class AgencyController extends Controller
     public function store(AgencyStoreRequest $request)
     {
         $validated = $request->validated();
-        $validated['added_by'] = $request->user()->id;
+        //$validated['added_by'] = $request->user()->id;
         $agency = Agency::create($validated);
         return new AgencyResource($agency);
     }

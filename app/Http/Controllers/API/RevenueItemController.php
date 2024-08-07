@@ -28,7 +28,7 @@ class RevenueItemController extends Controller
     public function store(RevenueItemStoreRequest $request)
     {
         $validatedData = $request->validated();
-        $validatedData['added_by'] = $request->user()->id;
+        //$validatedData['added_by'] = $request->user()->id;
         $validatedData['unique_code'] = uniqid('rev_');
         $revenue_item = RevenueItem::create($validatedData);
         return new RevenueItemResource($revenue_item);
