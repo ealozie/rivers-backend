@@ -30,6 +30,7 @@ class AssessmentResource extends JsonResource
             "status" => $this->status,
             "payment_status" => $this->payment_status,
             "added_by" => $this->added_by ? new UserResource($this->added_by_user) : '',
+            'created_at' => $this->created_at,
         ];
     }
 }
