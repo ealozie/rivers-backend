@@ -50,6 +50,7 @@ class UserController extends Controller
             'email' => 'required|email|unique:users,email',
             'phone_number' => 'required|unique:users,phone_number',
             'local_government_area_id' => 'required|exists:local_government_areas,id',
+            'role' => 'required',
         ]);
        
 
@@ -61,7 +62,7 @@ class UserController extends Controller
         //Generate a random password
         $password = 123456;
         $user->phone_number = $validatedData['phone_number'];
-        $user->role = 'individual';
+        $user->role = $validatedData['role'];
         $user->status = 1;
         $user->password = Hash::make($password);
         $user->phone_number_verification_code =
@@ -69,6 +70,7 @@ class UserController extends Controller
         $user_unique_id  = '9' . date('hi') . mt_rand(11111, 99999);
         $user->unique_id = $user_unique_id;
         $user->save();
+        $user->assignRole($validatedData['role']);
         return response()->json([
             'status' => 'success',
             'message' => 'User successfully created.',
