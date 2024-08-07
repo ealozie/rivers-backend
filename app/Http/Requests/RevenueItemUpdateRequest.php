@@ -27,7 +27,7 @@ class RevenueItemUpdateRequest extends FormRequest
             'revenue_code' => 'required|string',
             'fixed_fee' => 'required|numeric',
             'revenue_type_id' => 'required|numeric',
-            'notes' => 'nullable|string',
+            'notes' => 'nullable',
         ];
     }
 }

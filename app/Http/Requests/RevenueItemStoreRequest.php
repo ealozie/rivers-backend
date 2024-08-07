@@ -27,7 +27,7 @@ class RevenueItemStoreRequest extends FormRequest
             'revenue_code' => 'required|string|unique:revenue_items',
             'fixed_fee' => 'required|numeric',
             'revenue_type_id' => 'required|numeric',
-            'notes' => 'sometimes|string',
+            'notes' => 'nullable',
         ];
     }
 }
