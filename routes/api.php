@@ -141,7 +141,7 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('assessments', AssessmentController::class)->middleware('auth:sanctum')->only(['index', 'store', 'show', 'destroy']);
     Route::get('assessments-search', [AssessmentController::class, 'search'])->middleware('auth:sanctum');
     Route::get('assessments-by-user-id/{user_id_or_unique_id}', [AssessmentController::class, 'show_by_user_id'])->middleware('auth:sanctum');
-    Route::get('assessments-by-reference-number/{reference_number}', [AssessmentController::class, 'show_by_reference_number'])->middleware('auth:sanctum');
+    Route::get('assessments-by-reference-number/{reference_number}', [AssessmentController::class, 'show_by_reference_number']);
     Route::get('assessments-by-entity-id/{entity_id}', [AssessmentController::class, 'assessment_by_entity_id'])->middleware('auth:sanctum');
     Route::get('assessments-payment-verification/{entity_id}', [AssessmentController::class, 'assessment_payment_verification'])->middleware('auth:sanctum');
     Route::get('assessments-by-phone-number/{phone_number}', [AssessmentController::class, 'show_by_phone_number'])->middleware('auth:sanctum');
@@ -149,9 +149,9 @@ Route::prefix('v1')->group(function () {
     Route::post('bulk-assessments-with-id', [AssessmentController::class, 'bulk_assessment_store'])->middleware('auth:sanctum');
     Route::post('bulk-assessments-without-id', [AssessmentController::class, 'bulk_assessment_without_id_store'])->middleware('auth:sanctum');
     Route::get('assessment/{identifier}', [AssessmentController::class, 'indentifier']);
-    Route::apiResource('agencies', AgencyController::class)->only(['index', 'show', 'update', 'store'])->middleware('auth:sanctum');
+    Route::apiResource('agencies', AgencyController::class)->only(['index', 'show', 'update', 'store']);
     Route::apiResource('revenue-items', RevenueItemController::class)->only(['index', 'show', 'update', 'store'])->middleware('auth:sanctum');
-    Route::get('revenue-items-agency/{agency_id}', [RevenueItemController::class, 'revenue_item_agency'])->middleware('auth:sanctum');
+    Route::get('revenue-items-agency/{agency_id}', [RevenueItemController::class, 'revenue_item_agency']);
     Route::apiResource('cooperates', CooperateController::class)->middleware('auth:sanctum');
     Route::get('cooperates-search', [CooperateController::class, 'search'])->middleware('auth:sanctum');
     Route::apiResource('commercial-vehicles', CommercialVehicleController::class)->middleware('auth:sanctum');

@@ -87,19 +87,19 @@ class PaymentController extends Controller
                 'message' => 'User ID not found.',
             ], 404);
         }
-        $property = Payment::where('user_id', $user->id)->latest()->offset($offset)->limit($limit)->get();
-        if (!count($property)) {
+        $payments = Payment::where('user_id', $user->id)->latest()->offset($offset)->limit($limit)->get();
+        if (!count($payments)) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Payment not found.',
             ], 404);
         }
-        $total_property = Payment::where('user_id', $user->id)->count();
+        $total_payments = Payment::where('user_id', $user->id)->count();
         return response()->json([
             'status' => 'success',
             'message' => 'Payments retrieved successfully.',
-            'total_number_of_records' => (int) $total_property,
-            'data' => PaymentResource::collection($property)
+            'total_number_of_records' => (int) $total_payments,
+            'data' => PaymentResource::collection($payments)
         ]);
     }
 
