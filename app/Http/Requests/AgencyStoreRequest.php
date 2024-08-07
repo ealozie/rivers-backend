@@ -25,7 +25,7 @@ class AgencyStoreRequest extends FormRequest
             'agency_name' => 'required|string|unique:agencies',
             'agency_code' => 'required|string|unique:agencies',
             'status' => 'required|string',
-            'note' => 'sometimes|string',
+            'note' => 'nullable',
         ];
     }
 }

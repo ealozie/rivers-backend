@@ -25,7 +25,7 @@ class AgencyUpdateRequest extends FormRequest
             'agency_name' => 'required|string',
             'agency_code' => 'required|string',
             'status' => 'required|string',
-            'note' => 'required|string',
+            'note' => 'nullable',
         ];
     }
 }

@@ -164,7 +164,7 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('payments', PaymentController::class)->middleware('auth:sanctum')->only(['index', 'store']);
     Route::get('payments-search', [PaymentController::class, 'search'])->middleware('auth:sanctum');
     Route::post('payments-webhook', [PaymentController::class, 'payment_webhoook_for_wallet']);
-    Route::post('payments-isw-generate-reference', [PaymentController::class, 'payment_generate_reference'])->middleware('auth:sanctum');
+    Route::post('payments-isw-generate-reference', [PaymentController::class, 'payment_generate_reference']);
     Route::get('payments-isw-reference-verification', [PaymentController::class, 'payment_reference_verification'])->middleware('auth:sanctum');
     Route::get('payments-by-user-id/{user_id_or_unique_id}', [PaymentController::class, 'show_by_user_id'])->middleware('auth:sanctum');
     Route::get('payments-by-reference-number/{reference_number}', [PaymentController::class, 'show_by_reference_number'])->middleware('auth:sanctum');

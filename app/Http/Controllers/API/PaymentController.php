@@ -150,7 +150,7 @@ class PaymentController extends Controller
             'amount' => 'required',
             'payment_gateway' => 'required',
         ]);
-        $user = $request->user();
+        $user = auth()->user();
         try {
             $payment = new Payment();
             $payment->user_id = $user->id;
