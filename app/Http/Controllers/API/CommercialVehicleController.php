@@ -7,6 +7,7 @@ use App\Http\Requests\CommercialVehicleStoreRequest;
 use App\Http\Requests\CommercialVehicleUpdateRequest;
 use App\Http\Resources\CommercialVehicleResource;
 use App\Models\CommercialVehicle;
+use App\Traits\VehicleAuthorizable;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,6 +17,7 @@ use Illuminate\Support\Facades\Auth;
  */
 class CommercialVehicleController extends Controller
 {
+    use VehicleAuthorizable;
     /**
      * Display a listing of the resource.
      */

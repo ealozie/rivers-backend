@@ -7,6 +7,7 @@ use App\Http\Requests\ShopStoreRequest;
 use App\Http\Requests\ShopUpdateRequest;
 use App\Http\Resources\ShopResource;
 use App\Models\Shop;
+use App\Traits\ShopAuthorizable;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -15,6 +16,7 @@ use Illuminate\Http\Request;
  */
 class ShopController extends Controller
 {
+    use ShopAuthorizable;
     /**
      * Display a listing of the resource.
      */

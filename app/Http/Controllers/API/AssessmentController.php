@@ -23,6 +23,7 @@ use App\Models\Shop;
 use App\Models\Signage;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Traits\AssessmentAuthorizable;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -31,6 +32,7 @@ use Maatwebsite\Excel\Facades\Excel;
  */
 class AssessmentController extends Controller
 {
+    use AssessmentAuthorizable;
     /**
      * Display a listing of the resource.
      */

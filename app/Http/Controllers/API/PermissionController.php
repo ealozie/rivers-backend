@@ -3,19 +3,24 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Traits\DocumentAuthorizable;
+use Spatie\Permission\Models\Permission;
 use Illuminate\Http\Request;
 
-/**
- * @tags Document Service
- */
-class DocumentController extends Controller
+class PermissionController extends Controller
 {
-    use DocumentAuthorizable;
     /**
      * Display a listing of the resource.
      */
     public function index()
+    {
+        $permissions = Permission::select('id', 'name', 'guard_name', 'label')->orderBy('name', 'ASC')->get()->groupBy('label');
+        return $permissions;
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
     {
         //
     }
@@ -32,6 +37,14 @@ class DocumentController extends Controller
      * Display the specified resource.
      */
     public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
     {
         //
     }

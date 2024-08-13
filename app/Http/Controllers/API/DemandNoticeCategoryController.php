@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\DemandNoticeCategoryStoreRequest;
 use App\Http\Requests\DemandNoticeCategoryUpdateRequest;
 use App\Http\Resources\DemandNoticeCategoryResource;
+use App\Traits\DemandNoticeCategoryAuthorizable;
 use App\Models\DemandNoticeCategory;
 
 /**
@@ -13,6 +14,7 @@ use App\Models\DemandNoticeCategory;
  */
 class DemandNoticeCategoryController extends Controller
 {
+    use DemandNoticeCategoryAuthorizable;
     /**
      * Display a listing of the resource.
      */

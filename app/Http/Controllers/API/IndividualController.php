@@ -10,6 +10,7 @@ use App\Http\Resources\UserResource;
 use App\Models\Individual;
 use App\Models\User;
 use App\Traits\SendSMS;
+use App\Traits\IndividualAuthorizable;
 use Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -21,7 +22,7 @@ use Illuminate\Support\Str;
  */
 class IndividualController extends Controller
 {
-    use SendSMS;
+    use SendSMS, IndividualAuthorizable;
 
     public function __construct()
     {

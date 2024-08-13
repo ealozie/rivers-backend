@@ -40,6 +40,7 @@ use App\Http\Controllers\API\PaymentController;
 use App\Http\Controllers\API\PropertyCategoryController;
 use App\Http\Controllers\API\PropertyController;
 use App\Http\Controllers\API\PropertyTypeController;
+use App\Http\Controllers\API\PermissionController;
 use App\Http\Controllers\API\PropertyUseController;
 use App\Http\Controllers\API\RegistrationOptionController;
 use App\Http\Controllers\API\ResidentialController;
@@ -170,9 +171,13 @@ Route::prefix('v1')->group(function () {
     Route::get('payments-by-reference-number/{reference_number}', [PaymentController::class, 'show_by_reference_number'])->middleware('auth:sanctum');
     Route::apiResource('property-uses', PropertyUseController::class)->only(['index']);
     Route::apiResource('users', UserController::class)->middleware('auth:sanctum')->only(['index', 'show', 'store']);
+    
+    Route::post('assign-permissions/{user_id}', [UserController::class, 'assign_permission'])->middleware('auth:sanctum');
+    Route::post('revoke-permissions/{user_id}', [UserController::class, 'revoke_permission'])->middleware('auth:sanctum');
     Route::get('user/email-phone-number', [UserController::class, 'email_phone_number'])->middleware('auth:sanctum');
     Route::post('user-verification', [UserController::class, 'user_verification']);
     Route::apiResource('ticket-vending', TicketVendingController::class)->middleware('auth:sanctum')->only(['index', 'store', 'show']);
+    Route::apiResource('permissions', PermissionController::class)->middleware('auth:sanctum')->only(['index']);
     Route::get('ticket-vending-search', [TicketVendingController::class, 'search'])->middleware('auth:sanctum');
     Route::get('ticket-vending-statistics', [TicketVendingController::class, 'ticket_statistics'])->middleware('auth:sanctum');
     Route::get('ticket-vending-today-collection', [TicketVendingController::class, 'today_collection'])->middleware('auth:sanctum');

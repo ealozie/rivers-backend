@@ -8,6 +8,7 @@ use App\Http\Requests\PropertyUpdateRequest;
 use App\Http\Resources\PropertyResource;
 use App\Models\Property;
 use App\Models\PropertyPicture;
+use App\Traits\PropertyAuthorizable;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -16,6 +17,7 @@ use Illuminate\Http\Request;
  */
 class PropertyController extends Controller
 {
+    use PropertyAuthorizable;
     /**
      * Display a listing of the resource.
      */

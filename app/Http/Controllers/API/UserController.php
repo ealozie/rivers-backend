@@ -38,7 +38,9 @@ class UserController extends Controller
             'status' => 'success',
             'data' => [
                 'user' => new UserResource($user),
-                'agent' => $user->agent ? new TicketAgentResource($user->agent) : ''
+                'permissions' => array_map(function($item){
+                    return $item['name'];
+                }, $user->getDirectPermissions()->toArray())
             ],
         ]);
     }
@@ -96,6 +98,60 @@ class UserController extends Controller
             ],
         ]);
     }
+
+    /**
+     * Assign Permissions to User.
+     */
+    public function assign_permission(Request $request, string $user_id)
+    {
+        $validatedData = $request->validate([
+            'permissions' => 'required|array|min:1',
+        ]);
+
+        $user = User::where('unique_id', $user_id)->first();
+        if (!$user) {
+            return response()->json([
+            'status' => 'error',
+            'message' => 'User not found.',
+            'data' => [],
+        ], 404);
+        }
+        $user->syncPermissions($validatedData['permissions']);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Permission(s) has been assigned.',
+            'data' => [
+                'permissions' => $user->getDirectPermissions(),
+            ],
+        ]);
+    }
+
+    /**
+     * Revoke User's Permissions.
+     */
+    public function revoke_permission(Request $request, string $user_id)
+    {
+        
+        $user = User::where('unique_id', $user_id)->first();
+        if (!$user) {
+            return response()->json([
+            'status' => 'error',
+            'message' => 'User not found.',
+            'data' => [],
+        ], 404);
+        }
+        $user->syncPermissions([]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Permission(s) has been revoke.',
+            'data' => [
+                'permissions' => $user->getDirectPermissions(),
+            ],
+        ]);
+    }
+
 
     /**
      * Update the specified resource in storage.

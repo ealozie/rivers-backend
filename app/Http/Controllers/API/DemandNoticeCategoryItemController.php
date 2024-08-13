@@ -7,6 +7,7 @@ use App\Http\Requests\DemandNoticeCategoryItemStoreRequest;
 use App\Http\Resources\DemandNoticeCategoryItemResource;
 use App\Models\Agency;
 use App\Models\DemandNoticeCategoryItem;
+use App\Traits\DemandNoticeCategoryItemAuthorizable;
 use App\Models\RevenueItem;
 use Illuminate\Http\Request;
 
@@ -15,6 +16,7 @@ use Illuminate\Http\Request;
  */
 class DemandNoticeCategoryItemController extends Controller
 {
+    use DemandNoticeCategoryItemAuthorizable;
     /**
      * Display a listing of the resource.
      */

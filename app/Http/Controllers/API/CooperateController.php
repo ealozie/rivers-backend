@@ -11,6 +11,7 @@ use App\Models\Cooperate;
 use App\Models\User;
 use App\Traits\SendSMS;
 use Illuminate\Http\Request;
+use App\Traits\CooperateAuthorizable;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
@@ -21,7 +22,7 @@ use Illuminate\Support\Str;
  */
 class CooperateController extends Controller
 {
-    use SendSMS;
+    use SendSMS, CooperateAuthorizable;
 
 
     public function __construct()

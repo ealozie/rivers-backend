@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\AgencyStoreRequest;
 use App\Http\Requests\AgencyUpdateRequest;
 use App\Http\Resources\AgencyResource;
+use App\Traits\AgencyAuthorizable;
 use App\Models\Agency;
 
 /**
@@ -13,6 +14,7 @@ use App\Models\Agency;
  */
 class AgencyController extends Controller
 {
+    use AgencyAuthorizable;
     /**
      * Display a listing of the resource.
      */
