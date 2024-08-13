@@ -17,6 +17,7 @@ use App\Models\Property;
 use App\Models\Shop;
 use App\Models\Signage;
 use App\Models\User;
+use App\Traits\DemandNoticeAuthorizable;
 use Illuminate\Http\Request;
 
 /**
@@ -24,6 +25,8 @@ use Illuminate\Http\Request;
  */
 class DemandNoticeController extends Controller
 {
+    use DemandNoticeAuthorizable;
+
     /**
      * Display a listing of the resource.
      */

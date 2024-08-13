@@ -8,6 +8,7 @@ use App\Http\Requests\SignageUpdateRequest;
 use App\Http\Resources\SignageResource;
 use App\Models\Signage;
 use App\Models\User;
+use App\Traits\SignageAuthorizable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,6 +17,8 @@ use Illuminate\Support\Facades\Auth;
  */
 class SignageController extends Controller
 {
+    use SignageAuthorizable;
+
     /**
      * Display a listing of the resource.
      */

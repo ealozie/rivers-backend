@@ -7,6 +7,7 @@ use App\Http\Resources\TicketAgentResource;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Hash;
+use App\Traits\UserAuthorizable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
@@ -15,6 +16,9 @@ use Illuminate\Support\Facades\Http;
  */
 class UserController extends Controller
 {
+
+    use UserAuthorizable;
+
     /**
      * Display a User resource.
      */

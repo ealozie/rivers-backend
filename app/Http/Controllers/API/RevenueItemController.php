@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\RevenueItemStoreRequest;
 use App\Http\Requests\RevenueItemUpdateRequest;
 use App\Http\Resources\RevenueItemResource;
+use App\Traits\RevenueItemAuthorizable;
 use App\Models\RevenueItem;
 
 /**
@@ -13,6 +14,8 @@ use App\Models\RevenueItem;
  */
 class RevenueItemController extends Controller
 {
+    use RevenueItemAuthorizable;
+
     /**
      * Display a listing of the resource.
      */

@@ -138,7 +138,7 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('signage', SignageController::class)->middleware('auth:sanctum');
     Route::get('signage-by-user-id/{user_id_or_unique_id}', [SignageController::class, 'show_by_user_id'])->middleware('auth:sanctum');
     Route::get('audit-trails', AuditTrailController::class)->middleware('auth:sanctum');
-    Route::apiResource('assessments', AssessmentController::class)->middleware('auth:sanctum')->only(['index', 'store', 'show', 'destroy']);
+    Route::apiResource('assessments', AssessmentController::class)->middleware('auth:sanctum');
     Route::get('assessments-search', [AssessmentController::class, 'search'])->middleware('auth:sanctum');
     Route::get('assessments-by-user-id/{user_id_or_unique_id}', [AssessmentController::class, 'show_by_user_id'])->middleware('auth:sanctum');
     Route::get('assessments-by-reference-number/{reference_number}', [AssessmentController::class, 'show_by_reference_number']);

@@ -268,6 +268,7 @@ class AssessmentController extends Controller
         }
         return new AssessmentResource($assessment);
     }
+    
 
     /**
      * Update the specified resource in storage.
@@ -275,9 +276,9 @@ class AssessmentController extends Controller
     public function update(AssessmentUpdateRequest $request, string $id)
     {
         $validatedData = $request->validated();
-        $validatedData['full_name'] = $user->name;
-        $validatedData['email'] = $user->email;
-        $validatedData['phone_number'] = $user->phone_number;
+        // $validatedData['full_name'] = $user->name;
+        // $validatedData['email'] = $user->email;
+        // $validatedData['phone_number'] = $user->phone_number;
         $assessment = Assessment::find($id);
         $assessment->update($validatedData);
         return new AssessmentResource($assessment);
