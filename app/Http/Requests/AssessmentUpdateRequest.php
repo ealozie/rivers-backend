@@ -22,16 +22,7 @@ class AssessmentUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // 'full_name' => 'required|string',
-            // 'phone_number' => 'required|string',
-            // 'email' => 'required|email',
-            // 'agency_id' => 'required|exists:agencies,id',
-            // 'revenue_item_id' => 'required|exists:revenue_items,id',
-            // 'contact_address' => 'required|string',
-            // 'amount' => 'required|numeric',
-            // 'due_date' => 'required|date',
-            'status' => 'nullable',
-            //'assessment_year_id' => 'required|exists:assessment_years,id',
+            'status' => 'required',
         ];
     }
 }
