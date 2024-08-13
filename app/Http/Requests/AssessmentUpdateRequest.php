@@ -30,6 +30,7 @@ class AssessmentUpdateRequest extends FormRequest
             'contact_address' => 'required|string',
             'amount' => 'required|numeric',
             'due_date' => 'required|date',
+            'status' => 'nullable',
             'assessment_year_id' => 'required|exists:assessment_years,id',
         ];
     }

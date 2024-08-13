@@ -24,6 +24,7 @@ class AssessmentStoreRequest extends FormRequest
         return [
             'full_name' => 'required|string',
             'phone_number' => 'required|string',
+            'status' => 'nullable',
             'email' => 'required|email',
             'agency_id' => 'required|exists:agencies,id',
             'revenue_item_id' => 'required|exists:revenue_items,id',

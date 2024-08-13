@@ -161,7 +161,9 @@ class AssessmentController extends Controller
     {
         $validatedData = $request->validated();
         $auth_user = $request->user();
-        $validatedData['status'] = 'pending';
+        if (!isset($validatedData['status'])) {
+            $validatedData['status'] = 'pending';
+        }
         $validatedData['payment_status'] = 'pending';
         $validatedData['added_by'] = $auth_user->id ?? 0;
         $validatedData['assessment_reference'] = time() . rand(1000, 9999);
