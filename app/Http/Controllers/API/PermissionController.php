@@ -6,6 +6,10 @@ use App\Http\Controllers\Controller;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Http\Request;
 
+/**
+ * @tags Permissions Service
+ */
+
 class PermissionController extends Controller
 {
     /**
