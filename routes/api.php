@@ -14,6 +14,7 @@ use App\Http\Controllers\API\BusinessTypeController;
 use App\Http\Controllers\API\ClassificationController;
 use App\Http\Controllers\API\CommercialVehicleController;
 use App\Http\Controllers\API\CooperateController;
+use App\Http\Controllers\API\DashboardController;
 use App\Http\Controllers\API\DemandNoticeCategoryController;
 use App\Http\Controllers\API\DemandNoticeCategoryItemController;
 use App\Http\Controllers\API\DemandNoticeController;
@@ -171,7 +172,7 @@ Route::prefix('v1')->group(function () {
     Route::get('payments-by-reference-number/{reference_number}', [PaymentController::class, 'show_by_reference_number'])->middleware('auth:sanctum');
     Route::apiResource('property-uses', PropertyUseController::class)->only(['index']);
     Route::apiResource('users', UserController::class)->middleware('auth:sanctum')->only(['index', 'show', 'store']);
-    
+
     Route::post('assign-permissions/{user_id}', [UserController::class, 'assign_permission'])->middleware('auth:sanctum');
     Route::post('revoke-permissions/{user_id}', [UserController::class, 'revoke_permission'])->middleware('auth:sanctum');
     Route::get('user/email-phone-number', [UserController::class, 'email_phone_number'])->middleware('auth:sanctum');
@@ -216,6 +217,6 @@ Route::prefix('v1')->group(function () {
     Route::post('/monify/refund-completion', [MonifyWebhookController::class, 'refund_completion']);
     Route::post('/monify/disbursement', [MonifyWebhookController::class, 'disbursement']);
     Route::post('/monify/transaction-completed', [MonifyWebhookController::class, 'settlement']);
-    Route::post('/monify/transaction-completed', [MonifyWebhookController::class, 'settlement']);
+    Route::get('/dashboard-entities-aggregation', [DashboardController::class, 'metric_for_entities']);
     //Route::apiResource('users', UserController::class);
 });
