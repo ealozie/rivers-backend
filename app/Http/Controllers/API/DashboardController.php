@@ -18,25 +18,85 @@ class DashboardController extends Controller
 {
 
     /**
-     * Display aggregation for entities.
+     * Display aggregation for Shops.
      */
-    public function metric_for_entities()
+    public function shops_aggregates()
     {
         $shops = Shop::count();
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'shops' => $shops
+            ],
+        ]);
+    }
+
+    /**
+     * Display aggregation for individuals.
+     */
+    public function individuals_aggregates()
+    {
         $individuals = Individual::count();
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'individuals' => $individuals,
+            ],
+        ]);
+    }
+
+     /**
+     * Display aggregation for cooperates.
+     */
+    public function cooperates_aggregates()
+    {
         $cooperates = Cooperate::count();
-        $vehicles = CommercialVehicle::count();
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'cooperates' => $cooperates,
+            ],
+        ]);
+    }
+
+    /**
+     * Display aggregation for signage.
+     */
+    public function signage_aggregates()
+    {
         $signage = Signage::count();
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'signage' => $signage,
+            ],
+        ]);
+    }
+
+    /**
+     * Display aggregation for properties.
+     */
+    public function properties_aggregates()
+    {
         $properties = Property::count();
         return response()->json([
             'status' => 'success',
             'data' => [
-                'shops' => $shops,
-                'individuals' => $individuals,
-                'cooperates' => $cooperates,
-                'vehicles' => $vehicles,
-                'signage' => $signage,
                 'properties' => $properties
+            ],
+        ]);
+    }
+
+    /**
+     * Display aggregation for vehicles.
+     */
+    public function vehicles_aggregates()
+    {
+        $vehicles = CommercialVehicle::count();
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'vehicles' => $vehicles,
             ],
         ]);
     }

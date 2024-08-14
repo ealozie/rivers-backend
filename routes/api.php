@@ -169,7 +169,7 @@ Route::prefix('v1')->group(function () {
     Route::post('payments-isw-generate-reference', [PaymentController::class, 'payment_generate_reference']);
     Route::get('payments-isw-reference-verification', [PaymentController::class, 'payment_reference_verification'])->middleware('auth:sanctum');
     Route::get('payments-by-user-id/{user_id_or_unique_id}', [PaymentController::class, 'show_by_user_id'])->middleware('auth:sanctum');
-    Route::get('payments-by-reference-number/{reference_number}', [PaymentController::class, 'show_by_reference_number'])->middleware('auth:sanctum');
+    Route::get('payments-by-reference-number/{reference_number}', [PaymentController::class, 'show_by_reference_number']);
     Route::apiResource('property-uses', PropertyUseController::class)->only(['index']);
     Route::apiResource('users', UserController::class)->middleware('auth:sanctum')->only(['index', 'show', 'store']);
 
@@ -217,6 +217,11 @@ Route::prefix('v1')->group(function () {
     Route::post('/monify/refund-completion', [MonifyWebhookController::class, 'refund_completion']);
     Route::post('/monify/disbursement', [MonifyWebhookController::class, 'disbursement']);
     Route::post('/monify/transaction-completed', [MonifyWebhookController::class, 'settlement']);
-    Route::get('/dashboard-entities-aggregation', [DashboardController::class, 'metric_for_entities']);
+    Route::get('/dashboard-aggregate-shops', [DashboardController::class, 'shops_aggregates']);
+    Route::get('/dashboard-aggregate-properties', [DashboardController::class, 'properties_aggregates']);
+    Route::get('/dashboard-aggregate-signage', [DashboardController::class, 'signage_aggregates']);
+    Route::get('/dashboard-aggregate-individuals', [DashboardController::class, 'individuals_aggregates']);
+    Route::get('/dashboard-aggregate-cooperates', [DashboardController::class, 'cooperates_aggregates']);
+    Route::get('/dashboard-aggregate-vehicles', [DashboardController::class, 'vehicles_aggregates']);
     //Route::apiResource('users', UserController::class);
 });
