@@ -22,7 +22,8 @@ use Illuminate\Support\Str;
  */
 class CooperateController extends Controller
 {
-    use SendSMS, CooperateAuthorizable;
+    use SendSMS;
+    //use CooperateAuthorizable;
 
 
     public function __construct()

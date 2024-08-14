@@ -16,7 +16,7 @@ use Illuminate\Http\Request;
  */
 class ShopController extends Controller
 {
-    use ShopAuthorizable;
+    //use ShopAuthorizable;
     /**
      * Display a listing of the resource.
      */

@@ -22,7 +22,8 @@ use Illuminate\Support\Str;
  */
 class IndividualController extends Controller
 {
-    use SendSMS, IndividualAuthorizable;
+    use SendSMS;
+    //use IndividualAuthorizable;
 
     public function __construct()
     {

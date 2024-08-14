@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Http;
 class UserController extends Controller
 {
 
-    use UserAuthorizable;
+    //use UserAuthorizable;
 
     /**
      * Display a User resource.

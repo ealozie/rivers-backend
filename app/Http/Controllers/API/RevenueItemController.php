@@ -14,7 +14,7 @@ use App\Models\RevenueItem;
  */
 class RevenueItemController extends Controller
 {
-    use RevenueItemAuthorizable;
+    //use RevenueItemAuthorizable;
 
     /**
      * Display a listing of the resource.

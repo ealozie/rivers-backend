@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Auth;
  */
 class CommercialVehicleController extends Controller
 {
-    use VehicleAuthorizable;
+    //use VehicleAuthorizable;
     /**
      * Display a listing of the resource.
      */

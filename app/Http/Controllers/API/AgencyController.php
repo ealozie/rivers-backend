@@ -14,7 +14,7 @@ use App\Models\Agency;
  */
 class AgencyController extends Controller
 {
-    use AgencyAuthorizable;
+    //use AgencyAuthorizable;
     /**
      * Display a listing of the resource.
      */

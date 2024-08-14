@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Auth;
  */
 class SignageController extends Controller
 {
-    use SignageAuthorizable;
+    //use SignageAuthorizable;
 
     /**
      * Display a listing of the resource.

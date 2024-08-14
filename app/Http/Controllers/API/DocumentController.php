@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
  */
 class DocumentController extends Controller
 {
-    use DocumentAuthorizable;
+    //use DocumentAuthorizable;
     /**
      * Display a listing of the resource.
      */

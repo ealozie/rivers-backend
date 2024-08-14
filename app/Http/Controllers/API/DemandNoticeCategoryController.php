@@ -14,7 +14,7 @@ use App\Models\DemandNoticeCategory;
  */
 class DemandNoticeCategoryController extends Controller
 {
-    use DemandNoticeCategoryAuthorizable;
+    //use DemandNoticeCategoryAuthorizable;
     /**
      * Display a listing of the resource.
      */

@@ -17,7 +17,7 @@ use Illuminate\Http\Request;
  */
 class PropertyController extends Controller
 {
-    use PropertyAuthorizable;
+    //use PropertyAuthorizable;
     /**
      * Display a listing of the resource.
      */

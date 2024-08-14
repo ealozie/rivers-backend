@@ -32,7 +32,7 @@ use Maatwebsite\Excel\Facades\Excel;
  */
 class AssessmentController extends Controller
 {
-    use AssessmentAuthorizable;
+    //use AssessmentAuthorizable;
     /**
      * Display a listing of the resource.
      */

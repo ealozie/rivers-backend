@@ -16,7 +16,7 @@ use Illuminate\Http\Request;
  */
 class DemandNoticeCategoryItemController extends Controller
 {
-    use DemandNoticeCategoryItemAuthorizable;
+    //use DemandNoticeCategoryItemAuthorizable;
     /**
      * Display a listing of the resource.
      */
