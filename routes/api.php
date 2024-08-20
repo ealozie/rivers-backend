@@ -178,10 +178,12 @@ Route::prefix('v1')->group(function () {
     Route::get('user/email-phone-number', [UserController::class, 'email_phone_number'])->middleware('auth:sanctum');
     Route::post('user-verification', [UserController::class, 'user_verification']);
     Route::apiResource('ticket-vending', TicketVendingController::class)->middleware('auth:sanctum')->only(['index', 'store', 'show']);
-    Route::apiResource('permissions', PermissionController::class)->middleware('auth:sanctum')->only(['index']);
+    Route::apiResource('permissions', PermissionController::class);//->middleware('auth:sanctum')->only(['index']);
     Route::get('roles', [PermissionController::class, 'role_index'])->middleware('auth:sanctum');
-    Route::post('permissions/roles', [PermissionController::class, 'store_permission_to_roles'])->middleware('auth:sanctum');
-    Route::patch('permissions/roles', [PermissionController::class, 'remove_permission_from_role'])->middleware('auth:sanctum');
+    Route::post('permissions/roles', [PermissionController::class, 'store_permission_to_roles']);//->middleware('auth:sanctum');
+    Route::get('roles/permissions/{role}', [PermissionController::class, 'role_permissions_index']);//->middleware('auth:sanctum');
+
+    Route::patch('permissions/roles/revoke', [PermissionController::class, 'revoke_permission_from_role']);//->middleware('auth:sanctum');
 
     Route::get('ticket-vending-search', [TicketVendingController::class, 'search'])->middleware('auth:sanctum');
     Route::get('ticket-vending-statistics', [TicketVendingController::class, 'ticket_statistics'])->middleware('auth:sanctum');

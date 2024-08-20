@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\PermissionResource;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Illuminate\Http\Request;
@@ -56,7 +57,7 @@ class PermissionController extends Controller
     }
 
     /**
-     * Store Permission assigned to role.
+     * Store & update Permission assigned to role.
      */
     public function store_permission_to_roles(Request $request)
     {
@@ -75,7 +76,7 @@ class PermissionController extends Controller
 
         try {
             $role->syncPermissions($validatedData['permissions']);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
                 'message' => $e->getMessage(),
@@ -90,15 +91,14 @@ class PermissionController extends Controller
 
 
     /**
-     * Revoke or update Permission assigned to role.
+     * Revoke Permission assigned to role.
      */
-    public function remove_permission_from_role(Request $request)
+    public function revoke_permission_from_role(Request $request)
     {
         $validatedData = $request->validate([
             'role' => 'required',
             'permissions' => 'required|array',
         ]);
-
         $role = Role::where('name', $validatedData['role'])->first();
         if (!$role) {
             return response()->json([
@@ -109,7 +109,7 @@ class PermissionController extends Controller
 
         try {
             $role->revokePermissionTo($validatedData['permissions']);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
                 'message' => $e->getMessage(),
@@ -120,6 +120,26 @@ class PermissionController extends Controller
                 'status' => 'success',
                 'message' => 'Permissions has been updated.'
             ], 200);
+    }
+
+    /**
+     * Display Role Permission.
+     */
+    public function role_permissions_index(Request $request, $role)
+    {
+
+        $user_role = Role::where('name', $role)->first();
+        if (!$user_role) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Role not found.',
+            ], 404);
+        }
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Retrieved permissions successfully.',
+            'data' => ['permissions' => PermissionResource::collection($user_role->permissions)]
+        ], 200);
     }
 
 
