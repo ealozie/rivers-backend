@@ -23,6 +23,15 @@ class PermissionController extends Controller
     }
 
     /**
+     * Display a roles listing of the resource.
+     */
+    public function role_index()
+    {
+        $roles = Role::all();
+        return $roles;
+    }
+
+    /**
      * Show the form for creating a new resource.
      */
     public function create()
@@ -63,7 +72,7 @@ class PermissionController extends Controller
                 'message' => 'Role not found.',
             ], 404);
         }
-        
+
         try {
             $role->syncPermissions($validatedData['permissions']);
         } catch (Exception $e) {
