@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 use Illuminate\Http\Request;
 
 /**
@@ -44,6 +45,74 @@ class PermissionController extends Controller
     {
         //
     }
+
+    /**
+     * Store Permission assigned to role.
+     */
+    public function store_permission_to_roles(Request $request)
+    {
+        $validatedData = $request->validate([
+            'role' => 'required',
+            'permissions' => 'required|array|min:2',
+        ]);
+
+        $role = Role::where('name', $validatedData['role'])->first();
+        if (!$role) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Role not found.',
+            ], 404);
+        }
+        
+        try {
+            $role->syncPermissions($validatedData['permissions']);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+
+        return response()->json([
+                'status' => 'success',
+                'message' => 'Permissions assigned successfully.'
+            ], 200);
+    }
+
+
+    /**
+     * Revoke or update Permission assigned to role.
+     */
+    public function remove_permission_from_role()
+    {
+        $validatedData = $request->validate([
+            'role' => 'required',
+            'permissions' => 'required|array',
+        ]);
+
+        $role = Role::where('name', $validatedData['role'])->first();
+        if (!$role) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Role not found.',
+            ], 404);
+        }
+
+        try {
+            $role->revokePermissionTo($validatedData['permissions']);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+
+        return response()->json([
+                'status' => 'success',
+                'message' => 'Permissions has been updated.'
+            ], 200);
+    }
+
 
     /**
      * Show the form for editing the specified resource.

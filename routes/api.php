@@ -179,6 +179,9 @@ Route::prefix('v1')->group(function () {
     Route::post('user-verification', [UserController::class, 'user_verification']);
     Route::apiResource('ticket-vending', TicketVendingController::class)->middleware('auth:sanctum')->only(['index', 'store', 'show']);
     Route::apiResource('permissions', PermissionController::class)->middleware('auth:sanctum')->only(['index']);
+    Route::post('permissions/roles', [PermissionController::class, 'store_permission_to_roles'])->middleware('auth:sanctum');
+    Route::patch('permissions/roles', [PermissionController::class, 'remove_permission_from_role'])->middleware('auth:sanctum');
+
     Route::get('ticket-vending-search', [TicketVendingController::class, 'search'])->middleware('auth:sanctum');
     Route::get('ticket-vending-statistics', [TicketVendingController::class, 'ticket_statistics'])->middleware('auth:sanctum');
     Route::get('ticket-vending-today-collection', [TicketVendingController::class, 'today_collection'])->middleware('auth:sanctum');

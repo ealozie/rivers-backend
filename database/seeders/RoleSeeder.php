@@ -12,13 +12,24 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
+        // $user_roles = [
+        //     'admin',
+        //     'agent',
+        //     'owner',
+        //     'individual',
+        //     'cooperate',
+        //     'super_agent',
+        // ];
         $user_roles = [
-            'admin',
-            'agent',
-            'owner',
-            'individual',
-            'cooperate',
-            'super_agent',
+            'super_admin',
+            'biller',
+            'buller_approver',
+            'mda_biller',
+            'mda_biller_approver',
+            'guest_reports',
+            'ticket_admin',
+            'data_entry',
+            'account_officer',
         ];
 
 
