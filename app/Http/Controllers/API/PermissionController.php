@@ -92,7 +92,7 @@ class PermissionController extends Controller
     /**
      * Revoke or update Permission assigned to role.
      */
-    public function remove_permission_from_role()
+    public function remove_permission_from_role(Request $request)
     {
         $validatedData = $request->validate([
             'role' => 'required',
