@@ -178,20 +178,27 @@ Route::prefix('v1')->group(function () {
     Route::get('user/email-phone-number', [UserController::class, 'email_phone_number'])->middleware('auth:sanctum');
     Route::post('user-verification', [UserController::class, 'user_verification']);
     Route::apiResource('ticket-vending', TicketVendingController::class)->middleware('auth:sanctum')->only(['index', 'store', 'show']);
-    Route::apiResource('permissions', PermissionController::class);//->middleware('auth:sanctum')->only(['index']);
+    Route::apiResource('permissions', PermissionController::class)->middleware('auth:sanctum')->only(['index']);
     Route::get('roles', [PermissionController::class, 'role_index'])->middleware('auth:sanctum');
-    Route::post('permissions/roles', [PermissionController::class, 'store_permission_to_roles']);//->middleware('auth:sanctum');
-    Route::get('roles/permissions/{role}', [PermissionController::class, 'role_permissions_index']);//->middleware('auth:sanctum');
+    Route::post('permissions/roles', [PermissionController::class, 'store_permission_to_roles'])->middleware('auth:sanctum');
+    Route::get('roles/permissions/{role}', [PermissionController::class, 'role_permissions_index'])->middleware('auth:sanctum');
 
-    Route::patch('permissions/roles/revoke', [PermissionController::class, 'revoke_permission_from_role']);//->middleware('auth:sanctum');
+    Route::patch('permissions/roles/revoke', [PermissionController::class, 'revoke_permission_from_role'])->middleware('auth:sanctum');
 
     Route::get('ticket-vending-search', [TicketVendingController::class, 'search'])->middleware('auth:sanctum');
     Route::get('ticket-vending-statistics', [TicketVendingController::class, 'ticket_statistics'])->middleware('auth:sanctum');
+    Route::get('ticket-vending-statistics-daily', [TicketVendingController::class, 'daily_ticket_vending_statistics'])->middleware('auth:sanctum');
+    Route::get('ticket-vending-statistics-weekly', [TicketVendingController::class, 'weekly_ticket_vending_statistics'])->middleware('auth:sanctum');
+    Route::get('ticket-vending-statistics-monthly', [TicketVendingController::class, 'monthly_ticket_vending_statistics'])->middleware('auth:sanctum');
     Route::get('ticket-vending-today-collection', [TicketVendingController::class, 'today_collection'])->middleware('auth:sanctum');
     Route::get('ticket-vending-weekly-collection', [TicketVendingController::class, 'weekly_collection'])->middleware('auth:sanctum');
     Route::get('ticket-vending-monthly-collection', [TicketVendingController::class, 'monthly_collection'])->middleware('auth:sanctum');
-    Route::get('ticket-total-vending-statistics', [TicketVendingController::class, 'ticket_total_statistics'])->middleware('auth:sanctum');
+    Route::get('ticket-total-vending-statistics-daily', [TicketVendingController::class, 'daily_ticket_total_statistics'])->middleware('auth:sanctum');
+    Route::get('ticket-total-vending-statistics-weekly', [TicketVendingController::class, 'weekly_ticket_total_statistics'])->middleware('auth:sanctum');
+    Route::get('ticket-total-vending-statistics-monthly', [TicketVendingController::class, 'monthly_ticket_total_statistics'])->middleware('auth:sanctum');
+    /*Make Total ticket for today, this week, month and last month*/
     Route::get('ticket-vending-by-agent-id/{ticket_agent_id}', [TicketVendingController::class, 'tickets_by_agent'])->middleware('auth:sanctum');
+    Route::get('ticket-total-vending-statistics', [TicketVendingController::class, 'ticket_total_statistics'])->middleware('auth:sanctum');
     Route::get('ticket-bulk-vending-by-agent-id/{ticket_agent_id}', [TicketBulkVendingController::class, 'tickets_by_agent'])->middleware('auth:sanctum');
     Route::apiResource('ticket-bulk-vending', TicketBulkVendingController::class)->middleware('auth:sanctum')->only(['store', 'show', 'index']);
     Route::get('ticket-bulk-vending-search', [TicketBulkVendingController::class, 'search'])->middleware('auth:sanctum');
@@ -203,6 +210,13 @@ Route::prefix('v1')->group(function () {
     Route::patch('change-agent-super-agent/{agent_id}', [TicketAgentController::class, 'change_agent_super_agent'])->middleware('auth:sanctum');
     Route::patch('remove-agent-from-super-agent/{agent_id}', [TicketAgentController::class, 'remove_agent_super_agent'])->middleware('auth:sanctum');
     Route::get('ticket-agents-wallet-transactions/{agent_id}', [TicketAgentController::class, 'ticket_agent_transactions'])->middleware('auth:sanctum');
+    Route::get('ticket-agent-sales', [TicketAgentController::class, 'get_agents_with_hightest_sales'])->middleware('auth:sanctum');
+    Route::get('ticket-sales-per-local-government', [TicketVendingController::class, 'sales_by_local_government'])->middleware('auth:sanctum');
+    Route::get('ticket-sales-statistics-by-local-government-ticket-categories', [TicketVendingController::class, 'sales_statistics_by_local_government_and_ticket_categories'])->middleware('auth:sanctum');
+    Route::get('ticket-sales-by-local-government-ticket-categories', [TicketVendingController::class, 'sales_by_local_government_and_ticket_categories'])->middleware('auth:sanctum');
+    Route::get('ticket-sales-statistics-by-zone-ticket-categories', [TicketVendingController::class, 'sales_statistics_by_zone_and_ticket_categories'])->middleware('auth:sanctum');
+    Route::get('ticket-sales-by-zone-ticket-categories', [TicketVendingController::class, 'sales_by_zone_and_ticket_categories'])->middleware('auth:sanctum');
+    Route::post('plate-number-recent-records', [TicketVendingController::class, 'plate_number_recent_records']);
     Route::apiResource('ticket-agent-wallet-transactions', TicketAgentWalletController::class)->middleware('auth:sanctum')->only(['show', 'index']);
     Route::apiResource('ticket-enforcements', TicketEnforcementController::class)->middleware('auth:sanctum');
     Route::get('ticket-enforcements-search', [TicketEnforcementController::class, 'search'])->middleware('auth:sanctum');

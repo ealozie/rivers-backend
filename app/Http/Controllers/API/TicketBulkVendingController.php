@@ -5,14 +5,20 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TicketBulkVendingCollection;
 use App\Http\Resources\TicketBulkVendingResource;
+use App\Models\CentralSystemLGA;
 use App\Models\CommercialVehicle;
 use App\Models\TicketAgent;
 use App\Models\TicketAgentCategory;
 use App\Models\TicketAgentWallet;
 use App\Models\TicketBulkVending;
 use App\Models\TicketCategory;
+use App\Models\TicketVending;
 use App\Traits\SendSMS;
+use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 
 /**
  * @tags Ticket Bulk Vending Service
@@ -29,7 +35,7 @@ class TicketBulkVendingController extends Controller
      * Additional Query parameter `?query=all`, return all resources
      * without pagination.
      */
-    public function index(Request $request)
+    public function index(Request $request) : JsonResponse
     {
         $per_page = 20;
         $limit = 10;
@@ -46,10 +52,10 @@ class TicketBulkVendingController extends Controller
         //$ticket_bulk_vending = TicketBulkVending::where('user_id', $request->user()->id)->latest()->paginate($per_page);
 
         $user = $request->user();
-        
-        if ($user->hasRole('admin')) {
+
+        if ($user->hasRole(['admin', 'guest'])) {
             $ticket_bulk_vending = TicketBulkVending::latest()->paginate($per_page);
-            if ($request->has('query') && $request->get('query') == 'all') {
+            if ($request->has('query') && $request->get('query') === 'all') {
                 $ticket_bulk_vending = TicketBulkVending::latest()->get();
             }
         }
@@ -57,7 +63,7 @@ class TicketBulkVendingController extends Controller
         if ($user->hasRole('super_agent')) {
             $sub_agents = TicketAgent::where('super_agent_id', $request->user()->id)->pluck('user_id')->toArray();
             $ticket_bulk_vending = TicketBulkVending::whereIn('user_id', $sub_agents)->latest()->paginate($per_page);
-            if ($request->has('query') && $request->get('query') == 'all') {
+            if ($request->has('query') && $request->get('query') === 'all') {
                 $ticket_bulk_vending = TicketBulkVending::whereIn('user_id', $sub_agents)->latest()->get();
             }
         }
@@ -66,9 +72,9 @@ class TicketBulkVendingController extends Controller
             return response()->json([
                 'status' => 'success',
                 'data' => [
-                'ticket_bulk_vending_data' => [],
-                'total_number_of_records' => (int) $total_number_of_records
-            ],
+                    'ticket_bulk_vending_data' => [],
+                    'total_number_of_records' => (int) $total_number_of_records
+                ],
             ], 200);
         }
         return response()->json([
@@ -80,6 +86,8 @@ class TicketBulkVendingController extends Controller
         ]);
     }
 
+
+
     /**
      * Store a resource.
      *
@@ -88,11 +96,11 @@ class TicketBulkVendingController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'plate_number' => 'required|string',
-            'phone_number' => 'required|string',
+            'plate_number' => 'required|string|min:5|max:10',
+            'phone_number' => 'required|string|min:11|max:11',
             'ticket_category_id' => 'sometimes|required|integer',
             'number_of_tickets' => 'required|integer|min:1',
-            'owner_name' => 'required|string',
+            'owner_name' => 'required|string|min:3|max:10',
         ]);
         $plate_number = strtoupper($validatedData['plate_number']);
         $phone_number = $validatedData['phone_number'];
@@ -105,8 +113,7 @@ class TicketBulkVendingController extends Controller
             ], 404);
         }
         $response_data = [];
-        $ticket_category_id = $validatedData['ticket_category_id'];
-        $response_data['category_id'] = $ticket_category_id;
+        $response_data['category_id'] = $validatedData['ticket_category_id'];
         $is_enumerated = false;
         if ($commercial_vehicle) {
             $response_data['category_id'] = $commercial_vehicle->category_id;
@@ -123,7 +130,7 @@ class TicketBulkVendingController extends Controller
             ], 403);
         }
 
-        if ($ticket_agent->agent_status != 'active' ) {
+        if ($ticket_agent->agent_status !== 'active') {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Account has been placed on hold.'
@@ -147,48 +154,128 @@ class TicketBulkVendingController extends Controller
                 'message' => 'You are not allowed to vend a ticket category that support multiple purchase.',
             ], 403);
         }
-
+        //Check if ticket support bulk vending
+        $ticket_category_name = $ticket_category->category_name;
+        if (!$ticket_category->support_bulk_vending) {
+            return response()->json([
+                'status' => 'error',
+                'message' => "Ticket category for {$ticket_category_name} does not support bulk vending. Try another ticket category.",
+            ], 403);
+        }
+        //return $ticket_category;
         //Check if agent wallet balance is enough to vend that number of tickets
         $number_of_tickets = $validatedData['number_of_tickets'];
         $total_amount = $ticket_category->amount * $number_of_tickets;
-        if ($ticket_agent->wallet_balance < $total_amount) {
+
+        //Apply discount here
+        // if ($number_of_tickets < 6) {
+        //     $discount_percentage = 0.1;
+        //
+        // }
+        $discount_total_amount = $total_amount;
+        // if ($number_of_tickets != 6 && $number_of_tickets != 24) {
+        //     return response()->json([
+        //         'status' => 'error',
+        //         'message' => 'Bulk vending only accepts Weekly(6 days) or Monthly(24 days)'
+        //     ], 500);
+        // }
+        if ($number_of_tickets == 1) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Bulk vending does not accept 1 ticket.'
+            ], 500);
+        }
+        // if ($number_of_tickets == 6) {
+        //     if ($ticket_category->weekly_amount) {
+        //         $discount_total_amount = $ticket_category->weekly_amount;
+        //     } else {
+        //         $discount_percentage = 0.075;
+        //        $discount_total_amount = $total_amount - ($discount_percentage*$total_amount);
+        //     }
+        // }
+        if ($number_of_tickets < 6) {
+            $discount_total_amount = $ticket_category->amount * $number_of_tickets;
+        }
+        if ($number_of_tickets == 6) {
+            if ($ticket_category->weekly_amount) {
+                $discount_total_amount = $ticket_category->weekly_amount;
+            } else {
+                $discount_percentage = 0.075;
+                $discount_total_amount = $total_amount - ($discount_percentage*$total_amount);
+            }
+        }
+        if ($number_of_tickets > 6 && $number_of_tickets < 24) {
+            $discount_percentage = 0.75;
+            $discount_total_amount = $total_amount - ($discount_percentage*$total_amount);
+        }
+        if ($number_of_tickets == 24) {
+            if ($ticket_category->monthly_amount) {
+                $discount_total_amount = $ticket_category->monthly_amount;
+            } else {
+                $discount_percentage = 0.1;
+                $discount_total_amount = $total_amount - ($discount_percentage*$total_amount);
+            }
+        }
+        if ($number_of_tickets > 24) {
+            $discount_percentage = 0.1;
+            $discount_total_amount = $total_amount - ($discount_percentage*$total_amount);
+        }
+        //Apply the agent discount here
+        $discount_amount = 0;
+        if ($ticket_agent->discount) {
+            $price = $discount_total_amount - ($discount_total_amount * ($ticket_agent->discount / 100));
+            $ticket_price = round($price, 2);
+            $discount_amount = $price;
+        } else {
+            $ticket_price = round($discount_total_amount, 2);
+            $discount_amount = $discount_total_amount;
+        }
+
+        if ($ticket_agent->account_type === "Save4ME") {
+            $ticket_price = $discount_total_amount;
+        }
+
+        if ($ticket_agent->wallet_balance < $ticket_price) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'You do not have enough balance to vend this number of tickets.',
                 'data' => [
                     'number_of_tickets' => $validatedData['number_of_tickets'],
-                    'total_amount' => $total_amount,
+                    'total_amount' => $ticket_price,
                     'wallet_balance' => $ticket_agent->wallet_balance
                 ]
             ], 403);
         }
-
         try {
             //Check if agent has discount for this ticket then calculate the ticket price
-            $ticket_price = $ticket_category->amount;
-            $ticket_actual_price = $ticket_category->amount;
-            if ($ticket_agent->discount) {
-            $price = $ticket_price - ($ticket_price * ($ticket_agent->discount/100));
-            $ticket_price = round($price);
-            }
+            // $ticket_actual_price = round($discount_total_amount/$number_of_tickets, 2);
+            // $agent_discounted_price = round($ticket_price/$number_of_tickets, 2);
+            $ticket_actual_price = round($discount_total_amount, 2);
+            $agent_discounted_price = round($ticket_price, 2);
+            DB::beginTransaction();
             $ticket_bulk_vending = new TicketBulkVending();
             $ticket_bulk_vending->plate_number = $plate_number;
             $ticket_bulk_vending->phone_number = $phone_number;
             $ticket_bulk_vending->ticket_category_id = $response_data['category_id'];
-            $ticket_bulk_vending->amount = $ticket_price;
+            $ticket_bulk_vending->amount = $discount_amount;
+            $ticket_bulk_vending->discounted_price = $discount_amount;
             $ticket_bulk_vending->ticket_amount = $ticket_actual_price;
             $ticket_bulk_vending->agent_discount = $ticket_agent->discount;
             $ticket_bulk_vending->ticket_agent_id = $ticket_agent->id;
             $ticket_bulk_vending->owner_name = $validatedData['owner_name'];
             $ticket_bulk_vending->user_id = $user->id;
-            $ticket_bulk_vending->remaining_tickets = $number_of_tickets;
+            $ticket_bulk_vending->remaining_tickets = $number_of_tickets - 1;
             $ticket_bulk_vending->total_tickets = $number_of_tickets;
             $ticket_bulk_vending->expired_at = $ticket_category->expired_at;
             $ticket_bulk_vending->status = 'active';
             $ticket_bulk_vending->save();
             //Deduct agent wallet balance
-            $ticket_agent->wallet_balance = $ticket_agent->wallet_balance - $ticket_price * $number_of_tickets;
+            $ticket_agent->wallet_balance = $ticket_agent->wallet_balance - $agent_discounted_price;
             $ticket_agent->save();
+            if ($ticket_agent->account_type === "Save4ME") {
+                $total_discount = $discount_total_amount * ($ticket_agent->discount / 100);
+                $ticket_agent->increment('savings_balance', $total_discount);
+            }
 
             //Add to agent wallet transaction
             $ticket_agent_wallet = new TicketAgentWallet();
@@ -199,13 +286,53 @@ class TicketBulkVendingController extends Controller
             $ticket_agent_wallet->type = 'bulk_tickets';
             $ticket_agent_wallet->transaction_status = 'active';
             $ticket_agent_wallet->added_by = $user->id;
-            $ticket_agent_wallet->transaction_reference_number = date('isYd');
+            $ticket_agent_wallet->transaction_reference_number = random_int(11111, 99999) . date('hisYd');
             $ticket_agent_wallet->save();
+
+            //Ticket Vending Process for Bulk Begin here
+            $ticket_vending_check = TicketVending::ofToday()->where('plate_number', $validatedData['plate_number'])->first();
+            if (!$ticket_vending_check) {
+                //Ticket Vending Process for Bulk begins here
+                $ticket_vending = new TicketVending();
+                $ticket_vending->plate_number = $plate_number;
+                $ticket_vending->ticket_category_id = $response_data['category_id'];
+                $ticket_vending->amount = round($discount_amount/$number_of_tickets, 2);
+                $ticket_vending->quantity = 1; //To Be discussed in meeting;
+                $ticket_vending->discounted_price = round($discount_amount/$number_of_tickets, 2);
+                $ticket_vending->owner_name = $validatedData['owner_name'];
+                $ticket_vending->vending_source = 'bulk_vending';
+                $ticket_vending->ticket_amount = round($ticket_actual_price/$number_of_tickets,2);
+                $ticket_vending->agent_discount = $ticket_agent->discount;
+                $ticket_vending->ticket_agent_id = $ticket_agent->id;
+                $ticket_vending->user_id = $user->id;
+                $ticket_vending->phone_number = $phone_number;
+                // if (isset($request->geo_location_coordinates)) {
+                //     $coodinates = explode(",",$request->geo_location_coordinates);
+                //     $ticket_vending->latitude = $coodinates[0];
+                //     $ticket_vending->longitude = $coodinates[1];
+                // }
+                $ticket_vending->expired_at = $ticket_category->expired_at;
+                $ticket_vending->ticket_status = 'active';
+                $ticket_vending->ticket_reference_number = random_int(11111, 99999) . date('dmYhis');
+                $ticket_vending->save();
+                DB::commit();
+            }
             //Send SMS to user
             $mobile_number = ltrim($phone_number, "0");
             $owner_name = $validatedData['owner_name'];
-            $message = "Hello {$owner_name}, your ticket has been successfully processed. A total of " . $number_of_tickets . " ticket(s) has been processed for " . $plate_number . " for the next {$number_of_tickets} day(s).";
+            $current_date = date('d-m-Y');
+            //Ticket Vending Message
+            $ticket_category_name = $ticket_category->category_name;
+            $amount = number_format($ticket_category->amount, 2);
+            $expires_at = date('h:ia', strtotime($ticket_category->expired_at));
+            //Bulk Ticket  Vending Message
+            $message = "Hello {$owner_name}, your {$ticket_category_name} ticket for {$plate_number} is successful for {$number_of_tickets} day(s) (N{$discount_total_amount}). {$current_date}. Thank you.";
             $this->send_sms_process_message("+234" . $mobile_number, $message);
+            sleep(2);
+            //Send sms
+            $message = "Hello {$owner_name}, your {$ticket_category_name} ticket purchase for {$plate_number} was successful. Expires at {$expires_at}. {$current_date}. Thank you.";
+            $this->send_sms_process_message("+234" . $mobile_number, $message);
+
             return response()->json([
                 'status' => 'success',
                 'message' => 'Bulk Ticket(s) purchased successfully.',
@@ -266,7 +393,6 @@ class TicketBulkVendingController extends Controller
         }
         $ticket_bulk_vending = TicketBulkVending::where('ticket_agent_id', $ticket_agent_id)->latest()->offset($offset)->limit($limit)->get();
         $total_number_of_records = TicketBulkVending::where('ticket_agent_id', $ticket_agent_id)->count();
-
         if ($request->has('query') && $request->get('query') == 'all') {
             $ticket_bulk_vending = TicketBulkVending::where('ticket_agent_id', $ticket_agent_id)->latest()->get();
         }
@@ -275,15 +401,16 @@ class TicketBulkVendingController extends Controller
             return response()->json([
                 'status' => 'success',
                 'data' => [
-                'ticket_bulk_vending_data' => [],
-                'total_number_of_records' => (int) $total_number_of_records
-            ],
+                    'ticket_bulk_vending_data' => [],
+                    'total_number_of_records' => (int) $total_number_of_records
+                ],
             ], 200);
         }
         return response()->json([
             'status' => 'success',
             'data' => [
-                'ticket_bulk_vending_data' => new TicketBulkVendingCollection($ticket_bulk_vending),
+                //'ticket_bulk_vending_data' => new TicketBulkVendingCollection($ticket_bulk_vending),
+                'ticket_bulk_vending_data' => TicketBulkVendingResource::collection($ticket_bulk_vending),
                 'total_number_of_records' => (int) $total_number_of_records
             ]
         ]);
@@ -298,7 +425,7 @@ class TicketBulkVendingController extends Controller
     public function search(Request $request)
     {
         $per_page = 20;
-        
+
         if ($request->has('plate_number')) {
             $query_request = $request->get('plate_number');
 
@@ -322,7 +449,7 @@ class TicketBulkVendingController extends Controller
             $date_to = $request->get('date_to');
             $ticket_response = TicketBulkVending::whereBetween('created_at', [$date_from, $date_to])->latest()->paginate($per_page);
         }
-        if (!isset($ticket_response)){
+        if (!isset($ticket_response)) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Invalid request.'

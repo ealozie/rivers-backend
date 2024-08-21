@@ -61,9 +61,10 @@ class LoginController extends Controller
                     'token_type' => 'Bearer',
                     'user' => new UserResource($user),
                     'role' => $user->getRoleNames(),
-//                    'permissions' => array_map(function($item){
-//                    return $item['name'];
-//                    }, $user->getDirectPermissions()->toArray())
+                    'formatted_permissions' => array_map(function($item){
+                   return $item['name'];
+                   }, $user->getPermissionsViaRoles()->toArray()),
+                    'permissions' => $user->getPermissionsViaRoles(),
                 ]
             ], 200);
         } else {
