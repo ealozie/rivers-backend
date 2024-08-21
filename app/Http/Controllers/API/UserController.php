@@ -40,9 +40,46 @@ class UserController extends Controller
                 'user' => new UserResource($user),
                 'permissions' => array_map(function($item){
                     return $item['name'];
-                }, $user->getDirectPermissions()->toArray())
+                }, $user->getPermissionsViaRoles()->toArray())
             ],
         ]);
+    }
+
+     /**
+     * Advanced Search in resource.
+     *
+     * Query paramters `phone_number` or `email`.<br>
+     * Additonal Query paramters `status`, `local_government_id`, `role`
+     */
+    public function search(Request $request)
+    {
+        $user_query = User::query();
+        $user_query->when($request->has('email'), function ($query) use ($request) {
+            $email = $request->get('email');
+            return $query->where('email', 'like' ,"%{$email}%");
+        });
+        $user_query->when($request->has('phone_number'), function ($query) use ($request) {
+            $phone_number = $request->get('phone_number');
+            return $query->where('phone_number', 'like' ,"%{$phone_number}%");
+        });
+        $user_query->when($request->has('local_government_id'), function ($query) use ($request) {
+            return $query->where('local_government_area_id', $request->get('local_government_id'));
+        });
+        $user_query->when($request->has('status'), function ($query) use ($request) {
+            return $query->where('status', $request->get('status'));
+        });
+        $user_response = $user_query->get();
+
+        if ($request->has('role')) {
+            $user_response = User::role($request->get('role'))->get();
+        }
+        if (!isset($user_response)) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Invalid request.'
+            ]);
+        }
+        return UserResource::collection($user_response);
     }
 
     /**

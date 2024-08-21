@@ -23,6 +23,9 @@ class UserResource extends JsonResource
             'last_login_at' => $this->last_login_at,
             'residential_address' => $this->residential_address,
             'roles' => $this->get_roles_as_array_list(),
+            'local_government_area' => $this->local_government_area_id ? $this->local_government_area : null,
+            'updated_at' => $this->updated_at,
+            'created_at' => $this->created_at,
         ];
     }
 

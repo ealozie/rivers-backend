@@ -175,6 +175,7 @@ Route::prefix('v1')->group(function () {
 
     Route::post('assign-permissions/{user_id}', [UserController::class, 'assign_permission'])->middleware('auth:sanctum');
     Route::post('revoke-permissions/{user_id}', [UserController::class, 'revoke_permission'])->middleware('auth:sanctum');
+    Route::post('users-advanced-search', [UserController::class, 'search'])->middleware('auth:sanctum');
     Route::get('user/email-phone-number', [UserController::class, 'email_phone_number'])->middleware('auth:sanctum');
     Route::post('user-verification', [UserController::class, 'user_verification']);
     Route::apiResource('ticket-vending', TicketVendingController::class)->middleware('auth:sanctum')->only(['index', 'store', 'show']);

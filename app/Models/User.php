@@ -31,6 +31,7 @@ class User extends Authenticatable implements Auditable
         'role',
         'last_login_at',
         'status',
+        'local_government_area_id'
     ];
 
     /**
@@ -62,4 +63,8 @@ class User extends Authenticatable implements Auditable
     // {
     //     return str_ends_with($this->email, '@gmail.com') && $this->hasVerifiedEmail();
     // }
+    public function local_government_area()
+    {
+        return $this->belongsTo(LocalGovernmentArea::class);
+    }
 }
