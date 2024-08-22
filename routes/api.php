@@ -124,6 +124,7 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('individuals', IndividualController::class);
     Route::get('individuals-search', [IndividualController::class, 'search']);
     Route::get('individuals-entity-id/{entity_id}', [IndividualController::class, 'show_entity_id']);
+    Route::get('cooperate-entity-id/{entity_id}', [CooperateController::class, 'show_entity_id']);
     //Route::apiResource('residential-address', ResidentialController::class);
     Route::apiResource('spouse', SpouseController::class);
     Route::apiResource('shops', ShopController::class)->middleware('auth:sanctum');

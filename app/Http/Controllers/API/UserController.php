@@ -95,10 +95,10 @@ class UserController extends Controller
             'local_government_area_id' => 'required|exists:local_government_areas,id',
             'role' => 'required',
         ]);
-       
+
 
         $user = new User();
-        $user->name = $validatedData['first_name'] . ' ' . $validatedData['surname'];
+        //$user->name = $validatedData['first_name'] . ' ' . $validatedData['surname'];
         $user->email = $validatedData['email'];
         $user->email_verified_at = now();
         $user->phone_number_verified_at = now();
@@ -169,7 +169,7 @@ class UserController extends Controller
      */
     public function revoke_permission(Request $request, string $user_id)
     {
-        
+
         $user = User::where('unique_id', $user_id)->first();
         if (!$user) {
             return response()->json([
@@ -231,7 +231,7 @@ class UserController extends Controller
 
     /**
      * Get User by Email or Phone Number.
-     * 
+     *
      * Query parameter is `email_phone_number` `e.g: http://igr-system.test/api/v1/user/email-phone-number?email_phone_number=08034325697`
      */
     public function email_phone_number(Request $request)

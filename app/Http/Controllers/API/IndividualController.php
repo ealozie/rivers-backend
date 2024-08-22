@@ -70,7 +70,6 @@ class IndividualController extends Controller
         // }
         DB::beginTransaction();
         $user = new User();
-        $user->name = $validatedData['first_name'] . ' ' . $validatedData['surname'];
         $user->email = $validatedData['email'];
         $user->email_verified_at = now();
         //Generate a random password
@@ -150,10 +149,10 @@ class IndividualController extends Controller
     {
         $validatedData = $request->validated();
         $individual = Individual::find($id);
-        $user = User::where('id', $individual->user_id)->first();
-        $user->name = $validatedData['first_name'] . " " . $validatedData['middle_name'] . " " . $validatedData['surname'];
-        $user->save();
         $individual->update($validatedData);
+        $user = User::where('id', $individual->user_id)->first();
+        $user->phone_number = $individual->phone_number;
+        $user->save();
         return response()->json([
             'status' => 'success',
             'data' => [

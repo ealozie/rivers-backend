@@ -29,6 +29,7 @@ return new class extends Migration
             $table->foreignId('demand_notice_category_id');
             $table->integer('number_of_staff');
             $table->string('monthly_turnover', 50);
+            $table->string('phone_number', 50);
             $table->string('picture_path')->nullable();
             $table->boolean('has_signage')->default(false);
             $table->text('notes')->nullable();

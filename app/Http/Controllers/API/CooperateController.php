@@ -73,7 +73,6 @@ class CooperateController extends Controller
             // }
 
             $user = new User();
-            $user->name = $validatedData['business_name'];
             $user->email = $validatedData['email'];
             $user->email_verified_at = now();
             //Generate a random password
@@ -138,6 +137,23 @@ class CooperateController extends Controller
     }
 
     /**
+     * Display the specified resource using the entity id.
+     *
+     * The entity id is the cooperate 10 digit number.
+     */
+    public function show_entity_id(string $entity_id)
+    {
+        $cooperate = Cooperate::where('cooperate_id', $entity_id)->first();
+        if (!$cooperate) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Individual not found',
+            ], 404);
+        }
+        return new CooperateResource($cooperate);
+    }
+
+    /**
      * Update the specified resource in storage.
      */
     public function update(CooperateUpdateRequest $request, string $id)
@@ -151,7 +167,7 @@ class CooperateController extends Controller
             $cooperate = Cooperate::findOrFail($id);
             $cooperate->update($validatedData);
             $user = User::where('id', $cooperate->user_id)->first();
-            $user->name = $validatedData['business_name'];
+            $user->phone_number = $cooperate->phone_number;
             $user->save();
             return response()->json([
                 'status' => 'success',
