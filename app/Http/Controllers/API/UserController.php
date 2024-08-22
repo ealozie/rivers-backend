@@ -200,7 +200,7 @@ class UserController extends Controller
         ]);
         $user = User::findOrFail($id);
         if (isset($requestData['roles']) && count($requestData['roles'])) {
-            $user->syncRoles($validatedData['roles']);
+            $user->syncRoles($requestData['roles']);
         }
         return response()->json([
             'status' => 'success',
