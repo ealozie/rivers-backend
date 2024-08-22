@@ -89,40 +89,42 @@ class PermissionSeeder extends Seeder
         //         Permission::create(['name' => 'edit assessment', 'label'=>'Assessment']);
         //         Permission::create(['name' => 'delete assessment', 'label'=>'Assessment']);
         //         Permission::create(['name' => 'view assessment', 'label'=>'Assessment']);
-        Permission::create(['name' => 'create payment', 'label' => 'Payment']);
-        Permission::create(['name' => 'edit payment', 'label'=> 'Payment']);
-        Permission::create(['name' => 'delete payment', 'label'=> 'Payment']);
-        Permission::create(['name' => 'view payment', 'label'=> 'Payment']);
+        // Permission::create(['name' => 'create payment', 'label' => 'Payment']);
+        // Permission::create(['name' => 'edit payment', 'label'=> 'Payment']);
+        // Permission::create(['name' => 'delete payment', 'label'=> 'Payment']);
+        // Permission::create(['name' => 'view payment', 'label'=> 'Payment']);
 
-        Permission::create(['name' => 'create ticket', 'label' => 'Ticket']);
-        Permission::create(['name' => 'edit ticket', 'label'=> 'Ticket']);
-        Permission::create(['name' => 'delete ticket', 'label'=> 'Ticket']);
-        Permission::create(['name' => 'view ticket', 'label'=> 'Ticket']);
+        // Permission::create(['name' => 'create ticket', 'label' => 'Ticket']);
+        // Permission::create(['name' => 'edit ticket', 'label'=> 'Ticket']);
+        // Permission::create(['name' => 'delete ticket', 'label'=> 'Ticket']);
+        // Permission::create(['name' => 'view ticket', 'label'=> 'Ticket']);
 
-        Permission::create(['name' => 'create agent', 'label' => 'Agent']);
-        Permission::create(['name' => 'edit agent', 'label'=> 'Agent']);
-        Permission::create(['name' => 'delete agent', 'label'=> 'Agent']);
-        Permission::create(['name' => 'view agent', 'label'=> 'Agent']);
+        // Permission::create(['name' => 'create agent', 'label' => 'Agent']);
+        // Permission::create(['name' => 'edit agent', 'label'=> 'Agent']);
+        // Permission::create(['name' => 'delete agent', 'label'=> 'Agent']);
+        // Permission::create(['name' => 'view agent', 'label'=> 'Agent']);
 
-        Permission::create(['name' => 'create enforcement', 'label' => 'Enforcement']);
-        Permission::create(['name' => 'edit enforcement', 'label'=> 'Enforcement']);
-        Permission::create(['name' => 'delete enforcement', 'label'=> 'Enforcement']);
-        Permission::create(['name' => 'view enforcement', 'label'=> 'Enforcement']);
+        // Permission::create(['name' => 'create enforcement', 'label' => 'Enforcement']);
+        // Permission::create(['name' => 'edit enforcement', 'label'=> 'Enforcement']);
+        // Permission::create(['name' => 'delete enforcement', 'label'=> 'Enforcement']);
+        // Permission::create(['name' => 'view enforcement', 'label'=> 'Enforcement']);
 
-        Permission::create(['name' => 'create wallet', 'label' => 'Wallet']);
-        Permission::create(['name' => 'edit wallet', 'label'=> 'Wallet']);
-        Permission::create(['name' => 'delete wallet', 'label'=> 'Wallet']);
-        Permission::create(['name' => 'view wallet', 'label'=> 'Wallet']);
+        // Permission::create(['name' => 'create wallet', 'label' => 'Wallet']);
+        // Permission::create(['name' => 'edit wallet', 'label'=> 'Wallet']);
+        // Permission::create(['name' => 'delete wallet', 'label'=> 'Wallet']);
+        // Permission::create(['name' => 'view wallet', 'label'=> 'Wallet']);
 
-        Permission::create(['name' => 'create ticketcategory', 'label' => 'Ticket Category']);
-        Permission::create(['name' => 'edit ticketcategory', 'label'=> 'Ticket Category']);
-        Permission::create(['name' => 'delete ticketcategory', 'label'=> 'Ticket Category']);
-        Permission::create(['name' => 'view ticketcategory', 'label'=> 'Ticket Category']);
+        // Permission::create(['name' => 'create ticketcategory', 'label' => 'Ticket Category']);
+        // Permission::create(['name' => 'edit ticketcategory', 'label'=> 'Ticket Category']);
+        // Permission::create(['name' => 'delete ticketcategory', 'label'=> 'Ticket Category']);
+        // Permission::create(['name' => 'view ticketcategory', 'label'=> 'Ticket Category']);
 
-        Permission::create(['name' => 'create audittrail', 'label' => 'Audit Trail']);
-        Permission::create(['name' => 'edit audittrail', 'label'=> 'Audit Trail']);
-        Permission::create(['name' => 'delete audittrail', 'label'=> 'Audit Trail']);
-        Permission::create(['name' => 'view audittrail', 'label'=> 'Audit Trail']);
+        // Permission::create(['name' => 'create audittrail', 'label' => 'Audit Trail']);
+        // Permission::create(['name' => 'edit audittrail', 'label'=> 'Audit Trail']);
+        // Permission::create(['name' => 'delete audittrail', 'label'=> 'Audit Trail']);
+        // Permission::create(['name' => 'view audittrail', 'label'=> 'Audit Trail']);
+
+        Permission::create(['name' => 'view dashboard', 'label' => 'Dashboard']);
 
         $permissions = Permission::all();
         foreach ($permissions as $permission) {
