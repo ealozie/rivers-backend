@@ -196,11 +196,16 @@ class UserController extends Controller
     {
         $requestData = $request->validate([
             'roles' => 'nullable|array|min:1',
+            'mda_biller_id' => 'nullable',
             'local_government_area_id' => 'nullable|exists:local_government_areas,id',
         ]);
         $user = User::findOrFail($id);
         if (isset($requestData['roles']) && count($requestData['roles'])) {
             $user->syncRoles($requestData['roles']);
+        }
+        if (isset($requestData['mda_biller_id'])) {
+            $user->mda_biller_id = $requestData['mda_biller_id'];
+            $user->save();
         }
         return response()->json([
             'status' => 'success',
