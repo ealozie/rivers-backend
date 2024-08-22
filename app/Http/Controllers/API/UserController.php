@@ -154,7 +154,6 @@ class UserController extends Controller
         ], 404);
         }
         $user->syncPermissions($validatedData['permissions']);
-
         return response()->json([
             'status' => 'success',
             'message' => 'Permission(s) has been assigned.',
@@ -195,7 +194,20 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $requestData = $request->validate([
+            'role' => 'nullable',
+            //'email' => 'nullable|email|unique:users,email',
+            //'phone_number' => 'nullable|unique:users,phone_number',
+            'local_government_area_id' => 'nullable|exists:local_government_areas,id',
+        ]);
+        $user = User::findOrFail($id);
+        if (isset($requestData['role'])) {
+            $user->assignRole($validatedData['role']);
+        }
+        return response()->json([
+            'status' => 'success',
+            'message' => 'User updated successfully.',
+        ], 200);
     }
 
     /**
