@@ -58,6 +58,7 @@ class AppSettingSeeder extends Seeder
             "ENABLE_SUPER_AGENT" => 'true',
             "ANNOUCEMENT_URL" => 'https://abiaeticket.com/annoucement',
             'ENFORCE_PAYMENT' => 'true',
+            'AGENCY_NAME' => 'ABIA IGR',
         ];
 
         AppSetting::truncate();

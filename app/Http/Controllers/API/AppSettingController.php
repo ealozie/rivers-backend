@@ -35,6 +35,35 @@ class AppSettingController extends Controller
     }
 
     /**
+     * Return Public App settings key and value.
+     *
+     * Authorization header is required to be set to Bearer `<token>` <br>
+     */
+    public function public_app_settings()
+    {
+        $settings = [];
+        $app_settings = AppSetting::whereIn('key', [
+            'APP_NAME',
+            'APP_LOGO',
+            'ORGANIZATION_NAME',
+            'CONTACT_ADDRESS',
+            'CONTACT_NUMBER',
+            'CONTACT_EMAIL',
+            'AGENCY_NAME',
+        ])->get();
+        foreach ($app_settings as $app_setting) {
+            $settings[$app_setting->key] = [
+                'id' => $app_setting->id,
+                'value' => $app_setting->value,
+            ];
+        }
+        return response()->json([
+            'data' => $settings
+        ]);
+    }
+
+
+    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)

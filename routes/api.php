@@ -94,6 +94,7 @@ Route::prefix('v1')->group(function () {
     Route::post('logout', LogoutController::class)->middleware('auth:sanctum');
     Route::post('update-password', UserUpdatePasswordController::class)->middleware('auth:sanctum');
     Route::apiResource('app-settings', AppSettingController::class)->middleware('auth:sanctum')->only(['index', 'update']);
+    Route::get('public-app-settings', [AppSettingController::class, 'public_app_settings']);
     Route::get('assessment-years', AssessmentYearController::class);
     Route::get('business-levels', BusinessLevelController::class);
     Route::get('business-types', BusinessTypeController::class);
