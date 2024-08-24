@@ -15,6 +15,9 @@ use App\Models\Shop;
 use App\Models\Signage;
 use Illuminate\Http\Request;
 
+/**
+ * @tags Account Manager Service
+ */
 class AccountManagerController extends Controller
 {
     /**

@@ -14,6 +14,9 @@ use App\Models\Shop;
 use App\Models\Signage;
 use Illuminate\Http\Request;
 
+/**
+ * @tags Note Service
+ */
 class NoteController extends Controller
 {
     /**
