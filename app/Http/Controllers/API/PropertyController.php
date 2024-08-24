@@ -85,10 +85,8 @@ class PropertyController extends Controller
                 'message' => 'No property found.',
             ], 404);
         }
-
         return new PropertyResource($property);
     }
-
     /**
      * Update the specified resource in storage.
      */

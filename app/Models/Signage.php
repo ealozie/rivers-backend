@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Model;
 
 class Signage extends Model
@@ -28,6 +29,16 @@ class Signage extends Model
     public function local_government_area()
     {
         return $this->belongsTo(LocalGovernmentArea::class);
+    }
+
+    public function notes(): MorphMany
+    {
+        return $this->morphMany(Note::class, 'noteable');
+    }
+
+    public function account_manager(): MorphOne
+    {
+        return $this->morphOne(AccountManager::class, 'accountable');
     }
 
     //Belongs to user

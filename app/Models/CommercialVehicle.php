@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Model;
 
 class CommercialVehicle extends Model
@@ -18,10 +19,20 @@ class CommercialVehicle extends Model
         return $this->belongsTo(VehicleCategory::class);
     }
 
+    public function notes(): MorphMany
+    {
+        return $this->morphMany(Note::class, 'noteable');
+    }
+
     //Belong to a vehicle manufacturer
     public function vehicle_manufacturer()
     {
         return $this->belongsTo(VehicleManufacturer::class);
+    }
+
+    public function account_manager(): MorphOne
+    {
+        return $this->morphOne(AccountManager::class, 'accountable');
     }
 
     //Belong to a vehicle model

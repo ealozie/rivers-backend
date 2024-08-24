@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\AWSImageRecognitionController;
+use App\Http\Controllers\API\AccountManagerController;
 use App\Http\Controllers\API\AgencyController;
 use App\Http\Controllers\API\AppSettingController;
 use App\Http\Controllers\API\AssessmentController;
@@ -36,12 +37,13 @@ use App\Http\Controllers\API\MaritalStatusController;
 use App\Http\Controllers\API\MarketNameController;
 use App\Http\Controllers\API\MonifyWebhookController;
 use App\Http\Controllers\API\NationalityController;
+use App\Http\Controllers\API\NoteController;
 use App\Http\Controllers\API\OccupationController;
 use App\Http\Controllers\API\PaymentController;
+use App\Http\Controllers\API\PermissionController;
 use App\Http\Controllers\API\PropertyCategoryController;
 use App\Http\Controllers\API\PropertyController;
 use App\Http\Controllers\API\PropertyTypeController;
-use App\Http\Controllers\API\PermissionController;
 use App\Http\Controllers\API\PropertyUseController;
 use App\Http\Controllers\API\RegistrationOptionController;
 use App\Http\Controllers\API\ResidentialController;
@@ -143,7 +145,12 @@ Route::prefix('v1')->group(function () {
     Route::get('signage-by-user-id/{user_id_or_unique_id}', [SignageController::class, 'show_by_user_id'])->middleware('auth:sanctum');
     Route::get('audit-trails', AuditTrailController::class)->middleware('auth:sanctum');
     Route::apiResource('assessments', AssessmentController::class)->middleware('auth:sanctum');
+    Route::apiResource('notes', NoteController::class)->middleware('auth:sanctum');
+    Route::get('entity-notes/{entity_type}/{entity_id}', [NoteController::class, 'notes'])->middleware('auth:sanctum');
+    Route::apiResource('account-managers', AccountManagerController::class)->middleware('auth:sanctum');
     Route::get('assessments-search', [AssessmentController::class, 'search'])->middleware('auth:sanctum');
+    Route::get('assessments-agency/{agency_id}', [AssessmentController::class, 'assessments_by_agency_id'])->middleware('auth:sanctum');
+    Route::get('assessments-agency-user/{agency_id}/{user_id}', [AssessmentController::class, 'assessments_by_agency_user'])->middleware('auth:sanctum');
     Route::get('assessments-by-user-id/{user_id_or_unique_id}', [AssessmentController::class, 'show_by_user_id'])->middleware('auth:sanctum');
     Route::get('assessments-by-reference-number/{reference_number}', [AssessmentController::class, 'show_by_reference_number']);
     Route::get('assessments-by-entity-id/{entity_id}', [AssessmentController::class, 'assessment_by_entity_id'])->middleware('auth:sanctum');

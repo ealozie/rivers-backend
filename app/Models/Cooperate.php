@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Model;
 
 class Cooperate extends Model
@@ -16,6 +17,16 @@ class Cooperate extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function notes(): MorphMany
+    {
+        return $this->morphMany(Note::class, 'noteable');
+    }
+
+    public function account_manager(): MorphOne
+    {
+        return $this->morphOne(AccountManager::class, 'accountable');
     }
 
     public function business_type()

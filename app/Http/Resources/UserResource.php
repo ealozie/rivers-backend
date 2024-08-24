@@ -21,6 +21,7 @@ class UserResource extends JsonResource
             'unique_id' => $this->unique_id,
             'phone_number' => $this->phone_number,
             'last_login_at' => $this->last_login_at,
+            'mda_biller_id' => $this->mda_biller_id,
             'residential_address' => $this->residential_address,
             'roles' => $this->get_roles_as_array_list(),
             'local_government_area' => $this->local_government_area_id ? $this->local_government_area : null,

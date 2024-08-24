@@ -43,6 +43,27 @@ class AssessmentController extends Controller
     }
 
     /**
+     * Assessments by agency listing resource.
+     */
+    public function assessments_by_agency_id($agency_id)
+    {
+        $assessments = Assessment::where('agency_id', $agency_id)->paginate();
+        return AssessmentResource::collection($assessments);
+    }
+
+
+    /**
+     * Assessments by agency and user id listing resource.
+     */
+    public function assessments_by_agency_user($agency_id, $user_id)
+    {
+        $assessments = Assessment::where('agency_id', $agency_id)
+        ->where('agency_id', $agency_id)->paginate();
+        return AssessmentResource::collection($assessments);
+    }
+
+
+    /**
      * Verify Assessment Entity ID.
      */
     public function validate_assessment_entity_id(Request $request)
@@ -236,7 +257,7 @@ class AssessmentController extends Controller
         }
 
         if ($entity_type == 'vehicle') {
-            $vehicle = CommercialVehicle::where('signage_id', $entity_id)->first();
+            $vehicle = CommercialVehicle::where('vehicle_id', $entity_id)->first();
             if ($vehicle) {
                 $assessment = $vehicle->assessments()->create($validatedData);
             } else {
