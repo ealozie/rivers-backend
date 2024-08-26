@@ -147,6 +147,7 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('assessments', AssessmentController::class)->middleware('auth:sanctum');
     Route::apiResource('notes', NoteController::class)->middleware('auth:sanctum');
     Route::get('entity-notes/{entity_type}/{entity_id}', [NoteController::class, 'notes'])->middleware('auth:sanctum');
+    Route::get('entity-account-managers/{entity_type}/{entity_id}', [AccountManagerController::class, 'account_manager_by_entity_id'])->middleware('auth:sanctum');
     Route::apiResource('account-managers', AccountManagerController::class)->middleware('auth:sanctum');
     Route::get('assessments-search', [AssessmentController::class, 'search'])->middleware('auth:sanctum');
     Route::get('assessments-agency/{agency_id}', [AssessmentController::class, 'assessments_by_agency_id'])->middleware('auth:sanctum');
