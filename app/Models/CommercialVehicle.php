@@ -19,7 +19,7 @@ class CommercialVehicle extends Model
         return $this->belongsTo(VehicleCategory::class);
     }
 
-    public function notes(): MorphMany
+    public function vehicle_notes(): MorphMany
     {
         return $this->morphMany(Note::class, 'noteable');
     }

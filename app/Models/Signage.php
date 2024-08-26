@@ -31,7 +31,7 @@ class Signage extends Model
         return $this->belongsTo(LocalGovernmentArea::class);
     }
 
-    public function notes(): MorphMany
+    public function signage_notes(): MorphMany
     {
         return $this->morphMany(Note::class, 'noteable');
     }

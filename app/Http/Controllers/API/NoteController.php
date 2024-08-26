@@ -39,7 +39,7 @@ class NoteController extends Controller
         if ($validatedData['entity_type'] == 'property') {
             $property = Property::where('property_id', $entity_id)->first();
             if ($property) {
-                $note = $property->notes()->create($validatedData);
+                $note = $property->property_notes()->create($validatedData);
             } else {
                 return response()->json([
                     'status' => 'error',
@@ -51,7 +51,7 @@ class NoteController extends Controller
         if ($validatedData['entity_type'] == 'shop') {
             $shop = Shop::where('shop_id', $entity_id)->first();
             if ($shop) {
-                $note = $shop->notes()->create($validatedData);
+                $note = $shop->shop_notes()->create($validatedData);
             } else {
                 return response()->json([
                     'status' => 'error',
@@ -62,7 +62,7 @@ class NoteController extends Controller
         if ($validatedData['entity_type'] == 'individual') {
             $individual = Individual::where('individual_id', $entity_id)->first();
             if ($individual) {
-                $note = $individual->notes()->create($validatedData);
+                $note = $individual->individual_notes()->create($validatedData);
             } else {
                 return response()->json([
                     'status' => 'error',
@@ -73,7 +73,7 @@ class NoteController extends Controller
         if ($validatedData['entity_type'] == 'cooperate') {
             $cooperate = Cooperate::where('cooperate_id', $entity_id)->first();
             if ($cooperate) {
-                $note = $cooperate->notes()->create($validatedData);
+                $note = $cooperate->cooperate_notes()->create($validatedData);
             } else {
                 return response()->json([
                     'status' => 'error',
@@ -85,7 +85,7 @@ class NoteController extends Controller
         if ($validatedData['entity_type'] == 'signage') {
             $signage = Signage::where('signage_id', $entity_id)->first();
             if ($signage) {
-                $note = $signage->notes()->create($validatedData);
+                $note = $signage->signage_notes()->create($validatedData);
             } else {
                 return response()->json([
                     'status' => 'error',
@@ -96,7 +96,7 @@ class NoteController extends Controller
         if ($validatedData['entity_type'] == 'vehicle') {
             $vehicle = CommercialVehicle::where('vehicle_id', $entity_id)->first();
             if ($vehicle) {
-                $note = $vehicle->notes()->create($validatedData);
+                $note = $vehicle->vehicle_notes()->create($validatedData);
             } else {
                 return response()->json([
                     'status' => 'error',
@@ -129,7 +129,7 @@ class NoteController extends Controller
         if ($validatedData['entity_type'] == 'shop') {
             $shop = Shop::where('shop_id', $entity_id)->first();
             if ($shop) {
-                $notes = $shop->notes;
+                $notes = $shop->shop_notes;
                 return NoteResource::collection($notes);
             } else {
                 return response()->json([
@@ -141,7 +141,7 @@ class NoteController extends Controller
         if ($validatedData['entity_type'] == 'individual') {
             $individual = Individual::where('individual_id', $entity_id)->first();
             if ($individual) {
-                $notes = $individual->notes;
+                $notes = $individual->individual_notes;
                 return NoteResource::collection($notes);
             } else {
                 return response()->json([
@@ -153,7 +153,8 @@ class NoteController extends Controller
         if ($validatedData['entity_type'] == 'cooperate') {
             $cooperate = Cooperate::where('cooperate_id', $entity_id)->first();
             if ($cooperate) {
-                $notes = $cooperate->notes;
+                $notes = $cooperate->cooperate_notes;
+                //return $notes;
                 return NoteResource::collection($notes);
             } else {
                 return response()->json([
@@ -166,7 +167,7 @@ class NoteController extends Controller
         if ($validatedData['entity_type'] == 'signage') {
             $signage = Signage::where('signage_id', $entity_id)->first();
             if ($signage) {
-                $notes = $signage->notes;
+                $notes = $signage->signage_notes;
                 return NoteResource::collection($notes);
             } else {
                 return response()->json([
@@ -178,7 +179,7 @@ class NoteController extends Controller
         if ($validatedData['entity_type'] == 'vehicle') {
             $vehicle = CommercialVehicle::where('vehicle_id', $entity_id)->first();
             if ($vehicle) {
-                $notes = $vehicle->notes;
+                $notes = $vehicle->vehicle_notes;
                 return NoteResource::collection($notes);
             } else {
                 return response()->json([

@@ -18,7 +18,7 @@ class Shop extends Model
         return $this->belongsTo(BusinessCategory::class);
     }
 
-    public function notes(): MorphMany
+    public function shop_notes(): MorphMany
     {
         return $this->morphMany(Note::class, 'noteable');
     }

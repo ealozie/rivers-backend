@@ -19,7 +19,7 @@ class Cooperate extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function notes(): MorphMany
+    public function cooperate_notes(): MorphMany
     {
         return $this->morphMany(Note::class, 'noteable');
     }
