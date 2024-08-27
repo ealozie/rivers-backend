@@ -51,6 +51,14 @@ class AccountManagerController extends Controller
     {
         $validatedData = $request->validated();
         $validatedData['added_by'] = $request->user()->id;
+        $user = User::where('unique_id', $validatedData['user_id'])->first();
+        if (!$user) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User not found',
+            ], 404);
+        }
+        $validatedData['user_id'] = $user->id;
         $entity_id = $validatedData['entity_id'];
         if (isset($validatedData['entity_id']) && $validatedData['entity_type'] == 'shop') {
             $shop = Shop::where('shop_id', $entity_id)->first();
