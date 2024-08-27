@@ -13,6 +13,7 @@ use App\Models\Individual;
 use App\Models\Property;
 use App\Models\Shop;
 use App\Models\Signage;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 /**
