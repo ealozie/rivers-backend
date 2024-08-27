@@ -15,7 +15,7 @@ class UserSeeder extends Seeder
         // $users = [
         //     ['name' => 'Nathaniel', 'email' => 'david.nathaniel13@gmail.com', 'password' => bcrypt('xbba063nath'), 'role' => 'admin'],
         // ];
-        $users = \App\Models\User;
+        $users = \App\Models\User::all();
         foreach ($users as $user) {
             $names = explode('@', $user->email);
             $other_names = explode('.', $names);
@@ -25,6 +25,7 @@ class UserSeeder extends Seeder
                 $user->name = ucfirst($names[0]);
             }
             $user->save();
+            
         }
     }
 }
