@@ -17,7 +17,6 @@ class IndividualResource extends JsonResource
         return [
             "id" => $this->id,
             "individual_id" => $this->individual_id,
-            //"user" => $this->user,
             "bvn" => $this->bvn,
             "nin" => $this->nin,
             "tin" => $this->tin,
@@ -45,6 +44,7 @@ class IndividualResource extends JsonResource
             "residence_local_government_area" => $this->residence_local_government_area ?? '',
             "occupation" => $this->occupation,
             "income_range" => $this->income_range,
+            "user" => $this->user,
             "demand_notice_category" => $this->demand_notice_category,
             "created_at" => $this->created_at,
             "updated_at" => $this->updated_at,
