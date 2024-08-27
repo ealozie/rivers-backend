@@ -36,6 +36,15 @@ class AccountManagerController extends Controller
     }
 
     /**
+     * Get Account Manager entities by Account Manager User ID.
+     */
+    public function account_manager_entities(Request $request, $user_id)
+    {
+        $account_manager = AccountManager::where('user_id', $user_id)->get();
+        return AccountManagerResource::collection($account_manager);
+    }
+
+    /**
      * Store a newly created resource in storage.
      */
     public function store(AccountManagerStoreRequest $request)
