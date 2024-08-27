@@ -18,7 +18,7 @@ class UserSeeder extends Seeder
         $users = \App\Models\User::all();
         foreach ($users as $user) {
             $names = explode('@', $user->email);
-            $other_names = explode('.', $names);
+            $other_names = explode('.', $names[0]);
             if (count($other_names) > 1) {
                 $user->name = ucfirst($other_names[0]);
             } else {
