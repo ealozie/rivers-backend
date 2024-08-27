@@ -19,7 +19,7 @@ class NoteResource extends JsonResource
             'subject' => $this->subject,
             'note' => $this->note,
             'type' => $this->noteable_type,
-            'added_by' => new UserResource($this->user),
+            'added_by' => new IndividualResource($this->user()),
             'created_at' => $this->created_at,
         ];
     }

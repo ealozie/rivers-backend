@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
+use App\Models\Individual;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Note extends Model
 {
@@ -13,8 +14,15 @@ class Note extends Model
     protected $guarded = ['id'];
 
 
+    // public function user()
+    // {
+    //     return $this->belongsTo(User::class, 'added_by');
+    // }
+
     public function user()
     {
-        return $this->belongsTo(User::class, 'added_by');
+        $user = Individual::where('user_id', $this->added_by)->first();
+        return $user;
+        //return $this->belongsTo(User::class, 'added_by');
     }
 }
