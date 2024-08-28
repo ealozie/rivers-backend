@@ -31,6 +31,11 @@ class Signage extends Model
         return $this->belongsTo(LocalGovernmentArea::class);
     }
 
+    public function demand_notices(): MorphMany
+    {
+        return $this->morphMany(DemandNotice::class, 'demand_noticeable');
+    }
+
     public function signage_notes(): MorphMany
     {
         return $this->morphMany(Note::class, 'noteable');

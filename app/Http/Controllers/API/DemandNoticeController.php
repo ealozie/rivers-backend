@@ -61,7 +61,7 @@ class DemandNoticeController extends Controller
                     'message'=> 'Shop not found',
                 ], 404);
             }
-            $model_type = 'App\Models\Shop';
+            $demand_notice = $shop->demand_notices()->create($requestData);
         }
         if ($requestData['entity_type'] == 'vehicle') {
             $vehicle = CommercialVehicle::where('vehicle_id', $requestData['entity_id'])->first();
@@ -71,7 +71,7 @@ class DemandNoticeController extends Controller
                     'message'=> 'Commercial Vehicle not found.',
                 ], 404);
             }
-            $model_type = 'App\Models\CommercialVehicle';
+            $demand_notice = $vehicle->demand_notices()->create($requestData);
         }
         if ($requestData['entity_type'] == 'property') {
             $property = Property::where('property_id', $requestData['entity_id'])->first();
@@ -81,7 +81,7 @@ class DemandNoticeController extends Controller
                     'message'=> 'Property not found.',
                 ], 404);
             }
-            $model_type = 'App\Models\Property';
+            $demand_notice = $property->demand_notices()->create($requestData);
         }
         if ($requestData['entity_type'] == 'signage') {
             $signage = Signage::where('signage_id', $requestData['entity_id'])->first();
@@ -91,7 +91,7 @@ class DemandNoticeController extends Controller
                     'message'=> 'Signage not found.',
                 ], 404);
             }
-            $model_type = 'App\Models\Signage';
+            $demand_notice = $signage->demand_notices()->create($requestData);
         }
         if ($requestData['entity_type'] == 'individual') {
             $individual = Individual::where('individual_id', $requestData['entity_id'])->first();
@@ -101,9 +101,9 @@ class DemandNoticeController extends Controller
                     'message'=> 'Individual not found.',
                 ], 404);
             }
-            $model_type = 'App\Models\Individual';
+            $demand_notice = $individual->demand_notices()->create($requestData);
         }
-    
+
         if ($requestData['entity_type'] == 'individual') {
             $cooperate = Cooperate::where('cooperate_id', $requestData['entity_id'])->first();
             if (!$cooperate) {
@@ -112,11 +112,8 @@ class DemandNoticeController extends Controller
                     'message'=> 'Cooperate not found.',
                 ], 404);
             }
-            $model_type = 'App\Models\Cooperate';
+            $demand_notice = $cooperate->demand_notices()->create($requestData);
         }
-        $requestData['model_type'] = $model_type;
-
-        $demand_notice = DemandNotice::create($requestData);
         $demand_notice_category_items = DemandNoticeCategoryItem::where('demand_notice_category_id', $requestData['demand_notice_category_id'])->get();
         foreach ($demand_notice_category_items as $demand_notice_category_item) {
             $demand_notice_item = new DemandNoticeItem();

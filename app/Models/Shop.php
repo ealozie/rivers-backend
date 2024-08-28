@@ -23,6 +23,11 @@ class Shop extends Model
         return $this->morphMany(Note::class, 'noteable');
     }
 
+    public function demand_notices(): MorphMany
+    {
+        return $this->morphMany(DemandNotice::class, 'demand_noticeable');
+    }
+
     public function account_manager(): MorphOne
     {
         return $this->morphOne(AccountManager::class, 'accountable');

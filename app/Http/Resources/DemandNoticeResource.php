@@ -18,6 +18,8 @@ class DemandNoticeResource extends JsonResource
             'id' => $this->id,
             'demand_notice_number' => $this->demand_notice_number,
             'demand_notice_category' => $this->demand_notice_category,
+            'entity_type' => $this->demand_noticeable_type,
+            'entity' => $this->demand_noticeable,
             'user' => $this->user,
             'year' => $this->year,
             'generated_by' => $this->user_generated,

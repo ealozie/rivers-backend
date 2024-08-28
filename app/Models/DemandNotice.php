@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class DemandNotice extends Model
 {
@@ -41,5 +42,10 @@ class DemandNotice extends Model
     public function demand_notice_items()
     {
         return $this->hasMany(DemandNoticeItem::class);
+    }
+
+    //morph
+    public function demand_noticeable(): MorphTo {
+        return $this->morphTo();
     }
 }

@@ -14,10 +14,10 @@ class Note extends Model
     protected $guarded = ['id'];
 
 
-    // public function user()
-    // {
-    //     return $this->belongsTo(User::class, 'added_by');
-    // }
+    public function admin()
+    {
+        return $this->belongsTo(User::class, 'added_by');
+    }
 
     public function user()
     {
