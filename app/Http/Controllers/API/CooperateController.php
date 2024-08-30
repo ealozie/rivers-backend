@@ -147,7 +147,7 @@ class CooperateController extends Controller
         if (!$cooperate) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Individual not found',
+                'message' => 'Cooperate not found',
             ], 404);
         }
         return new CooperateResource($cooperate);

@@ -124,8 +124,18 @@ class PermissionSeeder extends Seeder
         // Permission::create(['name' => 'delete audittrail', 'label'=> 'Audit Trail']);
         // Permission::create(['name' => 'view audittrail', 'label'=> 'Audit Trail']);
 
+        Permission::create(['name' => 'create accountmanager', 'label' => 'Account Manager']);
+        Permission::create(['name' => 'edit accountmanager', 'label'=> 'Account Manager']);
+        Permission::create(['name' => 'delete accountmanager', 'label'=> 'Account Manager']);
+        Permission::create(['name' => 'view accountmanager', 'label'=> 'Account Manager']);
+
+        Permission::create(['name' => 'create note', 'label' => 'Note']);
+        Permission::create(['name' => 'edit note', 'label'=> 'Note']);
+        Permission::create(['name' => 'delete note', 'label'=> 'Note']);
+        Permission::create(['name' => 'view note', 'label'=> 'Note']);
+
         //Permission::create(['name' => 'view dashboard', 'label' => 'Dashboard']);
-        Permission::create(['name' => 'view settings', 'label' => 'Settings']);
+        //Permission::create(['name' => 'view settings', 'label' => 'Settings']);
 
         $permissions = Permission::all();
         foreach ($permissions as $permission) {

@@ -51,7 +51,7 @@ class DatabaseSeeder extends Seeder
             //RoleSeeder::class,
             // DocumentLifeSpanSeeder::class,
             // TollGateCategorySeeder::class,
-            //PermissionSeeder::class,
+            PermissionSeeder::class,
             UserSeeder::class,
         ]);
     }
