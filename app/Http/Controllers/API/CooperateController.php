@@ -102,6 +102,8 @@ class CooperateController extends Controller
             $validatedData['cooperate_id'] = '2' . date('hi') . mt_rand(11111, 99999);
             $cooperate = Cooperate::create($validatedData);
             $user->assignRole('cooperate');
+            $user->unique_id = $validatedData['cooperate_id'];
+            $user->save();
             DB::commit();
             return response()->json([
                 'status' => 'success',

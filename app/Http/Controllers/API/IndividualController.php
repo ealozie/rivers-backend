@@ -91,13 +91,11 @@ class IndividualController extends Controller
         $this->send_sms_process_message("+234" . $mobile_number, $message);
         $validatedData['user_id'] = $user->id;
         $validatedData['demand_notice_category_id'] = 0;
-
         $token = $user->createToken('igr_system_auth_token')->plainTextToken;
         $validatedData['email_address'] = $validatedData['email'];
         $individual = Individual::create($validatedData);
         $user->assignRole('individual');
         DB::commit();
-
         return response()->json([
             'status' => 'success',
             'data' => [
