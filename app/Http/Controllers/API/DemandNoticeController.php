@@ -104,7 +104,7 @@ class DemandNoticeController extends Controller
             $demand_notice = $individual->demand_notices()->create($requestData);
         }
 
-        if ($requestData['entity_type'] == 'individual') {
+        if ($requestData['entity_type'] == 'cooperate') {
             $cooperate = Cooperate::where('cooperate_id', $requestData['entity_id'])->first();
             if (!$cooperate) {
                 return response()->json([
