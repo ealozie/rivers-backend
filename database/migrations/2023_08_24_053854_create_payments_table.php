@@ -81,8 +81,6 @@ Teller
             $table->string('customer_reference')->nullable();
             $table->string('alternate_customer_reference')->nullable();
             $table->double('amount', 12, 2)->nullable();
-            $table->string('payment_status')->nullable();
-            $table->string('payment_method')->nullable();
             $table->string('payment_reference')->nullable();
             $table->string('terminal_id')->nullable();
             $table->string('channel_name')->nullable();
