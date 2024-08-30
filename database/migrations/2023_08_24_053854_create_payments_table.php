@@ -75,8 +75,6 @@ Teller
             $table->string('ftp_url')->nullable();
             $table->string('ftp_username')->nullable();
             $table->string('ftp_password')->nullable();
-            $table->string('payments')->nullable();
-            $table->string('payment')->nullable();
             $table->boolean('is_repeated')->nullable();
             $table->string('product_group_code')->nullable();
             $table->integer('payment_log_id')->nullable();
