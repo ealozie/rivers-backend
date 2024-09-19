@@ -75,9 +75,11 @@ Teller
             $table->string('ftp_url')->nullable();
             $table->string('ftp_username')->nullable();
             $table->string('ftp_password')->nullable();
-            $table->boolean('is_repeated')->nullable();
+            $table->string('is_repeated')->nullable();
             $table->string('product_group_code')->nullable();
-            $table->integer('payment_log_id')->nullable();
+            $table->string('payment_method')->nullable();
+            $table->string('payment_status')->nullable();
+            $table->string('payment_log_id')->nullable();
             $table->string('customer_reference')->nullable();
             $table->string('alternate_customer_reference')->nullable();
             $table->double('amount', 12, 2)->nullable();
@@ -85,9 +87,9 @@ Teller
             $table->string('terminal_id')->nullable();
             $table->string('channel_name')->nullable();
             $table->string('location')->nullable();
-            $table->boolean('is_reversal')->nullable();
-            $table->dateTime('payment_date')->nullable();
-            $table->dateTime('settlement_date')->nullable();
+            $table->string('is_reversal')->nullable();
+            $table->string('payment_date')->nullable();
+            $table->string('settlement_date')->nullable();
             $table->string('institution_id')->nullable();
             $table->string('institution_name')->nullable();
             $table->string('branch_name')->nullable();
@@ -98,8 +100,7 @@ Teller
             $table->string('receipt_no')->nullable();
             $table->string('collections_account')->nullable();
             $table->string('third_party_code')->nullable();
-            $table->json('payments')->nullable();
-            $table->json('payment')->nullable();
+            $table->json('payment_items')->nullable();
             $table->string('item_name', 50)->nullable();
             $table->string('item_code', 20)->nullable();
             $table->double('item_amount', 12, 2)->nullable();
@@ -118,6 +119,7 @@ Teller
             $table->integer('original_payment_log_id')->nullable();
             $table->string('original_payment_reference')->nullable();
             $table->string('teller')->nullable();
+            $table->boolean('is_credited')->default(false);
             // $table->string('uuid')->nullable();
             // $table->string('transaction_id')->nullable();
             // $table->string('reference_number')->nullable();

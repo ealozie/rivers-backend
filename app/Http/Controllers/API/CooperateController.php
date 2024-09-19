@@ -75,6 +75,7 @@ class CooperateController extends Controller
             $user = new User();
             $user->email = $validatedData['email'];
             $user->email_verified_at = now();
+            $user->name = $validatedData['business_name'];
             //Generate a random password
             $password = 123456;
             $user->phone_number = $validatedData['phone_number'];

@@ -72,6 +72,7 @@ class IndividualController extends Controller
         $user = new User();
         $user->email = $validatedData['email'];
         $user->email_verified_at = now();
+        $user->name = $validatedData['first_name'] . ' ' . $validatedData['surname'];
         //Generate a random password
         $password = 123456;
         $user->phone_number = $validatedData['phone_number'];

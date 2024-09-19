@@ -116,6 +116,177 @@ class PaymentController extends Controller
     }
 
     /**
+     * Interswitch Payment Notification  & Customer Data Validation.
+     */
+    public function interswitch_payment_notification_data_validation(Request $request)
+    {
+        $request_xml_data = $request->getContent();
+        $xml_tag_check = new \SimpleXMLElement($request_xml_data);
+        $requestData = simplexml_load_string($request_xml_data, "SimpleXMLElement", LIBXML_NOCDATA);
+        $json_encoded_data = json_encode($requestData);
+        //return $xml_tag_check->getName();
+        $paymentData = json_decode($json_encoded_data, true);
+        //return $paymentData;
+        try {
+            if ($xml_tag_check->getName() == 'PaymentNotificationRequest') {
+                $payment = Payment::firstOrCreate(
+                [
+                    'payment_log_id' => $paymentData['Payments']['Payment']['PaymentLogId'],
+                    'amount' => (float) $paymentData['Payments']['Payment']['Amount'],
+                    'payment_reference' => $paymentData['Payments']['Payment']['PaymentReference'],
+                    'receipt_no' => $paymentData['Payments']['Payment']['ReceiptNo'],
+                ],
+                [
+                    'service_url' => $paymentData['ServiceUrl'],
+                    //'service_username' => $paymentData['Payments']['Payment']['Amount'],
+                    //'service_password' => $paymentData['Payments']['Payment']['PaymentReference'],
+                    'ftp_url' => $paymentData['FtpUrl'],
+                    'is_repeated' => $paymentData['Payments']['Payment']['IsRepeated'],
+                    'product_group_code' => $paymentData['Payments']['Payment']['ProductGroupCode'],
+                    'customer_reference' => $paymentData['Payments']['Payment']['CustReference'],
+                    'alternate_customer_reference' => $paymentData['Payments']['Payment']['AlternateCustReference'],
+                    'payment_status' => $paymentData['Payments']['Payment']['PaymentStatus'],
+                    'payment_method' => $paymentData['Payments']['Payment']['PaymentMethod'],
+                    //'terminal_id' => $paymentData['Payments']['Payment']['TerminalId'],
+                    'channel_name' => $paymentData['Payments']['Payment']['ChannelName'],
+                    'location' => $paymentData['Payments']['Payment']['Location'],
+                    'is_reversal' => $paymentData['Payments']['Payment']['IsReversal'],
+                    'payment_date' => $paymentData['Payments']['Payment']['PaymentDate'],
+                    'settlement_date' => $paymentData['Payments']['Payment']['SettlementDate'],
+                    'institution_id' => $paymentData['Payments']['Payment']['InstitutionId'],
+                    'institution_name' => $paymentData['Payments']['Payment']['InstitutionName'],
+                    'branch_name' => $paymentData['Payments']['Payment']['BranchName'],
+                    'bank_name' => $paymentData['Payments']['Payment']['BankName'],
+                    //'fee_name' => $paymentData['Payments']['Payment']['FeeName'],
+                    //'customer_name' => $paymentData['Payments']['Payment']['CustomerName'],
+                    //'other_customer_info' => $paymentData['Payments']['Payment']['OtherCustomerInfo'],
+                    'collections_account' => $paymentData['Payments']['Payment']['CollectionsAccount'],
+                    //'third_party_code' => $paymentData['Payments']['Payment']['ThirdPartyCode'],
+                    'payments_items' => json_encode($paymentData['Payments']['Payment']['PaymentItems']),
+                    'item_name' => $paymentData['Payments']['Payment']['PaymentItems']['PaymentItem']['ItemName'],
+                    'item_code' => $paymentData['Payments']['Payment']['PaymentItems']['PaymentItem']['ItemCode'],
+                    'item_amount' => $paymentData['Payments']['Payment']['PaymentItems']['PaymentItem']['ItemAmount'],
+                    'lead_bank_code' => $paymentData['Payments']['Payment']['PaymentItems']['PaymentItem']['LeadBankCode'],
+                    'lead_bank_cbn_code' => $paymentData['Payments']['Payment']['PaymentItems']['PaymentItem']['LeadBankCbnCode'],
+                    'lead_bank_name' => $paymentData['Payments']['Payment']['PaymentItems']['PaymentItem']['LeadBankName'],
+                    //'category_code' => $paymentData['Payments']['Payment']['PaymentItems']['PaymentItem']['CategoryCode'],
+                    //'category_name' => $paymentData['Payments']['Payment']['PaymentItems']['PaymentItem']['CategoryName'],
+                    'item_quantity' => $paymentData['Payments']['Payment']['PaymentItems']['PaymentItem']['ItemQuantity'],
+
+                    'bank_code' => $paymentData['Payments']['Payment']['BankCode'],
+                    //'customer_address' => $paymentData['Payments']['Payment']['CustomerAddress'],
+                    //'customer_phone_number' => $paymentData['Payments']['Payment']['CustomerPhoneNumber'],
+                    //'depositor_name' => $paymentData['Payments']['Payment']['DepositorName'],
+                    'depositor_slip_number' => $paymentData['Payments']['Payment']['DepositSlipNumber'],
+                    'payment_currency' => $paymentData['Payments']['Payment']['PaymentCurrency'],
+                    //'original_payment_log_id' => $paymentData['Payments']['Payment']['OriginalPaymentLogId'],
+                    //'original_payment_reference' => $paymentData['Payments']['Payment']['OriginalPaymentReference'],
+                    'teller' => $paymentData['Payments']['Payment']['Teller'],
+                ]
+            );
+            //if its reversal
+            if ($paymentData['Payments']['Payment']['IsReversal'] == 'True') {
+                //update the payment status to reversed
+                //Decrement the amount from the user wallet
+            }
+            if ($paymentData['Payments']['Payment']['PaymentStatus'] == '0' && $payment->is_credited == 0) {
+                //update the payment status to paid
+                //Increment the amount to the user wallet
+                $payment->is_credited = true;
+                $payment->save();
+            }
+            $payment_log_id = $paymentData['Payments']['Payment']['PaymentLogId'];
+            //return xml response
+            $response = "
+            <PaymentNotificationResponse>
+                <Payments>
+                    <Payment>
+                        <PaymentLogId>{$payment_log_id}</PaymentLogId>
+                        <Status>0</Status>
+                    </Payment>
+                </Payments>
+            </PaymentNotificationResponse>";
+            return response($response, 200)->header('Content-Type', 'text/xml');
+            }
+
+            if ($xml_tag_check->getName() == 'CustomerInformationRequest') {
+                $customer_reference = $paymentData['CustReference'];
+                $merchant_reference = $paymentData['MerchantReference'];
+                $user = User::where('unique_id', $customer_reference)->first();
+                if (!$user) {
+                    $response = "
+                    <CustomerInformationResponse>
+                        <MerchantReference>{$merchant_reference}</MerchantReference>
+                        <Customers>
+                            <Customer>
+                                <Status>1</Status>
+                                <CustReference>{$customer_reference}</CustReference>
+                                <CustomerReferenceAlternate></CustomerReferenceAlternate>
+                                <FirstName></FirstName>
+                                <LastName></LastName>
+                                <Email></Email>
+                                <Phone></Phone>
+                                <ThirdPartyCode></ThirdPartyCode>
+                                <Amount>0.00</Amount>
+                            </Customer>
+                        </Customers>
+                    </CustomerInformationResponse>";
+                    return response($response, 200)->header('Content-Type', 'text/xml');
+                }
+                $email = $user->email;
+                $phone_number = $user->phone_number;
+                $names = explode(' ', $user->name);
+                if (count($names) > 1) {
+                    $first_name = $names[0];
+                    $last_name = $names[1];
+                } else {
+                    $first_name = $names[0];
+                    $last_name = '';
+                }
+
+                $response = "
+                    <CustomerInformationResponse>
+                        <MerchantReference>{$merchant_reference}</MerchantReference>
+                        <Customers>
+                            <Customer>
+                                <Status>0</Status>
+                                <CustReference>{$customer_reference}</CustReference>
+                                <CustomerReferenceAlternate></CustomerReferenceAlternate>
+                                <FirstName>{$first_name}</FirstName>
+                                <LastName>{$last_name}</LastName>
+                                <Email>{$email}</Email>
+                                <Phone>{$phone_number}</Phone>
+                                <ThirdPartyCode></ThirdPartyCode>
+                                <Amount>0</Amount>
+                            </Customer>
+                        </Customers>
+                    </CustomerInformationResponse>";
+                return response($response, 200)->header('Content-Type', 'text/xml');
+
+            }
+
+        } catch (\Exception $e) {
+            if ($xml_tag_check->getName() == 'PaymentNotificationRequest') {
+                $payment_log_id = $paymentData['Payments']['Payment']['PaymentLogId'];
+                $response = "
+                <PaymentNotificationResponse>
+                    <Payments>
+                        <Payment>
+                            <PaymentLogId>{$payment_log_id}</PaymentLogId>
+                            <Status>1</Status>
+                        </Payment>
+                    </Payments>
+                </PaymentNotificationResponse>";
+                return response($response, 200)->header('Content-Type', 'text/xml');
+            }
+            return $e->getMessage();
+        }
+
+        //This will be a queued process.
+        //logger($request_data);
+    }
+
+    /**
      * InterSwitch Payment Webhook.
      */
     public function payment_webhoook_for_wallet(Request $request)
@@ -138,7 +309,7 @@ class PaymentController extends Controller
                 return response()->json();
             }
         }
-        
+
     }
 
     /**
@@ -173,7 +344,7 @@ class PaymentController extends Controller
 
     /**
      * Verify InterSwitch Payment using Reference number.
-     * 
+     *
      * Query parameter `ref_number` is required.<br>
      * Authentication Token is required.
      */
@@ -222,7 +393,7 @@ class PaymentController extends Controller
     public function search(Request $request)
     {
         $per_page = 20;
-        
+
         if ($request->has('payer_name')) {
             $query_request = $request->get('payer_name');
             $response = Payment::where('payer_name', 'like', "%$query_request%")->paginate($per_page);
@@ -250,7 +421,7 @@ class PaymentController extends Controller
         if ($request->has('payment_channel')) {
             $query_request = $request->get('payment_channel');
             $response = Payment::where('payment_channel', $query_request)->paginate($per_page);
-        }        
+        }
         if ($request->has('date_from') && $request->has('date_to')) {
             $date_from = $request->get('date_from');
             $date_to = $request->get('date_to');
