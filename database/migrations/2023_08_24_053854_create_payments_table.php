@@ -109,14 +109,14 @@ Teller
             $table->string('lead_bank_name')->nullable();
             $table->string('category_code', 20)->nullable();
             $table->string('category_name')->nullable();
-            $table->integer('item_quantity')->nullable();
+            $table->string('item_quantity')->nullable();
             $table->string('bank_code', 20)->nullable();
             $table->string('customer_address')->nullable();
             $table->string('customer_phone_number')->nullable();
             $table->string('depositor_name')->nullable();
             $table->string('depositor_slip_number')->nullable();
             $table->string('payment_currency')->nullable();
-            $table->integer('original_payment_log_id')->nullable();
+            $table->string('original_payment_log_id')->nullable();
             $table->string('original_payment_reference')->nullable();
             $table->string('teller')->nullable();
             $table->boolean('is_credited')->default(false);

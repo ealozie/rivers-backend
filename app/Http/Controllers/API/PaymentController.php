@@ -120,68 +120,281 @@ class PaymentController extends Controller
      */
     public function interswitch_payment_notification_data_validation(Request $request)
     {
-        $request_xml_data = $request->getContent();
+        $request_xml_data = trim($request->getContent());
+
+        // Regular expression to check for special characters at the beginning or end of the XML
+        if (preg_match('/^[^<>]*<\?xml/', $request_xml_data) && preg_match('/<\/[^<>]+>[^<>]*$/', $request_xml_data)) {
+            $response = "
+            <PaymentNotificationResponse>
+                <Payments>
+                    <Payment>
+                        <Status>101</Status>
+                    </Payment>
+                </Payments>
+            </PaymentNotificationResponse>";
+            return response($response, status: 400)->header('Content-Type', 'text/xml');
+        }
+        /*Check for invalid XML Structure*/
+        $document_object = new \DOMDocument();
+        libxml_use_internal_errors(true);
+        //return $document_object->loadXML($request_xml_data);
+        if (!$document_object->loadXML($request_xml_data)) {
+            $errors = libxml_get_errors();
+            libxml_clear_errors();
+            $error_messages = [];
+            foreach ($errors as $error) {
+                $error_messages[] = sprintf("Line %d: %s", $error->line, trim($error->message));
+            }
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Invalid XML format',
+                'data' => $error_messages,
+            ], 400);
+        }
+        //Check for XML without opening and closing tags
+        // if (preg_match('/<\w+>.*?<\/\w+>|<\w+\/>/', $request_xml_data)) {
+        //     return response()->json([
+        //         'status' => 'error',
+        //         'message' => 'Invalid opening and closing tag.',
+        //     ], 400);
+        // }
         $xml_tag_check = new \SimpleXMLElement($request_xml_data);
+        //return $xml_tag_check
+        $namespaces = $xml_tag_check->getDocNamespaces(true);
+        // Check if any namespaces exist
+        // if (!empty($namespaces)) {
+        //     return response()->json([
+        //         'status' => 'error',
+        //         'message' => 'Namespaces are present in the XML'
+        //     ], 400);
+        // }
+
         $requestData = simplexml_load_string($request_xml_data, "SimpleXMLElement", LIBXML_NOCDATA);
         $json_encoded_data = json_encode($requestData);
         //return $xml_tag_check->getName();
         $paymentData = json_decode($json_encoded_data, true);
-        //return $paymentData;
         try {
+            //return $paymentData;
             if ($xml_tag_check->getName() == 'PaymentNotificationRequest') {
+                //Check if it tied to a customer;
+                $customer_reference = $paymentData['Payments']['Payment']['CustReference'] ?? '';
+                $amount = (float) $paymentData['Payments']['Payment']['Amount'];
+                $merchant_reference = $paymentData['Payments']['Payment']['MerchantReference'] ?? '';
+                //return $merchant_reference;
+                $user = User::where('unique_id', $customer_reference)->first();
+                if (!$user) {
+                    $response = "
+                    <CustomerInformationResponse>
+                        <MerchantReference>{$merchant_reference}</MerchantReference>
+                        <Customers>
+                            <Customer>
+                                <Status>1</Status>
+                                <CustReference>{$customer_reference}</CustReference>
+                                <CustomerReferenceAlternate></CustomerReferenceAlternate>
+                                <FirstName></FirstName>
+                                <LastName></LastName>
+                                <Email></Email>
+                                <Phone></Phone>
+                                <ThirdPartyCode></ThirdPartyCode>
+                                <Amount>{$amount}</Amount>
+                            </Customer>
+                        </Customers>
+                    </CustomerInformationResponse>";
+                    return response($response, 200)->header('Content-Type', 'text/xml');
+                }
+                //Check when amount is zero and customer is invalid
+                if (!$user && $amount == 0.00) {
+                    $response = "
+                    <CustomerInformationResponse>
+                        <MerchantReference>{$merchant_reference}</MerchantReference>
+                        <Customers>
+                            <Customer>
+                                <Status>1</Status>
+                                <CustReference>{$customer_reference}</CustReference>
+                                <CustomerReferenceAlternate></CustomerReferenceAlternate>
+                                <FirstName></FirstName>
+                                <LastName></LastName>
+                                <Email></Email>
+                                <Phone></Phone>
+                                <ThirdPartyCode></ThirdPartyCode>
+                                <Amount>{{ $amount }}</Amount>
+                            </Customer>
+                        </Customers>
+                    </CustomerInformationResponse>";
+                    return response($response, 200)->header('Content-Type', 'text/xml');
+                }
+
+                $email = $user->email;
+                $phone_number = $user->phone_number;
+                $names = explode(' ', $user->name);
+                if (count($names) > 1) {
+                    $first_name = $names[0];
+                    $last_name = $names[1];
+                } else {
+                    $first_name = $names[0];
+                    $last_name = '';
+                }
+                //Check when amount is zero and customer is invalid
+                if ($amount == 0.00) {
+                    $response = "
+                    <CustomerInformationResponse>
+                        <MerchantReference>{$merchant_reference}</MerchantReference>
+                        <Customers>
+                            <Customer>
+                                <Status>1</Status>
+                                <CustReference>{$customer_reference}</CustReference>
+                                <CustomerReferenceAlternate></CustomerReferenceAlternate>
+                                <FirstName>{$first_name}</FirstName>
+                                <LastName>{$last_name}</LastName>
+                                <Email>{$email}</Email>
+                                <Phone>{$phone_number}</Phone>
+                                <ThirdPartyCode></ThirdPartyCode>
+                                <Amount>{$amount}</Amount>
+                            </Customer>
+                        </Customers>
+                    </CustomerInformationResponse>";
+                    return response($response, 200)->header('Content-Type', 'text/xml');
+                }
+                //This will be a queued process.
                 $payment = Payment::firstOrCreate(
                 [
-                    'payment_log_id' => $paymentData['Payments']['Payment']['PaymentLogId'],
-                    'amount' => (float) $paymentData['Payments']['Payment']['Amount'],
-                    'payment_reference' => $paymentData['Payments']['Payment']['PaymentReference'],
-                    'receipt_no' => $paymentData['Payments']['Payment']['ReceiptNo'],
+                    'payment_log_id' => $paymentData['Payments']['Payment']['PaymentLogId'] ?? '',
+                    'amount' => (float) $paymentData['Payments']['Payment']['Amount'] ?? '',
+                    'payment_reference' => $paymentData['Payments']['Payment']['PaymentReference'] ?? '',
+                    'receipt_no' => $paymentData['Payments']['Payment']['ReceiptNo'] ?? '',
                 ],
                 [
-                    'service_url' => $paymentData['ServiceUrl'],
-                    //'service_username' => $paymentData['Payments']['Payment']['Amount'],
-                    //'service_password' => $paymentData['Payments']['Payment']['PaymentReference'],
-                    'ftp_url' => $paymentData['FtpUrl'],
-                    'is_repeated' => $paymentData['Payments']['Payment']['IsRepeated'],
-                    'product_group_code' => $paymentData['Payments']['Payment']['ProductGroupCode'],
-                    'customer_reference' => $paymentData['Payments']['Payment']['CustReference'],
-                    'alternate_customer_reference' => $paymentData['Payments']['Payment']['AlternateCustReference'],
-                    'payment_status' => $paymentData['Payments']['Payment']['PaymentStatus'],
-                    'payment_method' => $paymentData['Payments']['Payment']['PaymentMethod'],
-                    //'terminal_id' => $paymentData['Payments']['Payment']['TerminalId'],
-                    'channel_name' => $paymentData['Payments']['Payment']['ChannelName'],
-                    'location' => $paymentData['Payments']['Payment']['Location'],
-                    'is_reversal' => $paymentData['Payments']['Payment']['IsReversal'],
-                    'payment_date' => $paymentData['Payments']['Payment']['PaymentDate'],
-                    'settlement_date' => $paymentData['Payments']['Payment']['SettlementDate'],
-                    'institution_id' => $paymentData['Payments']['Payment']['InstitutionId'],
-                    'institution_name' => $paymentData['Payments']['Payment']['InstitutionName'],
-                    'branch_name' => $paymentData['Payments']['Payment']['BranchName'],
-                    'bank_name' => $paymentData['Payments']['Payment']['BankName'],
-                    //'fee_name' => $paymentData['Payments']['Payment']['FeeName'],
-                    //'customer_name' => $paymentData['Payments']['Payment']['CustomerName'],
-                    //'other_customer_info' => $paymentData['Payments']['Payment']['OtherCustomerInfo'],
-                    'collections_account' => $paymentData['Payments']['Payment']['CollectionsAccount'],
-                    //'third_party_code' => $paymentData['Payments']['Payment']['ThirdPartyCode'],
-                    'payments_items' => json_encode($paymentData['Payments']['Payment']['PaymentItems']),
-                    'item_name' => $paymentData['Payments']['Payment']['PaymentItems']['PaymentItem']['ItemName'],
-                    'item_code' => $paymentData['Payments']['Payment']['PaymentItems']['PaymentItem']['ItemCode'],
-                    'item_amount' => $paymentData['Payments']['Payment']['PaymentItems']['PaymentItem']['ItemAmount'],
-                    'lead_bank_code' => $paymentData['Payments']['Payment']['PaymentItems']['PaymentItem']['LeadBankCode'],
-                    'lead_bank_cbn_code' => $paymentData['Payments']['Payment']['PaymentItems']['PaymentItem']['LeadBankCbnCode'],
-                    'lead_bank_name' => $paymentData['Payments']['Payment']['PaymentItems']['PaymentItem']['LeadBankName'],
-                    //'category_code' => $paymentData['Payments']['Payment']['PaymentItems']['PaymentItem']['CategoryCode'],
-                    //'category_name' => $paymentData['Payments']['Payment']['PaymentItems']['PaymentItem']['CategoryName'],
-                    'item_quantity' => $paymentData['Payments']['Payment']['PaymentItems']['PaymentItem']['ItemQuantity'],
+                   'service_url' => (isset($paymentData['ServiceUrl']) && !is_array($paymentData['ServiceUrl']))
+                             ? $paymentData['ServiceUrl']
+                            : '',
+                    'service_username' => (isset($paymentData['ServiceUsername']) && !is_array($paymentData['ServiceUsername']))
+                             ? $paymentData['ServiceUsername']
+                            : '',
+                    'service_password' => (isset($paymentData['ServicePassword']) && !is_array($paymentData['ServicePassword']))
+                             ? $paymentData['ServicePassword']
+                            : '',
+                     'ftp_url' => (isset($paymentData['FtpUrl']) && !is_array($paymentData['FtpUrl']))
+                             ? $paymentData['FtpUrl']
+                            : '',
+                     'is_repeated' => (isset($paymentData['Payments']['Payment']['IsRepeated']) && !is_array($paymentData['Payments']['Payment']['IsRepeated']))
+                             ? $paymentData['Payments']['Payment']['IsRepeated']
+                            : '',
+                     'product_group_code' => (isset($paymentData['Payments']['Payment']['ProductGroupCode']) && !is_array($paymentData['Payments']['Payment']['ProductGroupCode']))
+                             ? $paymentData['Payments']['Payment']['ProductGroupCode']
+                            : '',
+                    'customer_reference' => (isset($paymentData['Payments']['Payment']['CustReference']) && !is_array($paymentData['Payments']['Payment']['CustReference']))
+                            ? $paymentData['Payments']['Payment']['CustReference']
+                        : '',
 
-                    'bank_code' => $paymentData['Payments']['Payment']['BankCode'],
-                    //'customer_address' => $paymentData['Payments']['Payment']['CustomerAddress'],
-                    //'customer_phone_number' => $paymentData['Payments']['Payment']['CustomerPhoneNumber'],
-                    //'depositor_name' => $paymentData['Payments']['Payment']['DepositorName'],
-                    'depositor_slip_number' => $paymentData['Payments']['Payment']['DepositSlipNumber'],
-                    'payment_currency' => $paymentData['Payments']['Payment']['PaymentCurrency'],
-                    //'original_payment_log_id' => $paymentData['Payments']['Payment']['OriginalPaymentLogId'],
-                    //'original_payment_reference' => $paymentData['Payments']['Payment']['OriginalPaymentReference'],
-                    'teller' => $paymentData['Payments']['Payment']['Teller'],
+                    'alternate_customer_reference' => (isset($paymentData['Payments']['Payment']['AlternateCustReference']) && !is_array($paymentData['Payments']['Payment']['AlternateCustReference']))
+                            ? $paymentData['Payments']['Payment']['AlternateCustReference']
+                            : '',
+                    'payment_status' => (isset($paymentData['Payments']['Payment']['PaymentStatus']) && !is_array($paymentData['Payments']['Payment']['PaymentStatus']))
+                            ? $paymentData['Payments']['Payment']['PaymentStatus']
+                            : '',
+                    'payment_method' => (isset($paymentData['Payments']['Payment']['PaymentMethod']) && !is_array($paymentData['Payments']['Payment']['PaymentMethod']))
+                            ? $paymentData['Payments']['Payment']['PaymentMethod']
+                            : '',
+                    'terminal_id' => (isset($paymentData['Payments']['Payment']['TerminalId']) && !is_array($paymentData['Payments']['Payment']['TerminalId']))
+                        ? $paymentData['Payments']['Payment']['TerminalId']
+                        : '',
+                    'channel_name' => (isset($paymentData['Payments']['Payment']['ChannelName']) && !is_array($paymentData['Payments']['Payment']['ChannelName']))
+                        ? $paymentData['Payments']['Payment']['ChannelName']
+                        : '',
+                    'location' => (isset($paymentData['Payments']['Payment']['Location']) && !is_array($paymentData['Payments']['Payment']['Location']))
+                        ? $paymentData['Payments']['Payment']['Location']
+                        : '',
+                    'is_reversal' => (isset($paymentData['Payments']['Payment']['IsReversal']) && !is_array($paymentData['Payments']['Payment']['IsReversal']))
+                        ? $paymentData['Payments']['Payment']['IsReversal']
+                        : '',
+                    'payment_date' => (isset($paymentData['Payments']['Payment']['PaymentDate']) && !is_array($paymentData['Payments']['Payment']['PaymentDate']))
+                        ? $paymentData['Payments']['Payment']['PaymentDate']
+                        : '',
+                    'settlement_date' => (isset($paymentData['Payments']['Payment']['SettlementDate']) && !is_array($paymentData['Payments']['Payment']['SettlementDate']))
+                        ? $paymentData['Payments']['Payment']['SettlementDate']
+                        : '',
+                    'institution_id' => (isset($paymentData['Payments']['Payment']['InstitutionId']) && !is_array($paymentData['Payments']['Payment']['InstitutionId']))
+                        ? $paymentData['Payments']['Payment']['InstitutionId']
+                        : '',
+                    'institution_name' => (isset($paymentData['Payments']['Payment']['InstitutionName']) && !is_array($paymentData['Payments']['Payment']['InstitutionName']))
+                        ? $paymentData['Payments']['Payment']['InstitutionName']
+                        : '',
+                    'branch_name' => (isset($paymentData['Payments']['Payment']['BranchName']) && !is_array($paymentData['Payments']['Payment']['BranchName']))
+                        ? $paymentData['Payments']['Payment']['BranchName']
+                        : '',
+                    'bank_name' => (isset($paymentData['Payments']['Payment']['BankName']) && !is_array($paymentData['Payments']['Payment']['BankName']))
+                        ? $paymentData['Payments']['Payment']['BankName']
+                        : '',
+                    'fee_name' => (isset($paymentData['Payments']['Payment']['FeeName']) && !is_array($paymentData['Payments']['Payment']['FeeName']))
+                        ? $paymentData['Payments']['Payment']['FeeName']
+                        : '',
+                    'customer_name' => (isset($paymentData['Payments']['Payment']['CustomerName']) && !is_array($paymentData['Payments']['Payment']['CustomerName']))
+                        ? $paymentData['Payments']['Payment']['CustomerName']
+                        : '',
+                    'other_customer_info' => (isset($paymentData['Payments']['Payment']['OtherCustomerInfo']) && !is_array($paymentData['Payments']['Payment']['OtherCustomerInfo']))
+                        ? $paymentData['Payments']['Payment']['OtherCustomerInfo']
+                        : '',
+                    'collections_account' => (isset($paymentData['Payments']['Payment']['CollectionsAccount']) && !is_array($paymentData['Payments']['Payment']['CollectionsAccount']))
+                        ? $paymentData['Payments']['Payment']['CollectionsAccount']
+                        : '',
+                    'third_party_code' => (isset($paymentData['Payments']['Payment']['ThirdPartyCode']) && !is_array($paymentData['Payments']['Payment']['ThirdPartyCode']))
+                        ? $paymentData['Payments']['Payment']['ThirdPartyCode']
+                        : '',
+
+                    'payments_items' => isset($paymentData['Payments']['Payment']['PaymentItems']) ? json_encode($paymentData['Payments']['Payment']['PaymentItems']) : '',
+                    'item_name' => (isset($paymentData['Payments']['Payment']['PaymentItems']['PaymentItem']['ItemName']) && !is_array($paymentData['Payments']['Payment']['PaymentItems']['PaymentItem']['ItemName']))
+                            ? $paymentData['Payments']['Payment']['PaymentItems']['PaymentItem']['ItemName']
+                            : '',
+                    'item_code' => (isset($paymentData['Payments']['Payment']['PaymentItems']['PaymentItem']['ItemCode']) && !is_array($paymentData['Payments']['Payment']['PaymentItems']['PaymentItem']['ItemCode']))
+                            ? $paymentData['Payments']['Payment']['PaymentItems']['PaymentItem']['ItemCode']
+                            : '',
+                    'item_amount' => (float) $paymentData['Payments']['Payment']['PaymentItems']['PaymentItem']['ItemAmount'] ?? '',
+                    'lead_bank_code' => (isset($paymentData['Payments']['Payment']['PaymentItems']['PaymentItem']['LeadBankCode']) && !is_array($paymentData['Payments']['Payment']['PaymentItems']['PaymentItem']['LeadBankCode']))
+                            ? $paymentData['Payments']['Payment']['PaymentItems']['PaymentItem']['LeadBankCode']
+                            : '',
+                    'lead_bank_cbn_code' => (isset($paymentData['Payments']['Payment']['PaymentItems']['PaymentItem']['LeadBankCbnCode']) && !is_array($paymentData['Payments']['Payment']['PaymentItems']['PaymentItem']['LeadBankCbnCode']))
+                            ? $paymentData['Payments']['Payment']['PaymentItems']['PaymentItem']['LeadBankCbnCode']
+                            : '',
+                    'lead_bank_name' => (isset($paymentData['Payments']['Payment']['PaymentItems']['PaymentItem']['LeadBankName']) && !is_array($paymentData['Payments']['Payment']['PaymentItems']['PaymentItem']['LeadBankName']))
+                            ? $paymentData['Payments']['Payment']['PaymentItems']['PaymentItem']['LeadBankName']
+                            : '',
+                    'category_code' => (isset($paymentData['Payments']['Payment']['PaymentItems']['PaymentItem']['CategoryCode']) && !is_array($paymentData['Payments']['Payment']['PaymentItems']['PaymentItem']['CategoryCode']))
+                            ? $paymentData['Payments']['Payment']['PaymentItems']['PaymentItem']['CategoryCode']
+                            : '',
+                    'category_name' => (isset($paymentData['Payments']['Payment']['PaymentItems']['PaymentItem']['CategoryName']) && !is_array($paymentData['Payments']['Payment']['PaymentItems']['PaymentItem']['CategoryName']))
+                            ? $paymentData['Payments']['Payment']['PaymentItems']['PaymentItem']['CategoryName']
+                            : '',
+                    'item_quantity' => (isset($paymentData['Payments']['Payment']['PaymentItems']['PaymentItem']['ItemQuantity']) && !is_array($paymentData['Payments']['Payment']['PaymentItems']['PaymentItem']['ItemQuantity']))
+                            ? $paymentData['Payments']['Payment']['PaymentItems']['PaymentItem']['ItemQuantity']
+                            : '',
+
+                    'bank_code' => (isset($paymentData['Payments']['Payment']['BankCode']) && !is_array($paymentData['Payments']['Payment']['BankCode']))
+                            ? $paymentData['Payments']['Payment']['BankCode']
+                            : '',
+                    'customer_address' => (isset($paymentData['Payments']['Payment']['CustomerAddress']) && !is_array($paymentData['Payments']['Payment']['CustomerAddress']))
+                            ? $paymentData['Payments']['Payment']['CustomerAddress']
+                            : '',
+                    'customer_phone_number' => (isset($paymentData['Payments']['Payment']['CustomerPhoneNumber']) && !is_array($paymentData['Payments']['Payment']['CustomerPhoneNumber']))
+                            ? $paymentData['Payments']['Payment']['CustomerPhoneNumber']
+                            : '',
+                    'depositor_name' => (isset($paymentData['Payments']['Payment']['DepositorName']) && !is_array($paymentData['Payments']['Payment']['DepositorName']))
+                            ? $paymentData['Payments']['Payment']['DepositorName']
+                            : '',
+                    'depositor_slip_number' => (isset($paymentData['Payments']['Payment']['DepositSlipNumber']) && !is_array($paymentData['Payments']['Payment']['DepositSlipNumber']))
+                            ? $paymentData['Payments']['Payment']['DepositSlipNumber']
+                            : '',
+                    'payment_currency' => (isset($paymentData['Payments']['Payment']['PaymentCurrency']) && !is_array($paymentData['Payments']['Payment']['PaymentCurrency']))
+                            ? $paymentData['Payments']['Payment']['PaymentCurrency']
+                            : '',
+                    'original_payment_log_id' => (isset($paymentData['Payments']['Payment']['OriginalPaymentLogId']) && !is_array($paymentData['Payments']['Payment']['OriginalPaymentLogId']))
+                            ? $paymentData['Payments']['Payment']['OriginalPaymentLogId']
+                            : '',
+                    'original_payment_reference' => (isset($paymentData['Payments']['Payment']['OriginalPaymentReference']) && !is_array($paymentData['Payments']['Payment']['OriginalPaymentReference']))
+                            ? $paymentData['Payments']['Payment']['OriginalPaymentReference']
+                            : '',
+                    'teller' => (isset($paymentData['Payments']['Payment']['Teller']) && !is_array($paymentData['Payments']['Payment']['Teller']))
+                            ? $paymentData['Payments']['Payment']['Teller']
+                            : '',
                 ]
             );
             //if its reversal
@@ -210,9 +423,18 @@ class PaymentController extends Controller
             }
 
             if ($xml_tag_check->getName() == 'CustomerInformationRequest') {
-                $customer_reference = $paymentData['CustReference'];
-                $merchant_reference = $paymentData['MerchantReference'];
-                $user = User::where('unique_id', $customer_reference)->first();
+            $customer_reference = $paymentData['CustReference'] ?? '';
+            $merchant_reference = $paymentData['MerchantReference'] ?? '';
+            //Check if customer's reference is empty
+            //return gettype($customer_reference);
+            if (is_array($customer_reference)) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'CustReference is empty'
+                ], 400);
+            }
+            //return $merchant_reference;
+            $user = User::where('unique_id', $customer_reference)->first();
                 if (!$user) {
                     $response = "
                     <CustomerInformationResponse>
@@ -243,7 +465,6 @@ class PaymentController extends Controller
                     $first_name = $names[0];
                     $last_name = '';
                 }
-
                 $response = "
                     <CustomerInformationResponse>
                         <MerchantReference>{$merchant_reference}</MerchantReference>
@@ -267,23 +488,27 @@ class PaymentController extends Controller
 
         } catch (\Exception $e) {
             if ($xml_tag_check->getName() == 'PaymentNotificationRequest') {
-                $payment_log_id = $paymentData['Payments']['Payment']['PaymentLogId'];
-                $response = "
-                <PaymentNotificationResponse>
-                    <Payments>
-                        <Payment>
-                            <PaymentLogId>{$payment_log_id}</PaymentLogId>
-                            <Status>1</Status>
-                        </Payment>
-                    </Payments>
-                </PaymentNotificationResponse>";
-                return response($response, 200)->header('Content-Type', 'text/xml');
+                // $payment_log_id = $paymentData['Payments']['Payment']['PaymentLogId'];
+                // $response = "
+                // <PaymentNotificationResponse>
+                //     <Payments>
+                //         <Payment>
+                //             <PaymentLogId>{$payment_log_id}</PaymentLogId>
+                //             <Status>1</Status>
+                //         </Payment>
+                //     </Payments>
+                // </PaymentNotificationResponse>";
+                return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+                ]);
+                //return response($response, 200)->header('Content-Type', 'text/xml');
             }
-            return $e->getMessage();
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ]);
         }
-
-        //This will be a queued process.
-        //logger($request_data);
     }
 
     /**
