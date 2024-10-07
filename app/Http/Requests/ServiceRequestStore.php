@@ -11,7 +11,7 @@ class ServiceRequestStore extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,8 @@ class ServiceRequestStore extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'user_id' => 'required|min:10|max:10',
+            'service_sub_category_id' => 'required|exists:service_sub_categories,id',
         ];
     }
 }

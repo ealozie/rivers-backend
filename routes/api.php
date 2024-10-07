@@ -52,6 +52,7 @@ use App\Http\Controllers\API\RevenueTypeController;
 use App\Http\Controllers\API\ServiceCategoryController;
 use App\Http\Controllers\API\ServiceHistoryController;
 use App\Http\Controllers\API\ServiceProviderController;
+use App\Http\Controllers\API\ServiceRequestController;
 use App\Http\Controllers\API\ServiceSubCategoryController;
 use App\Http\Controllers\API\SettlementTypeController;
 use App\Http\Controllers\API\ShopController;
@@ -135,6 +136,7 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('spouse', SpouseController::class);
     Route::apiResource('shops', ShopController::class)->middleware('auth:sanctum');
     Route::apiResource('service-providers', ServiceProviderController::class)->middleware('auth:sanctum');
+    Route::apiResource('service-requests', ServiceRequestController::class)->middleware('auth:sanctum');
     Route::apiResource('service-categories', ServiceCategoryController::class)->middleware('auth:sanctum');
     Route::apiResource('service-sub-categories', ServiceSubCategoryController::class)->middleware('auth:sanctum');
     Route::apiResource('service-histories', ServiceHistoryController::class)->middleware('auth:sanctum');

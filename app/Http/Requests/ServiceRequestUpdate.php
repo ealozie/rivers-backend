@@ -11,7 +11,7 @@ class ServiceRequestUpdate extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,8 @@ class ServiceRequestUpdate extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'status' => 'required|string|in:pending,approved,in_progress,completed,cancelled',
+            'payment_status' => 'required|string|in:pending,approved,failed',
         ];
     }
 }
