@@ -137,8 +137,8 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('shops', ShopController::class)->middleware('auth:sanctum');
     Route::apiResource('service-providers', ServiceProviderController::class)->middleware('auth:sanctum');
     Route::apiResource('service-requests', ServiceRequestController::class)->middleware('auth:sanctum');
-    Route::apiResource('service-categories', ServiceCategoryController::class)->middleware('auth:sanctum');
-    Route::apiResource('service-sub-categories', ServiceSubCategoryController::class)->middleware('auth:sanctum');
+    Route::apiResource('service-categories', ServiceCategoryController::class);
+    Route::apiResource('service-sub-categories', ServiceSubCategoryController::class);
     Route::apiResource('service-histories', ServiceHistoryController::class)->middleware('auth:sanctum');
     Route::get('shops-search', [ShopController::class, 'search'])->middleware('auth:sanctum');
     Route::apiResource('toll-gate-categories', TollGateCategoryController::class)->middleware('auth:sanctum')->only(['index']);

@@ -12,6 +12,12 @@ use App\Models\ServiceSubCategory;
  */
 class ServiceSubCategoryController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum')->only('store', 'update')
+    }
+
     /**
      * Display a listing of the resource.
      */
