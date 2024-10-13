@@ -16,7 +16,7 @@ class ServiceCategoryController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:sanctum')->only('store', 'update')
+        $this->middleware('auth:sanctum')->only('store', 'update');
     }
     /**
      * Display a listing of the resource.
