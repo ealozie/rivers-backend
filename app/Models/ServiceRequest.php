@@ -10,4 +10,14 @@ class ServiceRequest extends Model
     use HasFactory;
 
     protected $guarded = ['id'];
+
+    public function service_sub_category()
+    {
+        return $this->belongsTo(ServiceSubCategory::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

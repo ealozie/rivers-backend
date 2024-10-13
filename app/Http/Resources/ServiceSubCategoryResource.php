@@ -14,6 +14,17 @@ class ServiceSubCategoryResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'fees' => $this->fees,
+            'description' => $this->description,
+            'processing_time' => $this->processing_time,
+            'status' => $this->status,
+            'landing_page_url' => $this->landing_page_url,
+            'created_at' => $this->created_at,
+            'service_category' => $this->service_category,
+            'service_provider' => $this->service_provider,
+        ];
     }
 }
