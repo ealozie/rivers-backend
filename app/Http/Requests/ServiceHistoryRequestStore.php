@@ -24,7 +24,6 @@ class ServiceHistoryRequestStore extends FormRequest
         return [
             'service_request_id' => ['required', 'integer'],
             'activity' => ['required', 'string'],
-            'added_by' => ['required', 'integer'],
         ];
     }
 }

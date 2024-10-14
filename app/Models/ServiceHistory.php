@@ -9,5 +9,5 @@ class ServiceHistory extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['service_id', 'service_status_id', 'created_by'];
+    protected $fillable = ['service_request_id', 'activity', 'added_by'];
 }

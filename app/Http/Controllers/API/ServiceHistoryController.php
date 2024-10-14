@@ -28,7 +28,7 @@ class ServiceHistoryController extends Controller
     public function store(ServiceHistoryRequestStore $request)
     {
         $requestData = $request->validated();
-        $requestData['created_by'] = auth()->id();
+        $requestData['added_by'] = auth()->id();
         $service_history = ServiceHistory::create($requestData);
         return new ServiceHistoryResource($service_history);
     }
@@ -40,6 +40,15 @@ class ServiceHistoryController extends Controller
     {
         $service_history = ServiceHistory::find($id);
         return new ServiceHistoryResource($service_history);
+    }
+
+    /**
+     * Service History by service request ID  resource.
+     */
+    public function service_history_by_request(Request $request, $service_request_id)
+    {
+        $service_history = ServiceHistory::where('service_request_id', $service_request_id)->get();
+        return ServiceHistoryResource::collection($service_history);
     }
 
     /**
