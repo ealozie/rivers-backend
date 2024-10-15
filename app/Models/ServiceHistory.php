@@ -10,4 +10,9 @@ class ServiceHistory extends Model
     use HasFactory;
 
     protected $fillable = ['service_request_id', 'activity', 'added_by'];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'added_by');
+    }
 }

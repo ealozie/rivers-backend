@@ -21,7 +21,8 @@ class ServiceRequestResource extends JsonResource
             'request_id' => $this->request_id,
             'status' => $this->status,
             'payment_status' => $this->payment_status,
-            'created_at' => $this->created_at
+            'created_at' => $this->created_at,
+            'service_history' => ServiceHistoryResource::collection($this->service_history),
         ];
     }
 }

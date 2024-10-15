@@ -20,4 +20,9 @@ class ServiceRequest extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function service_history()
+    {
+        return $this->hasMany(ServiceHistory::class);
+    }
 }
