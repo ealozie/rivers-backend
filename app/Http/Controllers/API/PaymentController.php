@@ -7,6 +7,7 @@ use App\Http\Resources\PaymentResource;
 use App\Jobs\ProcessISWPaymentTransaction;
 use App\Models\Payment;
 use App\Models\User;
+use AWS\CRT\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log as FacadesLog;
 
@@ -112,6 +113,11 @@ class PaymentController extends Controller
             return response()->json(['status' => 'error', 'message' => 'Payment not found',], 404);
         }
         return new PaymentResource($payment);
+    }
+
+    public static function sanitize_data($string)
+    {
+        return preg_replace('/[^A-Za-z0-9@._-]/', '', $string);
     }
 
     /**
@@ -223,14 +229,14 @@ class PaymentController extends Controller
                     return response($response, 200)->header('Content-Type', 'text/xml');
                 }
 
-                $email = $user->email;
-                $phone_number = $user->phone_number;
-                $names = explode(' ', $user->name);
+                $email = self::sanitize_data($user->email);
+                $phone_number = self::sanitize_data($user->phone_number);
+                $names = htmlspecialchars(explode(' ', $user->name));
                 if (count($names) > 1) {
-                    $first_name = $names[0];
-                    $last_name = $names[1];
+                    $first_name = self::sanitize_data($names[0]);
+                    $last_name = self::sanitize_data($names[1]);
                 } else {
-                    $first_name = $names[0];
+                    $first_name = self::sanitize_data($names[0]);
                     $last_name = '';
                 }
                 //Check when amount is zero and customer is invalid
@@ -454,14 +460,14 @@ class PaymentController extends Controller
                     </CustomerInformationResponse>";
                     return response($response, 200)->header('Content-Type', 'text/xml');
                 }
-                $email = $user->email;
-                $phone_number = $user->phone_number;
+                $email = self::sanitize_data($user->email);
+                $phone_number = self::sanitize_data($user->phone_number);
                 $names = explode(' ', $user->name);
                 if (count($names) > 1) {
-                    $first_name = $names[0];
-                    $last_name = $names[1];
+                    $first_name = self::sanitize_data($names[0]);
+                    $last_name = self::sanitize_data($names[1]);
                 } else {
-                    $first_name = $names[0];
+                    $first_name = self::sanitize_data($names[0]);
                     $last_name = '';
                 }
                 $response = "
