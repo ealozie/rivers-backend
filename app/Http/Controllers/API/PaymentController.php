@@ -433,10 +433,23 @@ class PaymentController extends Controller
             //Check if customer's reference is empty
             //return gettype($customer_reference);
             if (is_array($customer_reference)) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'CustReference is empty'
-                ], 400);
+                $response_data = "<CustomerInformationResponse>
+    <MerchantReference>6405</MerchantReference>
+    <Customers>
+        <Customer>
+            <Status>1</Status>
+            <CustReference></CustReference>
+            <CustomerReferenceAlternate></CustomerReferenceAlternate>
+            <FirstName></FirstName>
+            <LastName></LastName>
+            <Email></Email>
+            <Phone></Phone>
+            <ThirdPartyCode></ThirdPartyCode>
+            <Amount>0.00</Amount>
+        </Customer>
+    </Customers>
+</CustomerInformationResponse>";
+return response($response_data, 200)->header('Content-Type', 'text/xml');
             }
             //return $merchant_reference;
             $user = User::where('unique_id', $customer_reference)->first();
