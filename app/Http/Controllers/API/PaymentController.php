@@ -125,6 +125,14 @@ class PaymentController extends Controller
      */
     public function interswitch_payment_notification_data_validation(Request $request)
     {
+
+        if ($request->ip() != "197.210.85.185") {
+            return;
+            // return response()->json([
+            //     'status' => 'error',
+            //     'message' => 'IP address is not authorized.'
+            // ], 404);
+        }
         $request_xml_data = trim($request->getContent());
 
         // Regular expression to check for special characters at the beginning or end of the XML
