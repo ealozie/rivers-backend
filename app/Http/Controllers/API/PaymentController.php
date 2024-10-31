@@ -231,7 +231,7 @@ class PaymentController extends Controller
 
                 $email = self::sanitize_data($user->email);
                 $phone_number = self::sanitize_data($user->phone_number);
-                $names = htmlspecialchars(explode(' ', $user->name));
+                $names = explode(' ', $user->name);
                 if (count($names) > 1) {
                     $first_name = self::sanitize_data($names[0]);
                     $last_name = self::sanitize_data($names[1]);
