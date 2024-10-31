@@ -126,7 +126,7 @@ class PaymentController extends Controller
     public function interswitch_payment_notification_data_validation(Request $request)
     {
 
-        if ($request->ip() != "197.210.85.185") {
+        if ($request->ip() != "197.210.85.186") {
             return;
             // return response()->json([
             //     'status' => 'error',
