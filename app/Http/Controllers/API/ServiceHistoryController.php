@@ -45,9 +45,9 @@ class ServiceHistoryController extends Controller
     /**
      * Service History by service request ID  resource.
      */
-    public function service_history_by_request(Request $request, $service_request_id)
+    public function service_history_by_request(Request $request, $request_id)
     {
-        $service_history = ServiceHistory::where('service_request_id', $service_request_id)->get();
+        $service_history = ServiceHistory::where('service_request_id', $request_id)->get();
         return ServiceHistoryResource::collection($service_history);
     }
 

@@ -8,6 +8,7 @@ use App\Http\Requests\ServiceRequestUpdate;
 use App\Http\Resources\ServiceRequestResource;
 use App\Models\ServiceRequest;
 use App\Models\User;
+use App\Traits\SendSMS;
 use Illuminate\Http\Request;
 
 /**
@@ -15,6 +16,7 @@ use Illuminate\Http\Request;
  */
 class ServiceRequestController extends Controller
 {
+    use SendSMS;
     /**
      * Display a listing of the resource.
      */
@@ -37,10 +39,16 @@ class ServiceRequestController extends Controller
             return response()->json(['message' => 'User not found'], 404);
         }
         $requestData['user_id'] = $user->id;
-        $service_request = ServiceRequest::create($requestData);
+        try {
+            $service_request = ServiceRequest::create($requestData);
+            //$this->send_sms_process_message("+234" . $mobile_number, $message);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Error: '.$e->getMessage(),
+            ]);
+        }
         return new ServiceRequestResource($service_request);
-
-
     }
 
     /**

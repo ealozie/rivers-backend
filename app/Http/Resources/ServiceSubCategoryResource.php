@@ -21,6 +21,7 @@ class ServiceSubCategoryResource extends JsonResource
             'description' => $this->description,
             'processing_time' => $this->processing_time,
             'status' => $this->status,
+            'require_login' => $this->require_login,
             'landing_page_url' => $this->landing_page_url,
             'created_at' => $this->created_at,
             'service_category' => $this->service_category,

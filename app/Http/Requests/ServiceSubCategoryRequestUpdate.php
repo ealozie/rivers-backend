@@ -27,6 +27,7 @@ class ServiceSubCategoryRequestUpdate extends FormRequest
             'service_category_id' => ['required',],
             'service_provider_id' => ['required'],
             'fees' => ['required', 'string'],
+            'require_login' => 'nullable|boolean',
             'processing_time' => ['required', 'string'],
             'status' => 'nullable',
             'landing_page_url' => ['required', 'string'],
