@@ -43,10 +43,17 @@ class ServiceHistoryController extends Controller
     }
 
     /**
-     * Service History by service request ID  resource.
+     * Service History by service request ID (Tracking number) Resource.
      */
     public function service_history_by_request(Request $request, $request_id)
     {
+        $service_request = ServiceRequest::where('request_id', $request_id)->frist();
+        if (!$service_request) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Request ID not found.'
+            ], 404);
+        }
         $service_history = ServiceHistory::where('service_request_id', $request_id)->get();
         return ServiceHistoryResource::collection($service_history);
     }

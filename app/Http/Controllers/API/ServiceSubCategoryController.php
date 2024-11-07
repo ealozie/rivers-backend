@@ -7,6 +7,7 @@ use App\Http\Requests\ServiceSubCategoryRequestStore;
 use App\Http\Requests\ServiceSubCategoryRequestUpdate;
 use App\Http\Resources\ServiceSubCategoryResource;
 use App\Models\ServiceSubCategory;
+use Illuminate\Http\Request;
 
 /**
  * @tags Service Sub Category Service
