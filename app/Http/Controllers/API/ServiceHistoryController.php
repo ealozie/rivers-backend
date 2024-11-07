@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ServiceHistoryRequestStore;
 use App\Http\Resources\ServiceHistoryResource;
+use App\Http\Resources\ServiceRequestResource;
 use App\Models\ServiceHistory;
 use Illuminate\Http\Request;
 
@@ -13,6 +14,11 @@ use Illuminate\Http\Request;
  */
 class ServiceHistoryController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum')->only(['store', 'update', 'destroy']);
+    }
     /**
      * Display a listing of the resource.
      */
@@ -55,7 +61,13 @@ class ServiceHistoryController extends Controller
             ], 404);
         }
         $service_history = ServiceHistory::where('service_request_id', $request_id)->get();
-        return ServiceHistoryResource::collection($service_history);
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'service' => new ServiceRequestResource($service_request),
+                'service_history' => ServiceHistoryResource::collection($service_history)
+            ],
+        ], 200);
     }
 
     /**
