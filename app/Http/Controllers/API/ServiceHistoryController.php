@@ -54,7 +54,7 @@ class ServiceHistoryController extends Controller
      */
     public function service_history_by_request(Request $request, $request_id)
     {
-        $service_request = ServiceRequest::where('request_id', $request_id)->frist();
+        $service_request = ServiceRequest::where('request_id', $request_id)->first();
         if (!$service_request) {
             return response()->json([
                 'status' => 'error',
