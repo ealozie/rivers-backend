@@ -7,6 +7,7 @@ use App\Http\Requests\ServiceHistoryRequestStore;
 use App\Http\Resources\ServiceHistoryResource;
 use App\Http\Resources\ServiceRequestResource;
 use App\Models\ServiceHistory;
+use App\Models\ServiceRequest;
 use Illuminate\Http\Request;
 
 /**
