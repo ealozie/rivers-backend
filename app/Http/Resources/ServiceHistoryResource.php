@@ -18,6 +18,7 @@ class ServiceHistoryResource extends JsonResource
             'id' => $this->id,
             'activity' => $this->activity,
             'added_by' => $this->user,
+            'request_id' => $this->service_request_id,
         ];
     }
 }
