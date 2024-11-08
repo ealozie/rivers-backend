@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ServiceProviderRequestStore;
+use App\Http\Requests\ServiceProviderRequestUpdate;
 use App\Http\Resources\ServiceProviderResource;
 use App\Models\ServiceProvider;
 use Illuminate\Http\Request;
@@ -45,7 +46,7 @@ class ServiceProviderController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(ServiceProviderRequestUpdate $request, string $id)
     {
         $requestData = $request->validated();
         $service_provider = ServiceProvider::findOrFail($id);

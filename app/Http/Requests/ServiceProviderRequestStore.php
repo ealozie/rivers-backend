@@ -22,9 +22,9 @@ class ServiceProviderRequestStore extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:100'],
-            'email' => ['required', 'email'],
-            'phone_number' => ['required', 'string'],
+            'name' => ['nullable', 'string', 'max:100'],
+            'email' => ['nullable', 'email'],
+            'phone_number' => ['nullable', 'string'],
         ];
     }
 }
