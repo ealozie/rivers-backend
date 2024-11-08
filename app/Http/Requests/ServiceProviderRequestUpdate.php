@@ -22,7 +22,9 @@ class ServiceProviderRequestUpdate extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => ['nullable', 'string', 'max:100'],
+            'email' => ['nullable', 'email'],
+            'phone_number' => ['nullable', 'string'],
         ];
     }
 }
