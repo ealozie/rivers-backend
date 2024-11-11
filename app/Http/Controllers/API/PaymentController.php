@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\API;
 
+use AWS\CRT\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PaymentResource;
 use App\Jobs\ProcessISWPaymentTransaction;
+use App\Models\AppSetting;
 use App\Models\Payment;
 use App\Models\User;
-use AWS\CRT\Log;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log as FacadesLog;
 
@@ -125,8 +126,8 @@ class PaymentController extends Controller
      */
     public function interswitch_payment_notification_data_validation(Request $request)
     {
-
-        if ($request->ip() != "197.210.85.186") {
+        $ip_address = AppSetting::where('key', 'PAYMENT_IP_ADDRESS_ALLOWED')->first()->value;
+        if ($request->ip() != $ip_address) {
             return;
             // return response()->json([
             //     'status' => 'error',

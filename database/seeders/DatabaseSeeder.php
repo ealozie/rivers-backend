@@ -47,12 +47,12 @@ class DatabaseSeeder extends Seeder
             // AgencySeeder::class,
             // UserUniqueIdSeeder::class,
             // RevenueItemSeeder::class,
-            //  AppSettingSeeder::class,
+            AppSettingSeeder::class,
             //RoleSeeder::class,
             // DocumentLifeSpanSeeder::class,
             // TollGateCategorySeeder::class,
-            PermissionSeeder::class,
-            UserSeeder::class,
+            //PermissionSeeder::class,
+            //UserSeeder::class,
         ]);
     }
 }

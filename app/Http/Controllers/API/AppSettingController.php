@@ -127,6 +127,7 @@ class AppSettingController extends Controller
             "ANNOUCEMENT_HEADING" => 'required|string',
             "ENABLE_SUPER_AGENT" => 'required|string',
             "ANNOUCEMENT_URL" => 'required|string',
+            "PAYMENT_IP_ADDRESS_ALLOWED" => 'required|string',
             ]);
         foreach ($validatedData as $key => $value) {
             $app_setting = AppSetting::where('key', $key)->first();
