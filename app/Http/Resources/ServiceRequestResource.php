@@ -22,7 +22,7 @@ class ServiceRequestResource extends JsonResource
             'status' => $this->status,
             'payment_status' => $this->payment_status,
             'created_at' => $this->created_at,
-            'service_history' => ServiceHistoryResource::collection($this->service_history),
+            //'service_history' => ServiceHistoryResource::collection($this->service_history),
         ];
     }
 }
