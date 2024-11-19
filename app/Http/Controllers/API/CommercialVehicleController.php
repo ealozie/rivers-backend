@@ -9,6 +9,7 @@ use App\Http\Resources\CommercialVehicleResource;
 use App\Models\CommercialVehicle;
 use App\Traits\VehicleAuthorizable;
 use App\Models\User;
+use App\Traits\SendSMS;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -17,6 +18,7 @@ use Illuminate\Support\Facades\Auth;
  */
 class CommercialVehicleController extends Controller
 {
+    use SendSMS;
     //use VehicleAuthorizable;
     /**
      * Display a listing of the resource.
@@ -64,6 +66,13 @@ class CommercialVehicleController extends Controller
             }
             $validatedData['vehicle_id'] = '6' . date('hi') . mt_rand(11111, 99999);
             $commercial_vehicle = CommercialVehicle::create($validatedData);
+            $phone_number = $user->phone_number;
+            $owner_name = $user->name;
+            $mobile_number = ltrim($phone_number, "0");
+           // $model = $commercial_vehicle->
+            $plate_number = $commercial_vehicle->plate_number;
+            $message = "Hello {$owner_name}, your vehicle with plate number {$plate_number} has been enumerated successfully.";
+            $this->send_sms_process_message("+234" . $mobile_number, $message);
             return response()->json([
                 'status' => 'success',
                 'message' => 'Commercial vehicle has been enumerated successfully.', 'data' => new CommercialVehicleResource($commercial_vehicle)
