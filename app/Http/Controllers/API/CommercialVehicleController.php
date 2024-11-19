@@ -69,9 +69,10 @@ class CommercialVehicleController extends Controller
             $phone_number = $user->phone_number;
             $owner_name = $user->name;
             $mobile_number = ltrim($phone_number, "0");
-           // $model = $commercial_vehicle->
+            $model_name = $commercial_vehicle->vehicle_model->name;
             $plate_number = $commercial_vehicle->plate_number;
-            $message = "Hello {$owner_name}, your vehicle with plate number {$plate_number} has been enumerated successfully.";
+            $vehicle_manufacturer = $commercial_vehicle->vehicle_manufacturer->name;
+            $message = "Hello {$owner_name}, your vehicle (Plate number: {$plate_number}, Model: {$model_name}, Manufacturer: {$vehicle_manufacturer}) has been successfully enumerated. Thank you!";
             $this->send_sms_process_message("+234" . $mobile_number, $message);
             return response()->json([
                 'status' => 'success',
