@@ -59,6 +59,7 @@ use App\Http\Controllers\API\ShopController;
 use App\Http\Controllers\API\SignageController;
 use App\Http\Controllers\API\SpouseController;
 use App\Http\Controllers\API\StateController;
+use App\Http\Controllers\API\StreetController;
 use App\Http\Controllers\API\SuperAgentController;
 use App\Http\Controllers\API\TicketAgentCategoryController;
 use App\Http\Controllers\API\TicketAgentController;
@@ -135,6 +136,7 @@ Route::prefix('v1')->group(function () {
     //Route::apiResource('residential-address', ResidentialController::class);
     Route::apiResource('spouse', SpouseController::class);
     Route::apiResource('shops', ShopController::class)->middleware('auth:sanctum');
+    Route::apiResource('streets', StreetController::class)->middleware('auth:sanctum');
     Route::apiResource('service-providers', ServiceProviderController::class)->middleware('auth:sanctum');
     Route::apiResource('service-requests', ServiceRequestController::class)->middleware('auth:sanctum');
     Route::apiResource('service-categories', ServiceCategoryController::class);
