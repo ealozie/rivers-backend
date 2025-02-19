@@ -46,6 +46,7 @@ class IndividualUpdateRequest extends FormRequest
             'street_name' => 'sometimes|string',
             'city' => 'nullable',
             'landmark' => 'nullable',
+            'street_id' => 'nullable|exists:streets,id',
         ];
     }
 }

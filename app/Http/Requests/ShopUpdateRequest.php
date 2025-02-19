@@ -37,6 +37,7 @@ class ShopUpdateRequest extends FormRequest
             'classification_id' => 'required|exists:classifications,id',
             'user_id' => 'required',
             'notes' => 'nullable',
+            'street_id' => 'nullable|exists:streets,id',
         ];
     }
 }

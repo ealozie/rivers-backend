@@ -32,6 +32,9 @@ class SignageUpdateRequest extends FormRequest
             'local_government_area_id' => 'required|exists:local_government_areas,id',
             'user_id' => 'required|exists:users,id',
             'notes' => 'nullable|string',
+            'signage_location' => 'nullable|string|in:property,standalone',
+            'property_id' => 'nullable|required_if:signage_location,property|exists:properties,property_id',
+            'street_id' => 'nullable|exists:streets,id',
         ];
     }
 }

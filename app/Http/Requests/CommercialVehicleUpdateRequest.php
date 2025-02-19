@@ -41,6 +41,7 @@ class CommercialVehicleUpdateRequest extends FormRequest
             'permit_expiry_date' => 'sometimes|string',
             'permit_image' => 'sometimes|mimes:jpeg,jpg,png|max:2048',
             'note' => 'sometimes|string',
+            'street_id' => 'nullable|exists:streets,id',
         ];
     }
 }

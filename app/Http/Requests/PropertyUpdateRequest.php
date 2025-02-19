@@ -46,6 +46,7 @@ class PropertyUpdateRequest extends FormRequest
             'landmark' => 'nullable',
             'state_id' => 'required|exists:states,id',
             'local_government_area_id' => 'required|exists:local_government_areas,id',
+            'street_id' => 'nullable|exists:streets,id',
         ];
     }
 }
