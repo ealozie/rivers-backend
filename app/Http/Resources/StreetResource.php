@@ -14,6 +14,13 @@ class StreetResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'city' => $this->city,
+            'local_government_area' => $this->local_government_area,
+            'is_active' => $this->is_active ? true : false,
+            'created_at' => $this->created_at,
+        ];
     }
 }
