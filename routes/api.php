@@ -141,6 +141,7 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('shops', ShopController::class)->middleware('auth:sanctum');
     Route::apiResource('streets', StreetController::class)->middleware('auth:sanctum');
     Route::apiResource('individual-relatives', IndividualRelativeController::class)->middleware('auth:sanctum');
+    Route::get('individual-relative/{individual_id}', [IndividualRelativeController::class, 'get_relatives'])->middleware('auth:sanctum');
     Route::apiResource('service-providers', ServiceProviderController::class)->middleware('auth:sanctum');
     Route::apiResource('service-requests', ServiceRequestController::class)->middleware('auth:sanctum');
     Route::apiResource('service-categories', ServiceCategoryController::class);

@@ -30,6 +30,15 @@ class IndividualRelativeController extends Controller
     }
 
     /**
+     * Get Relative by Individual or relative ID.
+     */
+    public function get_relatives($individual_id)
+    {
+        $individual_relatives = IndividualRelative::where('individual_id', $individual_id)->orWhere('relative_id', $individual_id)->get();
+        return IndividualRelativeResource::collection($individual_relatives);
+    }
+
+    /**
      * Display the specified resource.
      */
     public function show(string $id)
