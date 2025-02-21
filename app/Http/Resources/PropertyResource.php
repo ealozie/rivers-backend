@@ -18,6 +18,7 @@ class PropertyResource extends JsonResource
         return [
             'id' => $this->id,
             'owner' => $this->user,
+            'street' => $this->street,
             'property_id' => $this->property_id,
             'property_category' => $this->propertyCategory ?? '',
             'street_name' => $this->street_name,

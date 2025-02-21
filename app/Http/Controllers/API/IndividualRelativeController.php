@@ -6,11 +6,15 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\IndividualRelativeStoreRequest;
 use App\Http\Requests\IndividualRelativeUpdateRequest;
 use App\Http\Resources\IndividualRelativeResource;
+use App\Models\Individual;
 use App\Models\IndividualRelative;
+use App\Models\User;
+use App\Traits\SendSMS;
 use Illuminate\Http\Request;
 
 class IndividualRelativeController extends Controller
 {
+    use SendSMS;
     /**
      * Display a listing of the resource.
      */
@@ -25,7 +29,24 @@ class IndividualRelativeController extends Controller
      */
     public function store(IndividualRelativeStoreRequest $request)
     {
-        $individual_relative = IndividualRelative::create($request->validated());
+        $requestData = $request->validated();
+        if (IndividualRelative::check_for_duplicates($requestData['entity_id'], $requestData['relative_id'])) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'This relationship already exists.
+                '], 200);
+        }
+        $requestData['verification_code'] = 1234;
+        $individual_relative = IndividualRelative::create($requestData);
+        $individual = Individual::where('individual_id', $individual_relative->relative_id)->first();
+        $user = User::find($individual->user_id);
+        if ($user) {
+            $phone_number = $user->phone_number;
+            $mobile_number = ltrim($phone_number, "0");
+            $name = $user->first_name;
+            $message = "Hello {$name}, your relative verification code is: " . $requestData['verification_code'];
+            $this->send_sms_process_message("+234" . $mobile_number, $message);
+        }
         return new IndividualRelativeResource($individual_relative);
     }
 

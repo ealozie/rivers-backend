@@ -20,4 +20,15 @@ class IndividualRelative extends Model
     {
         return $this->belongsTo(Individual::class, 'relative_id');
     }
+
+    public static function check_for_duplicates($entityId, $relativeId)
+    {
+        return self::where(function ($query) use ($entityId, $relativeId) {
+            $query->where('entity_id', $entityId)->where('relative_id', $relativeId);
+        })
+        ->orWhere(function ($query) use ($entityId, $relativeId) {
+            $query->where('entity_id', $relativeId)->where('relative_id', $entityId);
+        })
+        ->exists();
+    }
 }

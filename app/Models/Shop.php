@@ -17,6 +17,11 @@ class Shop extends Model
     {
         return $this->belongsTo(BusinessCategory::class);
     }
+    
+    public function street()
+    {
+        return $this->belongsTo(Street::class);
+    }
 
     public function shop_notes(): MorphMany
     {

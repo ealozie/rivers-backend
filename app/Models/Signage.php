@@ -25,6 +25,11 @@ class Signage extends Model
         'added_by',
     ];
 
+    public function street()
+    {
+        return $this->belongsTo(Street::class);
+    }
+
     //Belongs to local government area
     public function local_government_area()
     {

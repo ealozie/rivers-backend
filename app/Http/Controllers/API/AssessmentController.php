@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\AssessmentStoreRequest;
 use App\Http\Requests\AssessmentUpdateRequest;
 use App\Http\Resources\AssessmentResource;
+use App\Http\Resources\CommercialVehicleResource;
 use App\Http\Resources\CooperateResource;
 use App\Http\Resources\IndividualResource;
 use App\Http\Resources\PropertyResource;
@@ -22,8 +23,8 @@ use App\Models\Property;
 use App\Models\Shop;
 use App\Models\Signage;
 use App\Models\User;
-use Illuminate\Http\Request;
 use App\Traits\AssessmentAuthorizable;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -166,7 +167,7 @@ class AssessmentController extends Controller
                 'status' => 'success',
                 'data' => [
                     'user' => new UserResource($user),
-                    'vehicle' => new SignageResource($vehicle)
+                    'vehicle' => new CommercialVehicleResource($vehicle)
                 ]
             ]);
         } else {

@@ -17,6 +17,7 @@ class CommercialVehicleResource extends JsonResource
         return [
             'id' => $this->id,
             "vehicle_id" => $this->vehicle_id,
+            'street' => $this->street,
             "user" => $this->user,
             "plate_number" => $this->plate_number,
             "vehicle_category" => new VehicleCategoryResource($this->vehicle_category),

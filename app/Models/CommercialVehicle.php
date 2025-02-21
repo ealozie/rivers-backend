@@ -19,6 +19,11 @@ class CommercialVehicle extends Model
         return $this->belongsTo(VehicleCategory::class);
     }
 
+    public function street()
+    {
+        return $this->belongsTo(Street::class);
+    }
+
     public function demand_notices(): MorphMany
     {
         return $this->morphMany(DemandNotice::class, 'demand_noticeable');
