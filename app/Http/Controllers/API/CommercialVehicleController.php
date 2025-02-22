@@ -32,7 +32,7 @@ class CommercialVehicleController extends Controller
             'status' => 'success',
             'data' => [
                 'total_vehicles' => $commercial_vehicles_count,
-                'individual' => CommercialVehicleResource::collection($commercial_vehicles),
+                'vehicles' => CommercialVehicleResource::collection($commercial_vehicles),
             ]
         ], 200);
     }
