@@ -133,7 +133,7 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('forgot-password', ForgotPasswordController::class)->only(['store', 'update']);
     Route::apiResource('individuals', IndividualController::class);
     Route::get('individuals-search', [IndividualController::class, 'search']);
-    Route::get('individuals-birthday', [IndividualController::class, 'send_birthday_message']);
+    Route::post('individuals-birthday', [IndividualController::class, 'send_birthday_message']);
     Route::get('individuals-entity-id/{entity_id}', [IndividualController::class, 'show_entity_id']);
     Route::get('cooperate-entity-id/{entity_id}', [CooperateController::class, 'show_entity_id']);
     //Route::apiResource('residential-address', ResidentialController::class);
