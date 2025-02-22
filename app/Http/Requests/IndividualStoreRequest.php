@@ -50,6 +50,7 @@ class IndividualStoreRequest extends FormRequest
             'city' => 'nullable',
             'landmark' => 'nullable',
             'street_id' => 'required|exists:streets,id',
+            'property_id' => 'nullable|exists:properties,property_id',
         ];
     }
 }

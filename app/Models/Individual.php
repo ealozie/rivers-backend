@@ -24,6 +24,11 @@ class Individual extends Model
         return $this->belongsTo(Street::class);
     }
 
+    public function property()
+    {
+        return $this->belongsTo(Property::class);
+    }
+
     public function demand_notices(): MorphMany
     {
         return $this->morphMany(DemandNotice::class, 'demand_noticeable');

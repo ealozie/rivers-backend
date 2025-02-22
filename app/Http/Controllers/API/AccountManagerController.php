@@ -30,10 +30,20 @@ class AccountManagerController extends Controller
         $user_id = $user->id;
         if ($user->hasRole('admin')) {
             $account_manager = AccountManager::paginate();
+            $total_account_manager = AccountManager::count();
         } else {
-            $account_manager = AccountManager::where('user_id', $user_id)->get();
+            $account_manager = AccountManager::where('user_id', $user_id)->paginate();
+            $total_account_manager = AccountManager::where('user_id', $user_id)->count();
         }
-        return AccountManagerResource::collection($account_manager);
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'total_account_manager' => $total_account_manager,
+                'account_manager' => AccountManagerResource::collection($account_manager),
+            ]
+        ], 200);
+        //return AccountManagerResource::collection($account_manager);
     }
 
     /**
@@ -112,7 +122,7 @@ class AccountManagerController extends Controller
                     'status' => 'error',
                     'message' => 'Cooperate not found',
                 ], 404);
-            } 
+            }
         }
 
         if (isset($validatedData['entity_id']) && $validatedData['entity_type'] == 'signage') {
@@ -126,7 +136,7 @@ class AccountManagerController extends Controller
                     'status' => 'error',
                     'message' => 'Signage not found',
                 ], 404);
-            } 
+            }
         }
 
         if (isset($validatedData['entity_id']) && $validatedData['entity_type'] == 'vehicle') {
@@ -140,7 +150,7 @@ class AccountManagerController extends Controller
                     'status' => 'error',
                     'message' => 'Vehicle not found',
                 ], 404);
-            } 
+            }
         }
         return new AccountManagerResource($account_manager);
     }
@@ -215,7 +225,7 @@ class AccountManagerController extends Controller
                     'status' => 'error',
                     'message' => 'Cooperate not found',
                 ], 404);
-            } 
+            }
         }
 
         if (isset($entity_id) && $validatedData['entity_type'] == 'signage') {
@@ -227,7 +237,7 @@ class AccountManagerController extends Controller
                     'status' => 'error',
                     'message' => 'Signage not found',
                 ], 404);
-            } 
+            }
         }
 
         if (isset($entity_id) && $validatedData['entity_type'] == 'vehicle') {
@@ -239,7 +249,7 @@ class AccountManagerController extends Controller
                     'status' => 'error',
                     'message' => 'Vehicle not found',
                 ], 404);
-            } 
+            }
         }
         return new AccountManagerResource($account_manager);
     }

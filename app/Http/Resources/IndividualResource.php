@@ -21,6 +21,7 @@ class IndividualResource extends JsonResource
             "nin" => $this->nin,
             "tin" => $this->tin,
             'street' => $this->street,
+            'property' => $this->property,
             "nationality" => $this->nationality,
             "title" => $this->title,
             "surname" => $this->surname,

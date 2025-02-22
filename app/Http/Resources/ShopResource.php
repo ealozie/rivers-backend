@@ -20,6 +20,7 @@ class ShopResource extends JsonResource
             "shop_id" => $this->shop_id,
             "name" => $this->name,
             "number" => $this->number,
+            'property' => $this->property,
             "zone" => $this->zone,
             "location" => $this->location,
             "location_type" => $this->location_type,

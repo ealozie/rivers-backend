@@ -39,6 +39,11 @@ class Cooperate extends Model
         return $this->morphOne(AccountManager::class, 'accountable');
     }
 
+    public function property()
+    {
+        return $this->belongsTo(Property::class);
+    }
+
     public function business_type()
     {
         return $this->belongsTo(BusinessType::class);

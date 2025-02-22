@@ -39,8 +39,18 @@ class AssessmentController extends Controller
      */
     public function index()
     {
-        $assessments = Assessment::all();
-        return AssessmentResource::collection($assessments);
+        $assessments = Assessment::latest()->paginate();
+        $total_paid = Assessment::where('payment_status', 'paid')->count();
+        $total_unpaid = Assessment::where('payment_status', 'pending')->count();
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'total_paid' => $total_paid,
+                'total_unpaid' => $total_unpaid,
+                'assessments' => AssessmentResource::collection($assessments),
+            ]
+        ], 200);
+        //return AssessmentResource::collection($assessments);
     }
 
     /**
@@ -205,7 +215,7 @@ class AssessmentController extends Controller
                     'message' => 'Property not found',
                 ], 404);
             }
-            
+
         }
 
         if ($entity_type == 'shop') {
@@ -218,7 +228,7 @@ class AssessmentController extends Controller
                     'message' => 'Shop not found',
                 ], 404);
             }
-            
+
         }
 
         if ($entity_type == 'individual') {
@@ -242,7 +252,7 @@ class AssessmentController extends Controller
                     'status' => 'error',
                     'message' => 'Cooperate not found',
                 ], 404);
-            } 
+            }
         }
 
         if ($entity_type == 'signage') {
@@ -254,7 +264,7 @@ class AssessmentController extends Controller
                     'status' => 'error',
                     'message' => 'Signage not found',
                 ], 404);
-            } 
+            }
         }
 
         if ($entity_type == 'vehicle') {
@@ -266,7 +276,7 @@ class AssessmentController extends Controller
                     'status' => 'error',
                     'message' => 'Vehicle not found',
                 ], 404);
-            } 
+            }
         }
 
         return new AssessmentResource($assessment);
@@ -292,7 +302,7 @@ class AssessmentController extends Controller
         }
         return new AssessmentResource($assessment);
     }
-    
+
 
     /**
      * Update the specified resource in storage.
@@ -452,7 +462,7 @@ class AssessmentController extends Controller
     public function search(Request $request)
     {
         $per_page = 20;
-        
+
         if ($request->has('full_name')) {
             $query_request = $request->get('full_name');
             $ticket_response = Assessment::where('full_name', 'like', "%$query_request%")->paginate($per_page);

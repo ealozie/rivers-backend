@@ -33,7 +33,7 @@ class SignageStoreRequest extends FormRequest
             'user_id' => 'required|exists:users,id',
             'notes' => 'nullable|string',
             'signage_location' => 'required|string|in:property,standalone',
-            'property_id' => 'required_if:signage_location,property|exists:properties,property_id',
+            'property_id' => 'nullable|required_if:signage_location,property|exists:properties,property_id',
             'street_id' => 'required|exists:streets,id',
         ];
     }

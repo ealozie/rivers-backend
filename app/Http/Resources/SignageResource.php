@@ -17,6 +17,7 @@ class SignageResource extends JsonResource
         return [
             "id" => $this->id,
             'street' => $this->street,
+            'property' => $this->property,
             "signage_id" => $this->signage_id,
             "height_in_meters" => $this->height_in_meters,
             "width_in_meters" => $this->width_in_meters,

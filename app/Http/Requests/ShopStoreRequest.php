@@ -38,6 +38,7 @@ class ShopStoreRequest extends FormRequest
             'user_id' => 'required',
             'notes' => 'nullable',
             'street_id' => 'required|exists:streets,id',
+            'property_id' => 'nullable|exists:properties,property_id',
         ];
     }
 }
