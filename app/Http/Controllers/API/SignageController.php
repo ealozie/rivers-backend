@@ -24,8 +24,16 @@ class SignageController extends Controller
      */
     public function index()
     {
-        $signage = Signage::paginate();
-        return SignageResource::collection($signage);
+        $signage = Signage::latest()->paginate();
+        $signage_count = Signage::count();
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'total_signages' => $signage_count,
+                'signages' => SignageResource::collection($signage),
+            ]
+        ], 200);
+        //return SignageResource::collection($signage);
     }
 
     /**

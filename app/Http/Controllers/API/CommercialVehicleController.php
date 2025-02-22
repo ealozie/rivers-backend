@@ -25,8 +25,16 @@ class CommercialVehicleController extends Controller
      */
     public function index()
     {
-        $commercial_vehicles = CommercialVehicle::latest()->get();
-        return CommercialVehicleResource::collection($commercial_vehicles);
+        $commercial_vehicles = CommercialVehicle::latest()->paginate();
+        $commercial_vehicles_count = CommercialVehicle::count();
+        //return CommercialVehicleResource::collection($commercial_vehicles);
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'total_vehicles' => $commercial_vehicles_count,
+                'individual' => CommercialVehicleResource::collection($commercial_vehicles),
+            ]
+        ], 200);
     }
 
     /**
