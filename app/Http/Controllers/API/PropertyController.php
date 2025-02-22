@@ -113,7 +113,7 @@ class PropertyController extends Controller
             }
 
             //$validatedData['property_id'] = '4' . date('hi') . mt_rand(11111, 99999);
-            $property = $property->update($validatedData);
+            $property->update($validatedData);
             if ($request->hasFile('property_pictures') && count($validatedData['property_pictures'])) {
                 $property_images = $validatedData['property_pictures'];
                 foreach ($property_images as $property_image) {
@@ -132,7 +132,7 @@ class PropertyController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Unable to generate property ID',
+                'message' => 'Unable to update property.',
                 'error' => $e->getMessage(),
             ], 500);
         }
