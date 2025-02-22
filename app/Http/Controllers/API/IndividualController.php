@@ -133,6 +133,39 @@ class IndividualController extends Controller
     }
 
     /**
+     * Send Birthday message to the specified resource.
+     */
+    public function send_birthday_message(Request $request, $individual_id) {
+        $requestData = $request->validate([
+            'message' => 'nullable|string'
+        ]);
+        try {
+            $individual = Individual::where('individual_id',$individual_id)->first();
+            if (!$individual) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Individual not found',
+                ], 404);
+            }
+            $user = User::where('id', $individual->user_id)->first();
+            $phone_number = $user->phone_number;
+            $mobile_number = ltrim($phone_number, "0");
+            $name = $user->name;
+            $message = "Hello {$name}, Happy Birthday! May your birthday be filled with sunshine and smiles, laughter, love, and cheer. Enjoy your day!";
+            if ($requestData['message']) {
+                $message = "Hello {$name}, ". $requestData['message'];
+            }
+            $this->send_sms_process_message("+234" . $mobile_number, $message);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'An error occurred while processing your request. Please try again.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
      * Display the specified resource using the entity id.
      *
      * The entity id is the individual 10 digit number.
