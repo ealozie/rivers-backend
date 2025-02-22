@@ -44,7 +44,7 @@ class IndividualController extends Controller
                 'status' => 'success',
                 'data' => [
                     'total_individual' => $individual_registrations_count,
-                    'shops' => IndividualResource::collection($individual_registrations),
+                    'individual' => IndividualResource::collection($individual_registrations),
                 ]
             ], 200);
             //return IndividualResource::collection($individual_registrations);

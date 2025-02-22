@@ -105,6 +105,12 @@ class PropertyController extends Controller
         }
         try {
             $property = Property::find($id);
+            if (!$property) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'No property found.',
+                ], 404);
+            }
 
             //$validatedData['property_id'] = '4' . date('hi') . mt_rand(11111, 99999);
             $property = $property->update($validatedData);
