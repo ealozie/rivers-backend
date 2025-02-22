@@ -92,7 +92,44 @@ class PropertyController extends Controller
      */
     public function update(PropertyUpdateRequest $request, string $id)
     {
-        //
+        $validatedData = $request->validated();
+        if (isset($validatedData['user_id'])) {
+            $user = User::where('unique_id', $validatedData['user_id'])->first();
+            if (!$user) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'User ID not found.',
+                ], 404);
+            }
+            $validatedData['user_id'] = $user->id;
+        }
+        try {
+            $property = Property::find($id);
+
+            //$validatedData['property_id'] = '4' . date('hi') . mt_rand(11111, 99999);
+            $property = $property->update($validatedData);
+            if ($request->hasFile('property_pictures') && count($validatedData['property_pictures'])) {
+                $property_images = $validatedData['property_pictures'];
+                foreach ($property_images as $property_image) {
+                    $path = $property_image->store('property_pictures', 'public');
+                    $property_picture = new PropertyPicture();
+                    $property_picture->property_id = $property->id;
+                    $property_picture->picture_path = "/storage/" . $path;
+                    $property_picture->save();
+                }
+            }
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Property has been successfully enumerated.',
+                'data' => new PropertyResource($property)
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Unable to generate property ID',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**

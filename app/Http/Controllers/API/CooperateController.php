@@ -40,7 +40,15 @@ class CooperateController extends Controller
         $per_page = 20;
         if ($user->hasRole('admin')) {
             $cooperate_registrations = Cooperate::with('user')->paginate($per_page);
-            return CooperateResource::collection($cooperate_registrations);
+            $cooperate_registration_count = Cooperate::count();
+            return response()->json([
+                'status' => 'success',
+                'data' => [
+                    'total_cooperate' => $cooperate_registration_count,
+                    'cooperates' => CooperateResource::collection($cooperate_registrations),
+                ]
+            ], 200);
+            //return CooperateResource::collection($cooperate_registrations);
         }
     }
 

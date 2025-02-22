@@ -39,7 +39,15 @@ class IndividualController extends Controller
         $per_page = 20;
         if ($user->hasRole('admin')) {
             $individual_registrations = Individual::with('user')->paginate($per_page);
-            return IndividualResource::collection($individual_registrations);
+            $individual_registrations_count = Individual::count();
+            return response()->json([
+                'status' => 'success',
+                'data' => [
+                    'total_individual' => $individual_registrations_count,
+                    'shops' => IndividualResource::collection($individual_registrations),
+                ]
+            ], 200);
+            //return IndividualResource::collection($individual_registrations);
         }
     }
 

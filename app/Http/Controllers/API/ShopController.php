@@ -22,11 +22,15 @@ class ShopController extends Controller
      */
     public function index()
     {
-        $shops = Shop::all();
+        $shops = Shop::paginate();
+        $shops_count = Shop::count();
         return response()->json([
             'status' => 'success',
             'message' => 'Shops retrieved successfully.',
-            'data' => ShopResource::collection($shops)
+            'data' => [
+                'shops' => ShopResource::collection($shops),
+                'shops_count' => $shops_count
+            ]
         ]);
     }
 
