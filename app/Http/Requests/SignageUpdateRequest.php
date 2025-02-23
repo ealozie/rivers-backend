@@ -26,7 +26,7 @@ class SignageUpdateRequest extends FormRequest
             'width_in_meters' => 'required|numeric',
             'longitude' => 'required|numeric',
             'latitude' => 'required|numeric',
-            'street_name' => 'required|string',
+            'street_name' => 'nullable|string',
             'street_number' => 'required|string',
             'city' => 'required|string',
             'local_government_area_id' => 'required|exists:local_government_areas,id',
