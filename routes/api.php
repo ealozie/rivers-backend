@@ -144,8 +144,7 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('streets', StreetController::class);
     Route::apiResource('individual-relatives', IndividualRelativeController::class)->middleware('auth:sanctum');
     Route::get('individual-relatives-search/{individual_id}', [IndividualRelativeController::class, 'get_relatives'])->middleware('auth:sanctum');
-    Route::get('sms-notification-entity-type-id', [SMSNotificationController::class, 'send_sms_via_entity_type_and_id'])->middleware('auth:sanctum');
-    
+    Route::post('sms-notification-entity-type-id', [SMSNotificationController::class, 'send_sms_via_entity_type_and_id'])->middleware('auth:sanctum');
     Route::get('individual-relatives-verification', [IndividualRelativeController::class, 'verify_relative'])->middleware('auth:sanctum');
     Route::apiResource('service-providers', ServiceProviderController::class)->middleware('auth:sanctum');
     Route::apiResource('service-requests', ServiceRequestController::class)->middleware('auth:sanctum');
