@@ -30,7 +30,7 @@ class SignageStoreRequest extends FormRequest
             'street_number' => 'required|string',
             'city' => 'required|string',
             'local_government_area_id' => 'required|exists:local_government_areas,id',
-            'user_id' => 'required|exists:users,id',
+            'user_id' => 'required|exists:users,unique_id',
             'notes' => 'nullable|string',
             'signage_location' => 'required|string|in:property,standalone',
             'property_id' => 'nullable|required_if:signage_location,property|exists:properties,property_id',
