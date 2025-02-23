@@ -13,10 +13,12 @@ return new class extends Migration
     {
         Schema::create('individual_relatives', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('entity_id')->constrained('individuals', 'individual_id')->cascadeOnDelete();
-            $table->foreignId('relative_id')->constrained('individuals', 'individual_id')->cascadeOnDelete();
+            $table->unsignedBigInteger('entity_id');
+            $table->unsignedBigInteger('relative_id');
             $table->string('relationship');
             $table->timestamps();
+            $table->foreign('entity_id')->references('individual_id')->on('individuals')->cascadeOnDelete();
+            $table->foreign('relative_id')->references('individual_id')->on('individuals')->cascadeOnDelete();
         });
     }
 
