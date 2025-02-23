@@ -82,7 +82,7 @@ class IndividualRelativeController extends Controller
      */
     public function get_relatives($individual_id)
     {
-        $individual_relatives = IndividualRelative::where('individual_id', $individual_id)->orWhere('relative_id', $individual_id)->get();
+        $individual_relatives = IndividualRelative::where('entity_id', $individual_id)->orWhere('relative_id', $individual_id)->get();
         return IndividualRelativeResource::collection($individual_relatives);
     }
 
