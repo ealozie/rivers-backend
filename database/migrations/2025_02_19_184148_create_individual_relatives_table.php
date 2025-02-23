@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('individual_relatives', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('entity_id')->constrained('individuals')->cascadeOnDelete();
-            $table->foreignId('relative_id')->constrained('individuals')->cascadeOnDelete();
+            $table->foreignId('entity_id')->constrained('individuals', 'individual_id')->cascadeOnDelete();
+            $table->foreignId('relative_id')->constrained('individuals', 'individual_id')->cascadeOnDelete();
             $table->string('relationship');
             $table->timestamps();
         });
