@@ -59,7 +59,8 @@ class AppSettingSeeder extends Seeder
             // "ANNOUCEMENT_URL" => 'https://abiaeticket.com/annoucement',
             // 'ENFORCE_PAYMENT' => 'true',
             // 'AGENCY_NAME' => 'ABIA IGR',
-            "PAYMENT_IP_ADDRESS_ALLOWED" => "127.0.0.1",
+            //"PAYMENT_IP_ADDRESS_ALLOWED" => "127.0.0.1",
+            "AUTO_BILL_REMINDER" => "none",
         ];
 
         //AppSetting::truncate();
