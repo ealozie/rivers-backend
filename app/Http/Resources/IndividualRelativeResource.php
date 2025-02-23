@@ -16,9 +16,9 @@ class IndividualRelativeResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'individual' => $this->individual,
-            'relative' => $this->relative,
             'relationship' => $this->relationship,
+            'individual' => new IndividualResource($this->individual),
+            'relative' => new IndividualResource($this->relative),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

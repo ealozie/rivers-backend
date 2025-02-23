@@ -13,12 +13,12 @@ class IndividualRelative extends Model
 
     public function individual()
     {
-        return $this->belongsTo(Individual::class);
+        return $this->belongsTo(Individual::class, 'entity_id', 'individual_id');
     }
 
     public function relative()
     {
-        return $this->belongsTo(Individual::class, 'relative_id');
+        return $this->belongsTo(Individual::class, 'relative_id', 'individual_id');
     }
 
     public static function check_for_duplicates($entityId, $relativeId)
