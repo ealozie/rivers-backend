@@ -51,6 +51,33 @@ class IndividualRelativeController extends Controller
     }
 
     /**
+     * Verify Relative the specified resource.
+     */
+    public function verify_relative(Request $request)
+    {
+        $validatedData = $request->validate([
+            'relative_id' => 'required',
+            'verification_code' => 'required',
+        ]);
+        $individual_relative = IndividualRelative::where('relative_id', $validatedData['relative_id'])->first();
+        if (! $individual_relative) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Relative not found.'
+            ], 404);
+        }
+        if ($individual_relative->verification_code != $validatedData['verification_code']) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Verification code not found.'
+            ], 404);
+        }
+        $individual_relative->verified_at = now();
+        $individual_relative->save();
+        return new IndividualRelativeResource($individual_relative);
+    }
+
+    /**
      * Get Relative by Individual or relative ID.
      */
     public function get_relatives($individual_id)
