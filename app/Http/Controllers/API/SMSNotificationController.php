@@ -13,7 +13,7 @@ class SMSNotificationController extends Controller
     /**
      * Send SMS notification
      */
-    public function send_sms_via_entity_type_and_id(Request, $request)
+    public function send_sms_via_entity_type_and_id(Request $request)
     {
         $requestData = $request->validate([
             'entity_type' => 'required|in:shop,vehicle,property,signage,cooperate,individual',
