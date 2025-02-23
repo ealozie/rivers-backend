@@ -17,8 +17,6 @@ return new class extends Migration
             $table->unsignedBigInteger('relative_id');
             $table->string('relationship');
             $table->timestamps();
-            $table->foreign('entity_id')->references('individual_id')->on('individuals')->cascadeOnDelete();
-            $table->foreign('relative_id')->references('individual_id')->on('individuals')->cascadeOnDelete();
         });
     }
 
