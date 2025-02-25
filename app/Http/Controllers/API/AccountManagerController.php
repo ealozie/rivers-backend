@@ -184,7 +184,7 @@ class AccountManagerController extends Controller
         $validatedData['entity_type'] = $entity_type;
         if (isset($entity_id) && $validatedData['entity_type'] == 'shop') {
             $shop = Shop::where('shop_id', $entity_id)->first();
-            if ($shop) {
+            if ($shop && $shop->account_manager) {
                 $account_manager = $shop->account_manager;
             } else {
                 return response()->json([
@@ -195,7 +195,7 @@ class AccountManagerController extends Controller
         }
         if (isset($entity_id) && $validatedData['entity_type'] == 'individual') {
             $individual = Individual::where('individual_id', $entity_id)->first();
-            if ($individual) {
+            if ($individual && $individual->account_manager) {
                 $account_manager = $individual->account_manager;
             } else {
                 return response()->json([
@@ -207,7 +207,7 @@ class AccountManagerController extends Controller
 
         if (isset($entity_id) && $validatedData['entity_type'] == 'property') {
             $property = Property::where('property_id', $entity_id)->first();
-            if ($property) {
+            if ($property && $property->account_manager) {
                 $account_manager = $property->account_manager;
             } else {
                 return response()->json([
@@ -218,7 +218,7 @@ class AccountManagerController extends Controller
         }
         if (isset($entity_id) && $validatedData['entity_type'] == 'cooperate') {
             $cooperate = Cooperate::where('cooperate_id', $entity_id)->first();
-            if ($cooperate) {
+            if ($cooperate && $cooperate->account_manager) {
                 $account_manager = $cooperate->account_manager;
             } else {
                 return response()->json([
@@ -230,7 +230,7 @@ class AccountManagerController extends Controller
 
         if (isset($entity_id) && $validatedData['entity_type'] == 'signage') {
             $signage = Signage::where('signage_id', $entity_id)->first();
-            if ($signage) {
+            if ($signage && $signage->account_manager) {
                 $account_manager = $signage->account_manager;
             } else {
                 return response()->json([
@@ -242,7 +242,7 @@ class AccountManagerController extends Controller
 
         if (isset($entity_id) && $validatedData['entity_type'] == 'vehicle') {
             $vehicle = CommercialVehicle::where('vehicle_id', $entity_id)->first();
-            if ($vehicle) {
+            if ($vehicle && $vehicle->account_manager) {
                 $account_manager = $vehicle->account_manager;
             } else {
                 return response()->json([
