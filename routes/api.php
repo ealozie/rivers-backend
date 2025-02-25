@@ -134,9 +134,11 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('forgot-password', ForgotPasswordController::class)->only(['store', 'update']);
     Route::apiResource('individuals', IndividualController::class);
     Route::get('individuals-search', [IndividualController::class, 'search']);
+    Route::get('individuals-properties/{property_id}', [IndividualController::class, 'get_by_property_id']);
     Route::post('individuals-birthday', [IndividualController::class, 'send_birthday_message']);
     Route::get('individuals-entity-id/{entity_id}', [IndividualController::class, 'show_entity_id']);
     Route::get('cooperate-entity-id/{entity_id}', [CooperateController::class, 'show_entity_id']);
+    Route::get('cooperate-properties/{property_id}', [CooperateController::class, 'get_by_property_id']);
     //Route::apiResource('residential-address', ResidentialController::class);
     Route::get('entity-search', EntitySearchController::class);
     Route::apiResource('spouse', SpouseController::class);
@@ -153,6 +155,7 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('service-histories', ServiceHistoryController::class);
     Route::get('service-histories-by-service-request/{request_id}', [ServiceHistoryController::class, 'service_history_by_request']);
     Route::get('shops-search', [ShopController::class, 'search'])->middleware('auth:sanctum');
+    Route::get('shops-properties/{property_id}', [ShopController::class, 'get_by_property_id']);
     Route::apiResource('toll-gate-categories', TollGateCategoryController::class)->middleware('auth:sanctum')->only(['index']);
     Route::apiResource('document-type-toll-gates', DocumentTypeTollGateController::class)->middleware('auth:sanctum')->only(['index']);
     Route::apiResource('document-toll-gates-entries', DocumentTollGateEntryController::class)->middleware('auth:sanctum')->only(['index']);
@@ -164,6 +167,7 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('document-life-spans', DocumentLifeSpanController::class)->middleware('auth:sanctum')->only(['index']);
     Route::get('shops-by-user-id/{user_id_or_unique_id}', [ShopController::class, 'show_by_user_id'])->middleware('auth:sanctum');
     Route::apiResource('signage', SignageController::class)->middleware('auth:sanctum');
+    Route::get('signage-properties/{property_id}', [SignageController::class, 'get_by_property_id']);
     Route::get('signage-by-user-id/{user_id_or_unique_id}', [SignageController::class, 'show_by_user_id'])->middleware('auth:sanctum');
     Route::get('audit-trails', AuditTrailController::class)->middleware('auth:sanctum');
     Route::apiResource('assessments', AssessmentController::class)->middleware('auth:sanctum');

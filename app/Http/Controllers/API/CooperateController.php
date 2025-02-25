@@ -180,6 +180,22 @@ class CooperateController extends Controller
     }
 
     /**
+     * Get Resources by Property ID.
+     */
+    public function get_by_property_id(Request $request, string $property_id)
+    {
+        $property = Property::where('property_id', $property_id)->first();
+        if (!$property) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Property ID not found',
+            ], 404);
+        }
+        $cooperate = Cooperate::where('property_id', $property_id)->get();
+        return CooperateResource::collection($cooperate);
+    }
+
+    /**
      * Update the specified resource in storage.
      */
     public function update(CooperateUpdateRequest $request, string $id)

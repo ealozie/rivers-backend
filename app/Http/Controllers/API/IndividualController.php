@@ -147,6 +147,22 @@ class IndividualController extends Controller
     }
 
     /**
+     * Get Resources by Property ID.
+     */
+    public function get_by_property_id(Request $request, string $property_id)
+    {
+        $property = Property::where('property_id', $property_id)->first();
+        if (!$property) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Property ID not found',
+            ], 404);
+        }
+        $individuals = Individual::where('property_id', $property_id)->get();
+        return IndividualResource::collection($individuals);
+    }
+
+    /**
      * Send Birthday message to the specified resource.
      */
     public function send_birthday_message(Request $request, $individual_id) {
