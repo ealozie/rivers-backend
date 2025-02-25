@@ -23,7 +23,7 @@ class PropertyController extends Controller
      *
      * Query Parameter `filter=count` and `per_page=20`
      */
-    public function index()
+    public function index(Request $request)
     {
         $per_page = 20;
         if ($request->has('per_page')) {
