@@ -8,13 +8,14 @@ use App\Http\Requests\IndividualUpdateRequest;
 use App\Http\Resources\IndividualResource;
 use App\Http\Resources\UserResource;
 use App\Models\Individual;
+use App\Models\Property;
 use App\Models\User;
-use App\Traits\SendSMS;
 use App\Traits\IndividualAuthorizable;
+use App\Traits\SendSMS;
 use Hash;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
 /**

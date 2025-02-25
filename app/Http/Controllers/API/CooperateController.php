@@ -8,13 +8,14 @@ use App\Http\Requests\CooperateUpdateRequest;
 use App\Http\Resources\CooperateResource;
 use App\Http\Resources\UserResource;
 use App\Models\Cooperate;
+use App\Models\Property;
 use App\Models\User;
+use App\Traits\CooperateAuthorizable;
 use App\Traits\SendSMS;
 use Illuminate\Http\Request;
-use App\Traits\CooperateAuthorizable;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 /**

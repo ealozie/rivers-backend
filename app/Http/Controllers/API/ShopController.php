@@ -6,9 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ShopStoreRequest;
 use App\Http\Requests\ShopUpdateRequest;
 use App\Http\Resources\ShopResource;
+use App\Models\Property;
 use App\Models\Shop;
-use App\Traits\ShopAuthorizable;
 use App\Models\User;
+use App\Traits\ShopAuthorizable;
 use Illuminate\Http\Request;
 
 /**

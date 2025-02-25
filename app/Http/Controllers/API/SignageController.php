@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\SignageStoreRequest;
 use App\Http\Requests\SignageUpdateRequest;
 use App\Http\Resources\SignageResource;
+use App\Models\Property;
 use App\Models\Signage;
 use App\Models\User;
 use App\Traits\SignageAuthorizable;
