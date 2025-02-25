@@ -40,11 +40,15 @@ class IndividualRelativeController extends Controller
         $individual_relative = IndividualRelative::create($requestData);
         $individual = Individual::where('individual_id', $individual_relative->relative_id)->first();
         $user = User::find($individual->user_id);
-        if ($user) {
+        $individual_sender = Individual::where('individual_id', $requestData['entity_id'])->first();
+        $sender = User::find($individual_sender->user_id);
+        if ($user && $sender) {
             $phone_number = $user->phone_number;
             $mobile_number = ltrim($phone_number, "0");
-            $name = $user->first_name;
-            $message = "Hello {$name}, your relative verification code is: " . $requestData['verification_code'];
+            $name = $user->name;
+            $sender_name = $sender->name;
+            $relationship = $individual_relative->relationship;
+            $message = "Hello {$name}, {$sender_name} wants to add you as a relative ({$relationship}). Your verification code is: " . $requestData['verification_code'];
             $this->send_sms_process_message("+234" . $mobile_number, $message);
         }
         return new IndividualRelativeResource($individual_relative);
