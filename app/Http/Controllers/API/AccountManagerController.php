@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AccountManagerStoreRequest;
 use App\Http\Requests\AccountManagerUpdateRequest;
+use App\Http\Resources\AccountManagerListResource;
 use App\Http\Resources\AccountManagerResource;
 use App\Models\AccountManager;
 use App\Models\CommercialVehicle;
@@ -40,7 +41,7 @@ class AccountManagerController extends Controller
             'status' => 'success',
             'data' => [
                 'total_account_manager' => $total_account_manager,
-                'account_manager' => AccountManagerResource::collection($account_manager),
+                'account_manager' => AccountManagerListResource::collection($account_manager),
             ]
         ], 200);
         //return AccountManagerResource::collection($account_manager);
