@@ -20,15 +20,34 @@ class PropertyController extends Controller
     //use PropertyAuthorizable;
     /**
      * Display a listing of the resource.
+     *
+     * Query Parameter `filter=count` and `per_page=20`
      */
     public function index()
     {
-        $properties = Property::all();
-        return response()->json([
+        $per_page = 20;
+        if ($request->has('per_page')) {
+            $per_page = $request->get('per_page');
+        }
+        if ($request->has('filter') && $request->get('filter') == 'count') {
+            $property_count = Property::count();
+            return response()->json([
+            'status' => 'success',
+            'message' => 'Property retrieved successfully.',
+            'data' => [
+                'property_count' => $property_count
+            ]
+        ]);
+        } else {
+            $properties = Property::paginate($per_page);
+            return response()->json([
             'status' => 'success',
             'message' => 'Properties retrieved successfully.',
-            'data' => PropertyResource::collection($properties)
+            'data' => [
+                'properties' => PropertyResource::collection($properties),
+            ]
         ]);
+        }
     }
 
     /**

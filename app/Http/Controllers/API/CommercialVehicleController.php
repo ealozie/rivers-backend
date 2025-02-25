@@ -22,19 +22,35 @@ class CommercialVehicleController extends Controller
     //use VehicleAuthorizable;
     /**
      * Display a listing of the resource.
+     *
+     * Query Parameter `filter=count` and `per_page=20`
      */
     public function index()
     {
-        $commercial_vehicles = CommercialVehicle::latest()->paginate();
-        $commercial_vehicles_count = CommercialVehicle::count();
-        //return CommercialVehicleResource::collection($commercial_vehicles);
-        return response()->json([
+        $per_page = 20;
+        if ($request->has('per_page')) {
+            $per_page = $request->get('per_page');
+        }
+        if ($request->has('filter') && $request->get('filter') == 'count') {
+            $commercial_vehicles_count = CommercialVehicle::count();
+            return response()->json([
             'status' => 'success',
+            'message' => 'Vehicle retrieved successfully.',
             'data' => [
-                'total_vehicles' => $commercial_vehicles_count,
+                'vehicles_count' => $commercial_vehicles_count
+            ]
+        ]);
+        } else {
+            $commercial_vehicles = CommercialVehicle::latest()->paginate($per_page);
+            return response()->json([
+            'status' => 'success',
+            'message' => 'Vehicle retrieved successfully.',
+            'data' => [
                 'vehicles' => CommercialVehicleResource::collection($commercial_vehicles),
             ]
-        ], 200);
+        ]);
+        }
+        //return CommercialVehicleResource::collection($commercial_vehicles);
     }
 
     /**

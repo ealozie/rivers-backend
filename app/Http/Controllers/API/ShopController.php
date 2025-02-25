@@ -19,19 +19,35 @@ class ShopController extends Controller
     //use ShopAuthorizable;
     /**
      * Display a listing of the resource.
+     *
+     * Query Parameter `filter=count` and `per_page=20`
      */
-    public function index()
+    public function index(Request $request)
     {
-        $shops = Shop::paginate();
-        $shops_count = Shop::count();
-        return response()->json([
+        $per_page = 20;
+        if ($request->has('per_page')) {
+            $per_page = $request->get('per_page');
+        }
+        if ($request->has('filter') && $request->get('filter') == 'count') {
+            $shops_count = Shop::count();
+            return response()->json([
+            'status' => 'success',
+            'message' => 'Shops retrieved successfully.',
+            'data' => [
+                'shops_count' => $shops_count
+            ]
+        ]);
+        } else {
+            $shops = Shop::paginate($per_page);
+            return response()->json([
             'status' => 'success',
             'message' => 'Shops retrieved successfully.',
             'data' => [
                 'shops' => ShopResource::collection($shops),
-                'shops_count' => $shops_count
             ]
         ]);
+        }
+        
     }
 
     /**

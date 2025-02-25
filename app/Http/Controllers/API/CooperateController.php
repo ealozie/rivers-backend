@@ -33,21 +33,36 @@ class CooperateController extends Controller
 
     /**
      * Display a listing of the resource.
+     *
+     * Query Parameter `filter=count` and `per_page=20`
      */
     public function index(Request $request)
     {
         $user = $request->user();
         $per_page = 20;
+        if ($request->has('per_page')) {
+            $per_page = $request->get('per_page');
+        }
         if ($user->hasRole('admin')) {
-            $cooperate_registrations = Cooperate::with('user')->paginate($per_page);
+            if ($request->has('filter') && $request->get('filter') == 'count') {
             $cooperate_registration_count = Cooperate::count();
             return response()->json([
-                'status' => 'success',
-                'data' => [
-                    'total_cooperate' => $cooperate_registration_count,
-                    'cooperates' => CooperateResource::collection($cooperate_registrations),
-                ]
-            ], 200);
+            'status' => 'success',
+            'message' => 'Cooperate retrieved successfully.',
+            'data' => [
+                'cooperate_count' => $cooperate_registration_count
+            ]
+        ], 200);
+        } else {
+            $cooperate_registrations = Cooperate::with('user')->paginate($per_page);
+            return response()->json([
+            'status' => 'success',
+            'message' => 'Cooperate retrieved successfully.',
+            'data' => [
+                'cooperates' => CooperateResource::collection($cooperate_registrations),
+            ]
+        ], 200);
+        }
             //return CooperateResource::collection($cooperate_registrations);
         }
     }

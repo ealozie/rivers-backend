@@ -32,22 +32,36 @@ class IndividualController extends Controller
 
     /**
      * Display a listing of the resource.
+     *
+     * Query Parameter `filter=count` and `per_page=20`
      */
     public function index(Request $request)
     {
         $user = $request->user();
         $per_page = 20;
+        if ($request->has('per_page')) {
+            $per_page = $request->get('per_page');
+        }
         if ($user->hasRole('admin')) {
-            $individual_registrations = Individual::with('user')->paginate($per_page);
+            if ($request->has('filter') && $request->get('filter') == 'count') {
             $individual_registrations_count = Individual::count();
             return response()->json([
-                'status' => 'success',
-                'data' => [
-                    'total_individual' => $individual_registrations_count,
-                    'individual' => IndividualResource::collection($individual_registrations),
-                ]
-            ], 200);
-            //return IndividualResource::collection($individual_registrations);
+            'status' => 'success',
+            'message' => 'Individuals retrieved successfully.',
+            'data' => [
+                'individual_count' => $individual_registrations_count
+            ]
+        ], 200);
+        } else {
+            $individual_registrations = Individual::with('user')->paginate($per_page);
+            return response()->json([
+            'status' => 'success',
+            'message' => 'Individuals retrieved successfully.',
+            'data' => [
+                'individual' => IndividualResource::collection($individual_registrations),
+            ]
+        ], 200);
+        }
         }
     }
 

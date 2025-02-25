@@ -21,18 +21,34 @@ class SignageController extends Controller
 
     /**
      * Display a listing of the resource.
+     *
+     * Query Parameter `filter=count` and `per_page=20`
      */
     public function index()
     {
-        $signage = Signage::latest()->paginate();
-        $signage_count = Signage::count();
-        return response()->json([
+        $per_page = 20;
+        if ($request->has('per_page')) {
+            $per_page = $request->get('per_page');
+        }
+        if ($request->has('filter') && $request->get('filter') == 'count') {
+            $signage_count = Signage::count();
+            return response()->json([
             'status' => 'success',
+            'message' => 'Signage retrieved successfully.',
             'data' => [
-                'total_signages' => $signage_count,
+                'signage_count' => $signage_count
+            ]
+        ], 200);
+        } else {
+            $signage = Signage::latest()->paginate($per_page);
+            return response()->json([
+            'status' => 'success',
+            'message' => 'Signage retrieved successfully.',
+            'data' => [
                 'signages' => SignageResource::collection($signage),
             ]
         ], 200);
+        }
         //return SignageResource::collection($signage);
     }
 
