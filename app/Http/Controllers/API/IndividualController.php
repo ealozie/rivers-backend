@@ -102,8 +102,8 @@ class IndividualController extends Controller
         $user->role = 'individual';
         $user->status = 0;
         $user->password = Hash::make($password);
-        $user->phone_number_verification_code =
-            mt_rand(111111, 999999);
+        $user->phone_number_verification_code = mt_rand(111111, 999999);
+        $user->facial_confirmation_token = mt_rand(111111, 999999);
         $user->save();
         //$user->unique_id = time() + $user->id + mt_rand(11111, 99999);
         //$user->save();
