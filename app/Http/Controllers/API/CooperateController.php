@@ -124,6 +124,12 @@ class CooperateController extends Controller
                 $path = $request->file('picture_path')->store('cooperates', 'public');
                 $validatedData['picture_path'] = "/storage/" . $path;
             }
+            if (auth()->user()) {
+            //$validatedData['added_by'] = $request->user()->id;
+            $validatedData['approval_status'] = 'approved';
+            } else {
+                //$validatedData['added_by'] = $owner->id;
+            }
             $validatedData['cooperate_id'] = '2' . date('hi') . mt_rand(11111, 99999);
             $cooperate = Cooperate::create($validatedData);
             $user->assignRole('cooperate');

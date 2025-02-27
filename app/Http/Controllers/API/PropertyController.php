@@ -66,6 +66,12 @@ class PropertyController extends Controller
             }
             $validatedData['user_id'] = $user->id;
         }
+        if (auth()->user()) {
+            //$validatedData['added_by'] = $request->user()->id;
+            $validatedData['approval_status'] = 'approved';
+        } else {
+            //$validatedData['added_by'] = $user->id;
+        }
         try {
             $validatedData['property_id'] = '4' . date('hi') . mt_rand(11111, 99999);
             $property = Property::create($validatedData);

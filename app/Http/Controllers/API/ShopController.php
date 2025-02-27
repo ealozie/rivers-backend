@@ -67,7 +67,12 @@ class ShopController extends Controller
             ], 404);
         }
         $validatedData['user_id'] = $user->id;
-        $validatedData['added_by'] = $request->user()->id;
+        if (auth()->user()) {
+            $validatedData['added_by'] = $request->user()->id;
+            $validatedData['approval_status'] = 'approved';
+        } else {
+            $validatedData['added_by'] = $user->id;
+        }
         try {
             $shop = Shop::create($validatedData);
         } catch (\Exception $e) {

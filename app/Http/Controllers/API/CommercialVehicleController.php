@@ -59,9 +59,7 @@ class CommercialVehicleController extends Controller
     public function store(CommercialVehicleStoreRequest $request)
     {
         $validatedData = $request->validated();
-        if (Auth::check()) {
-            $validatedData['added_by'] = Auth::id();
-        }
+        
         $validatedData['status'] = 'pending';
         $driver = User::where('unique_id', $validatedData['driver_id'])->first();
         if (!$driver) {
@@ -79,6 +77,12 @@ class CommercialVehicleController extends Controller
         }
         $validatedData['user_id'] = $user->id;
         $validatedData['driver_id'] = $driver->id;
+        if (auth()->user()) {
+            //$validatedData['added_by'] = $request->user()->id;
+            $validatedData['approval_status'] = 'approved';
+        } else {
+            //$validatedData['added_by'] = $user->id;
+        }
         try {
             if ($request->hasFile('driver_license_image')) {
                 $path = $request->file('driver_license_image')->store('commercial_vehicles', 'public');

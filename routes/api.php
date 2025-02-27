@@ -142,7 +142,7 @@ Route::prefix('v1')->group(function () {
     //Route::apiResource('residential-address', ResidentialController::class);
     Route::get('entity-search', EntitySearchController::class);
     Route::apiResource('spouse', SpouseController::class);
-    Route::apiResource('shops', ShopController::class)->middleware('auth:sanctum');
+    Route::apiResource('shops', ShopController::class);
     Route::apiResource('streets', StreetController::class);
     Route::apiResource('individual-relatives', IndividualRelativeController::class)->middleware('auth:sanctum');
     Route::get('individual-relatives-search/{individual_id}', [IndividualRelativeController::class, 'get_relatives'])->middleware('auth:sanctum');
@@ -166,7 +166,7 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('documents', DocumentController::class)->middleware('auth:sanctum')->only(['index']);
     Route::apiResource('document-life-spans', DocumentLifeSpanController::class)->middleware('auth:sanctum')->only(['index']);
     Route::get('shops-by-user-id/{user_id_or_unique_id}', [ShopController::class, 'show_by_user_id'])->middleware('auth:sanctum');
-    Route::apiResource('signage', SignageController::class)->middleware('auth:sanctum');
+    Route::apiResource('signage', SignageController::class);
     Route::get('signage-properties/{property_id}', [SignageController::class, 'get_by_property_id']);
     Route::get('signage-by-user-id/{user_id_or_unique_id}', [SignageController::class, 'show_by_user_id'])->middleware('auth:sanctum');
     Route::get('audit-trails', AuditTrailController::class)->middleware('auth:sanctum');
@@ -191,12 +191,12 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('agencies', AgencyController::class)->only(['index', 'show', 'update', 'store']);
     Route::apiResource('revenue-items', RevenueItemController::class)->only(['index', 'show', 'update', 'store'])->middleware('auth:sanctum');
     Route::get('revenue-items-agency/{agency_id}', [RevenueItemController::class, 'revenue_item_agency']);
-    Route::apiResource('cooperates', CooperateController::class)->middleware('auth:sanctum');
+    Route::apiResource('cooperates', CooperateController::class);
     Route::get('cooperates-search', [CooperateController::class, 'search'])->middleware('auth:sanctum');
-    Route::apiResource('commercial-vehicles', CommercialVehicleController::class)->middleware('auth:sanctum');
+    Route::apiResource('commercial-vehicles', CommercialVehicleController::class);
     Route::get('commercial-vehicles-search', [CommercialVehicleController::class, 'search'])->middleware('auth:sanctum');
     Route::get('commercial-vehicles-by-user-id/{user_id_or_unique_id}', [CommercialVehicleController::class, 'show_by_user_id'])->middleware('auth:sanctum');
-    Route::apiResource('properties', PropertyController::class)->middleware('auth:sanctum');
+    Route::apiResource('properties', PropertyController::class);
     Route::get('properties-search', [PropertyController::class, 'search'])->middleware('auth:sanctum');
     Route::get('properties-by-user-id/{user_id_or_unique_id}', [PropertyController::class, 'show_by_user_id'])->middleware('auth:sanctum');
     Route::apiResource('property-types', PropertyTypeController::class)->only(['index']);
