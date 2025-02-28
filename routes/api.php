@@ -135,7 +135,7 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('individuals', IndividualController::class);
     Route::get('individuals-search', [IndividualController::class, 'search']);
     Route::get('individuals-properties/{property_id}', [IndividualController::class, 'get_by_property_id']);
-    Route::post('individuals-birthday', [IndividualController::class, 'send_birthday_message']);
+    Route::post('individuals-birthday/{individual_id}', [IndividualController::class, 'send_birthday_message']);
     Route::get('individuals-entity-id/{entity_id}', [IndividualController::class, 'show_entity_id']);
     Route::get('cooperate-entity-id/{entity_id}', [CooperateController::class, 'show_entity_id']);
     Route::get('cooperate-properties/{property_id}', [CooperateController::class, 'get_by_property_id']);
