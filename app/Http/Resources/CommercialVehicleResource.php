@@ -29,6 +29,7 @@ class CommercialVehicleResource extends JsonResource
             "ticket_category" => new TicketCategoryResource($this->ticket_category),
             "capacity" => $this->capacity,
             "routes" => $this->routes,
+            "approval_status" => $this->approval_status,
             "driver" => new IndividualUserResource($this->driver),
             "driver_license_number" => $this->driver_license_number,
             "driver_license_expiry_date" => $this->driver_license_expiry_date,

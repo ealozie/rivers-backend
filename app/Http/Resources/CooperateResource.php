@@ -29,6 +29,7 @@ class CooperateResource extends JsonResource
             "date_of_business_commencement" => $this->date_of_business_commencement,
             "website" => $this->website,
             "tin_number" => $this->tin_number,
+            "approval_status" => $this->approval_status,
             "settlement_type" => $this->settlement_type,
             "business_category" => $this->business_category,
             "business_sub_category" => $this->business_sub_category,

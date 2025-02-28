@@ -19,6 +19,11 @@ class Cooperate extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function property()
+    {
+        return $this->belongsTo(Property::class, 'property_id', 'property_id');
+    }
+
     public function street()
     {
         return $this->belongsTo(Street::class);
@@ -37,11 +42,6 @@ class Cooperate extends Model
     public function account_manager(): MorphOne
     {
         return $this->morphOne(AccountManager::class, 'accountable');
-    }
-
-    public function property()
-    {
-        return $this->belongsTo(Property::class);
     }
 
     public function business_type()

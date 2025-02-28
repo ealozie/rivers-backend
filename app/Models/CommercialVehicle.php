@@ -38,7 +38,7 @@ class CommercialVehicle extends Model
 
     public function property()
     {
-        return $this->belongsTo(Property::class);
+        return $this->belongsTo(Property::class, 'property_id', 'property_id');
     }
 
     public function demand_notices(): MorphMany

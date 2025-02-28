@@ -19,6 +19,7 @@ class SignageResource extends JsonResource
             'street' => $this->street,
             'property' => $this->property,
             "signage_id" => $this->signage_id,
+            "approval_status" => $this->approval_status,
             "height_in_meters" => $this->height_in_meters,
             "width_in_meters" => $this->width_in_meters,
             "longitude" => $this->longitude,

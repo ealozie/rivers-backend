@@ -34,6 +34,7 @@ class PropertyResource extends JsonResource
             'demand_notice_category' => $this->demandNoticeCategory ?? '',
             'longitude' => $this->longitude,
             'latitude' => $this->latitude,
+            "approval_status" => $this->approval_status,
             'has_borehole' => $this->has_borehole ? true : false,
             'has_sewage' => $this->has_sewage ? true : false,
             'is_connected_to_power' => $this->is_connected_to_power ? true : false,
