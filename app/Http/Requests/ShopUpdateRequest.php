@@ -22,23 +22,26 @@ class ShopUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required',
-            'zone' => 'sometimes|string',
-            'number' => 'nullable',
-            'location_type' => 'required|in:market,street',
-            'location' => 'sometimes|string',
-            'market_name_id' => 'nullable|exists:market_names,id',
-            'street_name' => 'nullable',
-            'street_number' => 'nullable',
-            'city' => 'nullable',
-            'local_government_area_id' => 'required|exists:local_government_areas,id',
-            'business_category_id' => 'required|exists:business_categories,id',
-            'business_sub_category_id' => 'required|exists:business_sub_categories,id',
-            'classification_id' => 'required|exists:classifications,id',
-            'user_id' => 'required',
-            'notes' => 'nullable',
-            'street_id' => 'nullable|exists:streets,id',
-            'property_id' => 'nullable|exists:properties,property_id',
+            "name" => "nullable",
+            "zone" => "nullable|string",
+            "number" => "nullable",
+            "location_type" => "nullable|in:market,street",
+            "location" => "nullable|string",
+            "market_name_id" => "nullable|exists:market_names,id",
+            "street_name" => "nullable",
+            "street_number" => "nullable",
+            "city" => "nullable",
+            "approval_status" => "nullable|in:pending,approved,rejected",
+            "local_government_area_id" =>
+                "nullable|exists:local_government_areas,id",
+            "business_category_id" => "nullable|exists:business_categories,id",
+            "business_sub_category_id" =>
+                "nullable|exists:business_sub_categories,id",
+            "classification_id" => "nullable|exists:classifications,id",
+            "user_id" => "nullable",
+            "notes" => "nullable",
+            "street_id" => "nullable|exists:streets,id",
+            "property_id" => "nullable|exists:properties,property_id",
         ];
     }
 }

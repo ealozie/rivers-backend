@@ -28,27 +28,33 @@ class SignageController extends Controller
     public function index(Request $request)
     {
         $per_page = 20;
-        if ($request->has('per_page')) {
-            $per_page = $request->get('per_page');
+        if ($request->has("per_page")) {
+            $per_page = $request->get("per_page");
         }
-        if ($request->has('filter') && $request->get('filter') == 'count') {
+        if ($request->has("filter") && $request->get("filter") == "count") {
             $signage_count = Signage::count();
-            return response()->json([
-            'status' => 'success',
-            'message' => 'Signage retrieved successfully.',
-            'data' => [
-                'signage_count' => $signage_count
-            ]
-        ], 200);
+            return response()->json(
+                [
+                    "status" => "success",
+                    "message" => "Signage retrieved successfully.",
+                    "data" => [
+                        "signage_count" => $signage_count,
+                    ],
+                ],
+                200
+            );
         } else {
             $signage = Signage::latest()->paginate($per_page);
-            return response()->json([
-            'status' => 'success',
-            'message' => 'Signage retrieved successfully.',
-            'data' => [
-                'signages' => SignageResource::collection($signage),
-            ]
-        ], 200);
+            return response()->json(
+                [
+                    "status" => "success",
+                    "message" => "Signage retrieved successfully.",
+                    "data" => [
+                        "signages" => SignageResource::collection($signage),
+                    ],
+                ],
+                200
+            );
         }
         //return SignageResource::collection($signage);
     }
@@ -60,15 +66,15 @@ class SignageController extends Controller
     {
         $user = $request->user();
         $validatedData = $request->validated();
-        $owner = User::where('unique_id', $validatedData['user_id'])->first();
-        $validatedData['user_id'] = $owner->id;
+        $owner = User::where("unique_id", $validatedData["user_id"])->first();
+        $validatedData["user_id"] = $owner->id;
         if (auth()->user()) {
-            $validatedData['added_by'] = $request->user()->id;
-            $validatedData['approval_status'] = 'approved';
+            $validatedData["added_by"] = $request->user()->id;
+            $validatedData["approval_status"] = "approved";
         } else {
-            $validatedData['added_by'] = $owner->id;
+            $validatedData["added_by"] = $owner->id;
         }
-        $validatedData['signage_id'] = '5' . date('hi') . mt_rand(11111, 99999);
+        $validatedData["signage_id"] = "5" . date("hi") . mt_rand(11111, 99999);
         $signage = Signage::create($validatedData);
         return new SignageResource($signage);
     }
@@ -80,7 +86,10 @@ class SignageController extends Controller
     {
         $signage = Signage::find($id);
         if (!$signage) {
-            return response()->json(['status' => 'error', 'message' => 'Signage not found'], 404);
+            return response()->json(
+                ["status" => "error", "message" => "Signage not found"],
+                404
+            );
         }
         return new SignageResource($signage);
     }
@@ -90,14 +99,17 @@ class SignageController extends Controller
      */
     public function get_by_property_id(Request $request, string $property_id)
     {
-        $property = Property::where('property_id', $property_id)->first();
+        $property = Property::where("property_id", $property_id)->first();
         if (!$property) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Property ID not found',
-            ], 404);
+            return response()->json(
+                [
+                    "status" => "error",
+                    "message" => "Property ID not found",
+                ],
+                404
+            );
         }
-        $signages = Signage::where('property_id', $property_id)->get();
+        $signages = Signage::where("property_id", $property_id)->get();
         return SignageResource::collection($signages);
     }
 
@@ -106,9 +118,11 @@ class SignageController extends Controller
      */
     public function update(SignageUpdateRequest $request, string $id)
     {
-        $user = $request->user();
         $validatedData = $request->validated();
-        $validatedData['added_by'] = $user->id ?? 0;
+        if (auth()->user()) {
+            $user = $request->user();
+            $validatedData["added_by"] = $user->id;
+        }
         $signage = Signage::find($id);
         $signage->update($validatedData);
         return new SignageResource($signage);
@@ -120,7 +134,13 @@ class SignageController extends Controller
     public function destroy(string $id)
     {
         Signage::destroy($id);
-        return response()->json(['status' => 'success', 'message' => 'Signage deleted successfully',], 200);
+        return response()->json(
+            [
+                "status" => "success",
+                "message" => "Signage deleted successfully",
+            ],
+            200
+        );
     }
 
     /**
@@ -128,24 +148,32 @@ class SignageController extends Controller
      */
     public function show_by_user_id(string $user_id_or_unique_id)
     {
-        $user = User::where('id', $user_id_or_unique_id)->orWhere('unique_id', $user_id_or_unique_id)->first();
+        $user = User::where("id", $user_id_or_unique_id)
+            ->orWhere("unique_id", $user_id_or_unique_id)
+            ->first();
         if (!$user) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'User ID not found.',
-            ], 404);
+            return response()->json(
+                [
+                    "status" => "error",
+                    "message" => "User ID not found.",
+                ],
+                404
+            );
         }
-        $signage = Signage::where('user_id', $user->id)->get();
+        $signage = Signage::where("user_id", $user->id)->get();
         if (!count($signage)) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Signage not found.',
-            ], 404);
+            return response()->json(
+                [
+                    "status" => "error",
+                    "message" => "Signage not found.",
+                ],
+                404
+            );
         }
         return response()->json([
-            'status' => 'success',
-            'message' => 'Signage retrieved successfully.',
-            'data' => SignageResource::collection($signage)
+            "status" => "success",
+            "message" => "Signage retrieved successfully.",
+            "data" => SignageResource::collection($signage),
         ]);
     }
 }

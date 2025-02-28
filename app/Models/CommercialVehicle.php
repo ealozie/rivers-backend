@@ -11,12 +11,24 @@ class CommercialVehicle extends Model
 {
     use HasFactory;
 
-    protected $guarded = ['id'];
+    protected $guarded = ["id"];
 
     //Belong to a vehicle category
     public function vehicle_category()
     {
         return $this->belongsTo(VehicleCategory::class);
+    }
+
+    //Belong to a user
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    //Belong to a driver
+    public function driver()
+    {
+        return $this->belongsTo(User::class, "driver_id");
     }
 
     public function street()
@@ -31,12 +43,12 @@ class CommercialVehicle extends Model
 
     public function demand_notices(): MorphMany
     {
-        return $this->morphMany(DemandNotice::class, 'demand_noticeable');
+        return $this->morphMany(DemandNotice::class, "demand_noticeable");
     }
 
     public function vehicle_notes(): MorphMany
     {
-        return $this->morphMany(Note::class, 'noteable');
+        return $this->morphMany(Note::class, "noteable");
     }
 
     //Belong to a vehicle manufacturer
@@ -47,7 +59,7 @@ class CommercialVehicle extends Model
 
     public function account_manager(): MorphOne
     {
-        return $this->morphOne(AccountManager::class, 'accountable');
+        return $this->morphOne(AccountManager::class, "accountable");
     }
 
     //Belong to a vehicle model
@@ -64,8 +76,6 @@ class CommercialVehicle extends Model
 
     public function assessments(): MorphMany
     {
-        return $this->morphMany(Assessment::class, 'assessmentable');
+        return $this->morphMany(Assessment::class, "assessmentable");
     }
-
-
 }
