@@ -136,7 +136,6 @@ class PropertyController extends Controller
                     'message' => 'No property found.',
                 ], 404);
             }
-
             //$validatedData['property_id'] = '4' . date('hi') . mt_rand(11111, 99999);
             $property->update($validatedData);
             if ($request->hasFile('property_pictures') && count($validatedData['property_pictures'])) {
