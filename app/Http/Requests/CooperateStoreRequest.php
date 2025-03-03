@@ -45,13 +45,13 @@ class CooperateStoreRequest extends FormRequest
             'has_signage' => 'nullable|boolean',
             'notes' => 'nullable|string',
             'city' => 'nullable',
-            'street_name' => 'required|string',
+            'street_name' => 'nullable|string',
             'street_number' => 'nullable',
             'landmark' => 'nullable',
-            'state_id' => 'required|exists:states,id',
+            'state_id' => 'nullable|exists:states,id',
             'local_government_area_id' => 'required|exists:local_government_areas,id',
             'property_id' => 'nullable|exists:properties,property_id',
-            'street_id' => 'required|exists:streets,id',
+            'street_id' => 'nullable|exists:streets,id',
         ];
     }
 }

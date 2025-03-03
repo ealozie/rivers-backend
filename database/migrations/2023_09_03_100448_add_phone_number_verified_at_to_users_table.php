@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->dateTime('phone_number_verified_at')->nullable();
             $table->string('phone_number_verification_code')->nullable();
+            $table->string('facial_confirmation_token')->nullable();
             // $table->string('registration_status')->default('pending');
             // $table->string('facial_biometric_status')->default('pending');
             // $table->string('facial_biometric_image_url')->default('pending');
