@@ -30,7 +30,7 @@ class PropertyStoreRequest extends FormRequest
             'number_of_rooms' => 'sometimes|integer',
             'plot_size' => 'nullable',
             'property_use_id' => 'required|exists:property_uses,id',
-            'demand_notice_category_id' => 'required|exists:demand_notice_categories,id',
+            'demand_notice_category_id' => 'nullable|exists:demand_notice_categories,id',
             'longitude' => 'nullable',
             'latitude' => 'nullable',
             'has_borehole' => 'sometimes|boolean',
