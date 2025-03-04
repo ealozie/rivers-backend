@@ -66,16 +66,16 @@ class AssessmentController extends Controller
         $total_unpaid = Assessment::selectRaw('COUNT(*) as total_count, SUM(amount) as total_amount')
                     ->whereYear('created_at', $current_year)
                     ->where('payment_status', 'pending')
-                    ->count();
+                    ->first();
         $total_approved = Assessment::selectRaw('COUNT(*) as total_count, SUM(amount) as total_amount')
                     ->whereYear('created_at', $current_year)
                     ->where('status', 'approved')
-                    ->count();
+                    ->first();
         $total_cancelled = Assessment::selectRaw('COUNT(*) as total_count, SUM(amount) as total_amount')
                     ->whereYear('created_at', $current_year)
                     ->where('status', 'cancelled')
-                    ->count();
-        $total_assessments = Assessment::whereYear('created_at', $current_year)->count();
+                    ->first();
+        $total_assessments = Assessment::selectRaw('COUNT(*) as total_count, SUM(amount) as total_amount')->whereYear('created_at', $current_year)->first();
         return response()->json([
             'status' => 'success',
             'data' => [
