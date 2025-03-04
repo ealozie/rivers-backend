@@ -164,6 +164,32 @@ class UserController extends Controller
     }
 
     /**
+     * Assign Role to User.
+     */
+    public function assign_role(Request $request, string $user_id)
+    {
+        $validatedData = $request->validate([
+            'role' => 'required',
+        ]);
+        $user = User::where('unique_id', $user_id)->first();
+        if (!$user) {
+            return response()->json([
+            'status' => 'error',
+            'message' => 'User not found.',
+            'data' => [],
+        ], 404);
+        }
+        $user->syncRoles($validatedData['role']);
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Role(s) has been assigned.',
+            'data' => [
+                'roles' => $user->getDirectRoles(),
+            ],
+        ]);
+    }
+
+    /**
      * Revoke User's Permissions.
      */
     public function revoke_permission(Request $request, string $user_id)

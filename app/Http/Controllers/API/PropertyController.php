@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PropertyStoreRequest;
 use App\Http\Requests\PropertyUpdateRequest;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\PropertyResource;
 use App\Models\Property;
 use App\Models\PropertyPicture;
@@ -69,11 +70,11 @@ class PropertyController extends Controller
         if (!isset($validatedData['demand_notice_category_id'])) {
             $validatedData['demand_notice_category_id'] = 0;
         }
-        if ($request->user() && $request->user()->hasRole('admin')) {
-            //$validatedData['added_by'] = $request->user()->id;
+        if ($request->bearerToken()) {
+            Auth::setUser($request->user('sanctum'));
+            if ($request->user() && $request->user()->hasRole('admin')) {
             $validatedData['approval_status'] = 'approved';
-        } else {
-            //$validatedData['added_by'] = $user->id;
+            }
         }
         try {
             $validatedData['property_id'] = '4' . date('hi') . mt_rand(11111, 99999);

@@ -196,7 +196,7 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('commercial-vehicles', CommercialVehicleController::class);
     Route::get('commercial-vehicles-search', [CommercialVehicleController::class, 'search'])->middleware('auth:sanctum');
     Route::get('commercial-vehicles-by-user-id/{user_id_or_unique_id}', [CommercialVehicleController::class, 'show_by_user_id'])->middleware('auth:sanctum');
-    Route::apiResource('properties', PropertyController::class);
+    Route::apiResource('properties', PropertyController::class);//->middleware('auth:sanctum');
     Route::get('properties-search', [PropertyController::class, 'search'])->middleware('auth:sanctum');
     Route::get('properties-by-user-id/{user_id_or_unique_id}', [PropertyController::class, 'show_by_user_id'])->middleware('auth:sanctum');
     Route::apiResource('property-types', PropertyTypeController::class)->only(['index']);
