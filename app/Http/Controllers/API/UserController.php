@@ -46,6 +46,22 @@ class UserController extends Controller
     }
 
      /**
+     * Display a List of Account Officers resource.
+     */
+    public function account_officers(Request $request)
+    {
+        $account_managers = User::role('account_officer')->get();
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'users' => UserResource::collection($account_managers),
+            ],
+        ], 200);
+    }
+
+    
+
+     /**
      * Advanced Search in resource.
      *
      * Query paramters `phone_number` or `email`.<br>

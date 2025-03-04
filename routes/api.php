@@ -210,7 +210,7 @@ Route::prefix('v1')->group(function () {
     Route::get('payments-by-reference-number/{reference_number}', [PaymentController::class, 'show_by_reference_number']);
     Route::apiResource('property-uses', PropertyUseController::class)->only(['index']);
     Route::apiResource('users', UserController::class)->middleware('auth:sanctum');
-
+    Route::get('account-officers', [UserController::class, 'account_officers'])->middleware('auth:sanctum');
     Route::post('assign-permissions/{user_id}', [UserController::class, 'assign_permission'])->middleware('auth:sanctum');
     Route::post('revoke-permissions/{user_id}', [UserController::class, 'revoke_permission'])->middleware('auth:sanctum');
     Route::post('users-advanced-search', [UserController::class, 'search'])->middleware('auth:sanctum');
