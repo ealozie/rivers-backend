@@ -59,27 +59,46 @@ class AssessmentController extends Controller
     public function assessments_statistics()
     {
         $current_year = date('Y');
-        $total_paid = Assessment::whereYear('created_at', $current_year)
+        $total_paid = Assessment::selectRaw('COUNT(*) as total_count, SUM(amount) as total_amount')
+                    ->whereYear('created_at', $current_year)
                     ->where('payment_status', 'paid')
-                    ->count();
-        $total_unpaid = Assessment::whereYear('created_at', $current_year)
+                    ->first();
+        $total_unpaid = Assessment::selectRaw('COUNT(*) as total_count, SUM(amount) as total_amount')
+                    ->whereYear('created_at', $current_year)
                     ->where('payment_status', 'pending')
                     ->count();
-        $total_approved = Assessment::whereYear('created_at', $current_year)
+        $total_approved = Assessment::selectRaw('COUNT(*) as total_count, SUM(amount) as total_amount')
+                    ->whereYear('created_at', $current_year)
                     ->where('status', 'approved')
                     ->count();
-        $total_cancelled = Assessment::whereYear('created_at', $current_year)
+        $total_cancelled = Assessment::selectRaw('COUNT(*) as total_count, SUM(amount) as total_amount')
+                    ->whereYear('created_at', $current_year)
                     ->where('status', 'cancelled')
                     ->count();
         $total_assessments = Assessment::whereYear('created_at', $current_year)->count();
         return response()->json([
             'status' => 'success',
             'data' => [
-                'total_approved_assessments' => $total_approved,
-                'total_cancelled_assessments' => $total_cancelled,
-                'total_paid_assessments' => $total_paid,
-                'total_unpaid_assessments' => $total_unpaid,
-                'total_assessments' => $total_assessments,
+                'approved_assessments' => [
+                    'amount' => number_format($total_approved->total_amount, 2),
+                    'count' => $total_approved->total_count,
+                ],
+                'cancelled_assessments' => [
+                    'amount' => number_format($total_cancelled->total_amount, 2),
+                    'count' => $total_cancelled->total_count,
+                ],
+                'paid_assessments' => [
+                    'amount' => number_format($total_paid->total_amount, 2),
+                    'count' => $total_paid->total_count,
+                ],
+                'unpaid_assessments' => [
+                    'amount' => number_format($total_unpaid->total_amount, 2),
+                    'count' => $total_unpaid->total_count,
+                ],
+                'total_assessments' => [
+                    'amount' => number_format($total_assessments->total_amount, 2),
+                    'count' => $total_assessments->total_count,
+                ],
             ]
         ], 200);
         //return AssessmentResource::collection($assessments);
