@@ -133,6 +133,8 @@ Route::prefix('v1')->group(function () {
     Route::get('titles', TitleController::class);
     Route::apiResource('forgot-password', ForgotPasswordController::class)->only(['store', 'update']);
     Route::apiResource('individuals', IndividualController::class);
+    Route::get('individuals-gender', [IndividualController::class, 'gender']);
+
     Route::get('individuals-search', [IndividualController::class, 'search']);
     Route::get('individuals-properties/{property_id}', [IndividualController::class, 'get_by_property_id']);
     Route::post('individuals-birthday/{individual_id}', [IndividualController::class, 'send_birthday_message']);
@@ -171,6 +173,7 @@ Route::prefix('v1')->group(function () {
     Route::get('signage-by-user-id/{user_id_or_unique_id}', [SignageController::class, 'show_by_user_id'])->middleware('auth:sanctum');
     Route::get('audit-trails', AuditTrailController::class)->middleware('auth:sanctum');
     Route::apiResource('assessments', AssessmentController::class)->middleware('auth:sanctum');
+    Route::get('assessments-statistics', [AssessmentController::class, 'assessments_statistics'])->middleware('auth:sanctum');
     Route::apiResource('notes', NoteController::class)->middleware('auth:sanctum');
     Route::get('entity-notes/{entity_type}/{entity_id}', [NoteController::class, 'notes'])->middleware('auth:sanctum');
     Route::get('entity-account-managers/{entity_type}/{entity_id}', [AccountManagerController::class, 'account_manager_by_entity_id'])->middleware('auth:sanctum');

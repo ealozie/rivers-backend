@@ -72,8 +72,8 @@ class SMSNotificationController extends Controller
             if ($user) {
                 $phone_number = $user->phone_number;
                 $mobile_number = ltrim($phone_number, "0");
-                $name = $user->name;
-                $message = "Hello {$name}, " . $requestData["message"];
+                //$name = $user->name;
+                $message = $requestData["message"];
                 $this->send_sms_process_message(
                     "+234" . $mobile_number,
                     $message

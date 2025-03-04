@@ -154,6 +154,23 @@ class IndividualController extends Controller
     }
 
     /**
+     * Individuals by Gender resource.
+     */
+    public function gender()
+    {
+        $male_count = Individual::where('gender', 'Male')->count();
+        $female_count = Individual::where('gender', 'Female')->count();
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Retrived successfully',
+            'data' => [
+                'male' => $male_count,
+                'female' => $female_count,
+            ]
+        ], 200);
+    }
+
+    /**
      * Get Resources by Property ID.
      */
     public function get_by_property_id(Request $request, string $property_id)

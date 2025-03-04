@@ -54,6 +54,38 @@ class AssessmentController extends Controller
     }
 
     /**
+     * Assessments Statistics resource.
+     */
+    public function assessments_statistics()
+    {
+        $current_year = date('Y');
+        $total_paid = Assessment::whereYear('created_at', $current_year)
+                    ->where('payment_status', 'paid')
+                    ->count();
+        $total_unpaid = Assessment::whereYear('created_at', $current_year)
+                    ->where('payment_status', 'pending')
+                    ->count();
+        $total_approved = Assessment::whereYear('created_at', $current_year)
+                    ->where('status', 'approved')
+                    ->count();
+        $total_cancelled = Assessment::whereYear('created_at', $current_year)
+                    ->where('status', 'cancelled')
+                    ->count();
+        $total_assessments = Assessment::whereYear('created_at', $current_year)->count();
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'total_approved_assessments' => $total_approved,
+                'total_cancelled_assessments' => $total_cancelled,
+                'total_paid_assessments' => $total_paid,
+                'total_unpaid_assessments' => $total_unpaid,
+                'total_assessments' => $total_assessments,
+            ]
+        ], 200);
+        //return AssessmentResource::collection($assessments);
+    }
+
+    /**
      * Assessments by agency listing resource.
      */
     public function assessments_by_agency_id($agency_id)
