@@ -66,6 +66,9 @@ class PropertyController extends Controller
             }
             $validatedData['user_id'] = $user->id;
         }
+        if (!isset($validatedData['demand_notice_category_id'])) {
+            $validatedData['demand_notice_category_id'] = 0;
+        }
         if (auth()->user()) {
             //$validatedData['added_by'] = $request->user()->id;
             $validatedData['approval_status'] = 'approved';
