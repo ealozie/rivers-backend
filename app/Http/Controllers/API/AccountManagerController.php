@@ -161,7 +161,14 @@ class AccountManagerController extends Controller
      */
     public function show(string $id)
     {
-        $account_manager = AccountManager::findOrFail($id);
+        try {
+             $account_manager = AccountManager::findOrFail($id);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ]);
+        }
         return new AccountManagerResource($account_manager);
     }
 
