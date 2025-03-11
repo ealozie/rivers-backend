@@ -80,22 +80,14 @@ class PaymentController extends Controller
         if ($request->has('offset')) {
             $offset = $request->get('offset');
         }
-
-        $user = User::where('unique_id', $user_id_or_unique_id)->first();
-        if (!$user) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'User ID not found.',
-            ], 404);
-        }
-        $payments = Payment::where('user_id', $user->id)->latest()->offset($offset)->limit($limit)->get();
+        $payments = Payment::where('customer_reference', $user_id_or_unique_id)->latest()->offset($offset)->limit($limit)->get();
         if (!count($payments)) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Payment not found.',
             ], 404);
         }
-        $total_payments = Payment::where('user_id', $user->id)->count();
+        $total_payments = Payment::where('customer_reference', $user_id_or_unique_id)->count();
         return response()->json([
             'status' => 'success',
             'message' => 'Payments retrieved successfully.',
