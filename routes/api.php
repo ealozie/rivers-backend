@@ -116,6 +116,8 @@ Route::prefix('v1')->group(function () {
     Route::get('registration-options', RegistrationOptionController::class);
     Route::post('user-registration-verification', [UserVerificationController::class, 'initial_registration_request']);
     Route::post('user-phone-number-verification', [UserVerificationController::class, 'user_phone_number_confirmation']);
+        Route::get('phone-number-confirmation/{phone_number}/{account_type?}', [UserVerificationController::class, 'phone_number_confirmation_code']);
+        Route::post('phone-number-confirmation', [UserVerificationController::class, 'phone_number_confirmation_store']);
     Route::patch('user-facial-biometric', UserFacialBiometricController::class);
     Route::apiResource('demand-notice-categories', DemandNoticeCategoryController::class);
     Route::apiResource('demand-notice-categories-item', DemandNoticeCategoryItemController::class)->middleware('auth:sanctum');

@@ -72,7 +72,6 @@ class IndividualController extends Controller
     public function store(IndividualStoreRequest $request)
     {
         $validatedData = $request->validated();
-
         //Validate the user Email address
         // $api_key = "57wsBPtL5ULXVxPkbRiYq";
         // $email = $validatedData['email'];
@@ -97,35 +96,37 @@ class IndividualController extends Controller
         $user->email_verified_at = now();
         $user->name = $validatedData['first_name'] . ' ' . $validatedData['surname'];
         //Generate a random password
-        $password = 123456;
-        $user->phone_number = $validatedData['phone_number'];
+        $password = mt_rand(111111, 999999);
+        $verification_code = mt_rand(111111, 999999);
         $user->role = 'individual';
         $user->status = 0;
         $user->password = Hash::make($password);
-        $user->phone_number_verification_code = mt_rand(111111, 999999);
-        $user->facial_confirmation_token = mt_rand(111111, 999999);
+        $user->phone_number_verification_code = $verification_code;
+        $user->facial_confirmation_token = $verification_code;
         $user->save();
         //$user->unique_id = time() + $user->id + mt_rand(11111, 99999);
         //$user->save();
-        //Send Phone Number Verification Code
-        $phone_number = $user->phone_number;
-        $mobile_number = ltrim($phone_number, "0");
-        $name = $validatedData['first_name'];
-        $message = "Hello {$name}, your phone number verification code is " . $user->phone_number_verification_code;
-        $this->send_sms_process_message("+234" . $mobile_number, $message);
-        $validatedData['user_id'] = $user->id;
-        $validatedData['demand_notice_category_id'] = 0;
-        $token = $user->createToken('igr_system_auth_token')->plainTextToken;
-        $validatedData['email_address'] = $validatedData['email'];
         if (auth()->user()) {
             //$validatedData['added_by'] = $request->user()->id;
             $validatedData['approval_status'] = 'approved';
         } else {
             //$validatedData['added_by'] = $owner->id;
         }
+        $validatedData['user_id'] = $user->id;
+        $validatedData['demand_notice_category_id'] = 0;
         $individual = Individual::create($validatedData);
+        $individual->phone_number = $validatedData['phone_number'];
+        $individual->save();
         $user->assignRole('individual');
         DB::commit();
+        if ($user && $individual) {
+        $phone_number = $individual->phone_number;
+        $mobile_number = ltrim($phone_number, "0");
+        $name = $validatedData['first_name'];
+        $message = "Hello {$name}, your phone number verification code is " . $user->phone_number_verification_code;
+        $this->send_sms_process_message("+234" . $mobile_number, $message);
+        $token = $user->createToken('igr_system_auth_token')->plainTextToken;
+        }
         return response()->json([
             'status' => 'success',
             'data' => [
@@ -133,7 +134,6 @@ class IndividualController extends Controller
                 'token_type' => 'Bearer',
                 'user' => new UserResource($user),
                 'individual' => new IndividualResource($individual),
-                'password' => $password
             ]
         ]);
     }

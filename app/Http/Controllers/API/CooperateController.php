@@ -100,24 +100,17 @@ class CooperateController extends Controller
             $user->email = $validatedData['email'];
             $user->email_verified_at = now();
             $user->name = $validatedData['business_name'];
-            //Generate a random password
-            $password = 123456;
-            $user->phone_number = $validatedData['phone_number'];
+            $password = mt_rand(111111, 999999);
             $user->role = 'cooperate';
-            $user->password = Hash::make($password);
             $user->phone_number_verification_code =
                 mt_rand(111111, 999999);
+            $user->password = Hash::make($password);
             $user->save();
 
             $validatedData['cooperate_id'] = '2' . date('hi') . mt_rand(11111, 99999);
             $user->unique_id = $validatedData['cooperate_id'];
             $user->save();
             //Send Phone Number Verification Code
-            $phone_number = $user->phone_number;
-            $mobile_number = ltrim($phone_number, "0");
-            $name = $validatedData['business_name'];
-            $message = "Hello {$name}, your phone number verification code is " . $user->phone_number_verification_code;
-            $this->send_sms_process_message("+234" . $mobile_number, $message);;
             $validatedData['user_id'] = $user->id;
             $validatedData['demand_notice_category_id'] = 0;
             if (isset($validatedData['picture_path']) && $request->hasFile('picture_path')) {
@@ -126,22 +119,32 @@ class CooperateController extends Controller
             }
             if (auth()->user()) {
             //$validatedData['added_by'] = $request->user()->id;
-            $validatedData['approval_status'] = 'approved';
+                $validatedData['approval_status'] = 'approved';
             } else {
                 //$validatedData['added_by'] = $owner->id;
             }
-            $validatedData['cooperate_id'] = '2' . date('hi') . mt_rand(11111, 99999);
+            if (!isset($validatedData['number_of_staff'])) {
+                $validatedData['number_of_staff'] = 0;
+            }
             $cooperate = Cooperate::create($validatedData);
+            $cooperate->phone_number = $validatedData['phone_number'];
+            $cooperate->save();
             $user->assignRole('cooperate');
             $user->unique_id = $validatedData['cooperate_id'];
             $user->save();
             DB::commit();
+            if ($user && $cooperate) {
+                $phone_number = $cooperate->phone_number;
+                $mobile_number = ltrim($phone_number, "0");
+                $name = $validatedData['business_name'];
+                $message = "Hello {$name}, your phone number verification code is " . $user->phone_number_verification_code;
+                $this->send_sms_process_message("+234" . $mobile_number, $message);
+            }
             return response()->json([
                 'status' => 'success',
                 'data' => [
                     'user' => new UserResource($user),
                     'cooperate' => new CooperateResource($cooperate),
-                    'password' => $password
                 ]
             ]);
         } catch (\Exception $e) {

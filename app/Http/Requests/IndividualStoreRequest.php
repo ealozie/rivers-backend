@@ -27,7 +27,7 @@ class IndividualStoreRequest extends FormRequest
             'tin' => 'sometime|string',
             'registration_option' => 'required|in:nin,tin,bvn,no_id',
             'email' => 'required|email|unique:users,email',
-            'phone_number' => 'required|unique:users,phone_number',
+            'phone_number' => 'required|unique:individuals,phone_number',
             'nationality_id' => 'required|exists:nationalities,id',
             'title_id' => 'required|exists:titles,id',
             'surname' => 'required|string',

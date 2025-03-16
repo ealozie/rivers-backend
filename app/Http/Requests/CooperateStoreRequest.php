@@ -25,7 +25,7 @@ class CooperateStoreRequest extends FormRequest
         return [
             'rc_number' => 'required|unique:cooperates,rc_number',
             'email' => 'required|email|unique:users,email',
-            'phone_number' => 'required|unique:users,phone_number',
+            'phone_number' => 'required|unique:cooperates,phone_number',
             'business_name' => 'required|string',
             'business_type_id' => 'required|exists:business_types,id',
             'longitude' => 'nullable|numeric',
