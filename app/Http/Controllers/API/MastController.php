@@ -14,6 +14,7 @@ use App\Models\MastPicture;
 use App\Models\Property;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class MastController extends Controller
@@ -61,6 +62,14 @@ class MastController extends Controller
         }
         DB::beginTransaction();
         try {
+            if ($request->bearerToken()) {
+                Auth::setUser($request->user("sanctum"));
+                if ($request->user() && $request->user()->hasRole("admin")) {
+                    $validatedData["approval_status"] = "approved";
+                }
+            }
+            $validatedData["mast_id"] =
+                "9" . date("hi") . mt_rand(11111, 99999);
             $mast = Mast::create($validatedData);
             if (
                 $request->hasFile("pictures") &&
