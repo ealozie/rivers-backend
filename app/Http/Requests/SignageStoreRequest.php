@@ -34,8 +34,7 @@ class SignageStoreRequest extends FormRequest
             "user_id" => "nullable|exists:users,unique_id",
             "notes" => "nullable|string",
             "signage_location" => "required|string|in:property,standalone",
-            "property_id" =>
-                "nullable|required_if:signage_location,property|exists:properties,property_id",
+            "property_id" => "nullable|exists:properties,property_id",
             "street_id" => "nullable|exists:streets,id",
         ];
     }
