@@ -5,11 +5,13 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MastStoreRequest;
 use App\Http\Requests\MastUpdateRequest;
+use App\Http\Resources\MastListResource;
 use App\Http\Resources\MastResource;
 use App\Models\Cooperate;
 use App\Models\Individual;
 use App\Models\Mast;
 use App\Models\MastPicture;
+use App\Models\Property;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -30,7 +32,7 @@ class MastController extends Controller
             $masts = $masts->where('mast_name', 'like', "%$search%")
                 ->orWhere('mast_use', 'like', "%$search%");
         }
-        return MastResource::collection($masts->paginate($per_page));
+        return MastListResource::collection($masts->paginate($per_page));
     }
 
     /**
@@ -111,6 +113,15 @@ class MastController extends Controller
                 ], 404);
             }
             $validatedData['owner_id'] = $owner->id;
+        }
+        if (isset($validatedData['property_id'])) {
+            $property = Property::where('property_id',$validatedData['property_id'])->first();
+            if (!$property) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Property not found'
+                ], 404);
+            }
         }
         DB::beginTransaction();
         try {

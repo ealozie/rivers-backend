@@ -53,5 +53,10 @@ class Mast extends Model
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    
+    public function property()
+    {
+        return $this->belongsTo(Property::class, 'property_id', 'property_id');
+    }
+
+
 }
