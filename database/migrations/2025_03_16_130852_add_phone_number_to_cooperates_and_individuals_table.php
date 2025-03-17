@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('individuals', function (Blueprint $table) {
-            $table->string('phone_number')->nullable()->after('individual_id');
+            //$table->string('phone_number')->nullable()->after('individual_id');
         });
         Schema::table('cooperates', function (Blueprint $table) {
-            $table->string('phone_number')->nullable()->after('cooperate_id');
+            //$table->string('phone_number')->nullable()->after('cooperate_id');
         });
     }
 
