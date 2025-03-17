@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Traits\SendSMS;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @tags Commercial Vehicle Enumeration Service
@@ -96,6 +97,7 @@ class CommercialVehicleController extends Controller
         } else {
             //$validatedData['added_by'] = $user->id;
         }
+        DB::beginTransaction();
         try {
             if ($request->hasFile("driver_license_image")) {
                 $path = $request
@@ -112,6 +114,7 @@ class CommercialVehicleController extends Controller
             $validatedData["vehicle_id"] =
                 "6" . date("hi") . mt_rand(11111, 99999);
             $commercial_vehicle = CommercialVehicle::create($validatedData);
+            DB::commit();
             $phone_number = $user->phone_number;
             $owner_name = $user->name;
             $mobile_number = ltrim($phone_number, "0");
@@ -128,6 +131,7 @@ class CommercialVehicleController extends Controller
                 "data" => new CommercialVehicleResource($commercial_vehicle),
             ]);
         } catch (\Exception $e) {
+            DB::rollBack();
             return response()->json(
                 [
                     "status" => "error",
@@ -152,6 +156,8 @@ class CommercialVehicleController extends Controller
         ]);
     }
 
+    
+
     /**
      * Update the specified resource in storage.
      */
@@ -162,7 +168,7 @@ class CommercialVehicleController extends Controller
         if (Auth::check()) {
             $validatedData["added_by"] = Auth::id();
         }
-
+        DB::beginTransaction();
         try {
             if ($request->hasFile("driver_license_image")) {
                 $path = $request
@@ -178,6 +184,7 @@ class CommercialVehicleController extends Controller
             }
             $commercial_vehicle = CommercialVehicle::find($id);
             $commercial_vehicle->update($validatedData);
+            DB::commit();
             return response()->json([
                 "status" => "success",
                 "message" =>
@@ -185,6 +192,7 @@ class CommercialVehicleController extends Controller
                 "data" => new CommercialVehicleResource($commercial_vehicle),
             ]);
         } catch (\Exception $e) {
+            DB::rollBack();
             return response()->json(
                 [
                     "status" => "error",

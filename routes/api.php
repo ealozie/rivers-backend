@@ -170,6 +170,9 @@ Route::prefix('v1')->group(function () {
     Route::apiResource('documents', DocumentController::class)->middleware('auth:sanctum')->only(['index']);
     Route::apiResource('document-life-spans', DocumentLifeSpanController::class)->middleware('auth:sanctum')->only(['index']);
     Route::get('shops-by-user-id/{user_id_or_unique_id}', [ShopController::class, 'show_by_user_id'])->middleware('auth:sanctum');
+    Route::patch('shop-link-account/{shop_id}', [ShopController::class, 'link_account'])->middleware('auth:sanctum');
+    Route::patch('property-link-account/{property_id}', [PropertyController::class, 'link_account'])->middleware('auth:sanctum');
+    Route::patch('signage-link-account/{signage_id}', [SignageController::class, 'link_account'])->middleware('auth:sanctum');
     Route::apiResource('signage', SignageController::class);
     Route::get('signage-properties/{property_id}', [SignageController::class, 'get_by_property_id']);
     Route::get('signage-by-user-id/{user_id_or_unique_id}', [SignageController::class, 'show_by_user_id'])->middleware('auth:sanctum');

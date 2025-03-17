@@ -12,6 +12,7 @@ use App\Models\User;
 use App\Traits\SignageAuthorizable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @tags Signage Service
@@ -64,10 +65,11 @@ class SignageController extends Controller
      */
     public function store(SignageStoreRequest $request)
     {
-        $user = $request->user();
         $validatedData = $request->validated();
-        $owner = User::where("unique_id", $validatedData["user_id"])->first();
-        $validatedData["user_id"] = $owner->id;
+        if (isset($validatedData['user_id'])) {
+            $owner = User::where("unique_id", $validatedData["user_id"])->first();
+            $validatedData["user_id"] = $owner->id;
+        }
         if (auth()->user()) {
             $validatedData["added_by"] = $request->user()->id;
             $validatedData["approval_status"] = "approved";
@@ -75,8 +77,81 @@ class SignageController extends Controller
             $validatedData["added_by"] = $owner->id;
         }
         $validatedData["signage_id"] = "5" . date("hi") . mt_rand(11111, 99999);
-        $signage = Signage::create($validatedData);
+        DB::beginTransaction();
+        try {
+            $signage = Signage::create($validatedData);
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
         return new SignageResource($signage);
+    }
+
+
+    /**
+     * Link Account the specified resource.
+     */
+    public function link_account(Request $request, $signage_id)
+    {
+        $validatedData = $request->validate([
+            'individual_id_or_cooperate_id' => 'required|min:10|max:10'
+        ]);
+        $signage = Signage::find($shop_id);
+        if (!$signage) {
+            return response()->json([
+                    'status' => 'error',
+                    'message' => 'Signage ID not found.'
+                ], 404);
+        }
+        $user_id_prefix = $validatedData['individual_id_or_cooperate_id'][0];
+        if ($user_id_prefix == 2) {
+            $cooperate = Cooperate::where('cooperate_id', $validatedData['individual_id_or_cooperate_id'])->first();
+            if (!$cooperate) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Cooperate ID not found.'
+                ], 404);
+            }
+            $user = User::find($cooperate->user_id);
+        } else if ($user_id_prefix == 1) {
+            $individual = Individual::where('individual_id', $validatedData['individual_id_or_cooperate_id'])->first();
+            //return $individual;
+            if (!$individual) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Individual ID not found.'
+                ], 404);
+            }
+            $user = User::find($individual->user_id);
+        } else {
+            return response()->json([
+                    'status' => 'error',
+                    'message' => 'User ID not found.'
+                ], 404);
+        }
+        //return $user;
+        DB::beginTransaction();
+        try {
+            $signage->update([
+                'user_id' => $user->id
+            ]);
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Signage linked successfully.',
+            'data' => new SignageResource($signage)
+        ], 200);
     }
 
     /**
@@ -123,8 +198,18 @@ class SignageController extends Controller
             $user = $request->user();
             $validatedData["added_by"] = $user->id;
         }
-        $signage = Signage::find($id);
-        $signage->update($validatedData);
+        DB::beginTransaction();
+        try {
+            $signage = Signage::find($id);
+            $signage->update($validatedData);
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
         return new SignageResource($signage);
     }
 

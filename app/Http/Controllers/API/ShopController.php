@@ -6,11 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ShopStoreRequest;
 use App\Http\Requests\ShopUpdateRequest;
 use App\Http\Resources\ShopResource;
+use App\Models\Cooperate;
+use App\Models\Individual;
 use App\Models\Property;
 use App\Models\Shop;
 use App\Models\User;
 use App\Traits\ShopAuthorizable;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @tags Shop Service
@@ -58,24 +61,30 @@ class ShopController extends Controller
     {
         $validatedData = $request->validated();
         $validatedData['shop_id'] = '3' . date('hi') . mt_rand(11111, 99999);
-        $user_id = $validatedData['user_id'];
-        $user = User::where('unique_id', $user_id)->first();
-        if (!$user) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'User ID not found.',
-            ], 404);
+        if (isset($validatedData['user_id'])) {
+            $user_id = $validatedData['user_id'];
+            $user = User::where('unique_id', $user_id)->first();
+            if (!$user) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'User ID not found.',
+                ], 404);
+            }
+            $validatedData['user_id'] = $user->id;
         }
-        $validatedData['user_id'] = $user->id;
+
         if (auth()->user()) {
             $validatedData['added_by'] = $request->user()->id;
             $validatedData['approval_status'] = 'approved';
         } else {
             $validatedData['added_by'] = $user->id;
         }
+        DB::beginTransaction();
         try {
             $shop = Shop::create($validatedData);
+            DB::commit();
         } catch (\Exception $e) {
+            DB::rollBack();
             return response()->json([
                 'status' => 'error',
                 'message' => 'Shop not added.',
@@ -119,13 +128,85 @@ class ShopController extends Controller
     }
 
     /**
+     * Link Account the specified resource.
+     */
+    public function link_account(Request $request, $shop_id)
+    {
+        $validatedData = $request->validate([
+            'individual_id_or_cooperate_id' => 'required|min:10|max:10'
+        ]);
+        $shop = Shop::find($shop_id);
+        if (!$shop) {
+            return response()->json([
+                    'status' => 'error',
+                    'message' => 'Shop ID not found.'
+                ], 404);
+        }
+        $user_id_prefix = $validatedData['individual_id_or_cooperate_id'][0];
+        if ($user_id_prefix == 2) {
+            $cooperate = Cooperate::where('cooperate_id', $validatedData['individual_id_or_cooperate_id'])->first();
+            if (!$cooperate) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Cooperate ID not found.'
+                ], 404);
+            }
+            $user = User::find($cooperate->user_id);
+        } else if ($user_id_prefix == 1) {
+            $individual = Individual::where('individual_id', $validatedData['individual_id_or_cooperate_id'])->first();
+            //return $individual;
+            if (!$individual) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Individual ID not found.'
+                ], 404);
+            }
+            $user = User::find($individual->user_id);
+        } else {
+            return response()->json([
+                    'status' => 'error',
+                    'message' => 'User ID not found.'
+                ], 404);
+        }
+        //return $user;
+        DB::beginTransaction();
+        try {
+            $shop->update([
+                'user_id' => $user->id
+            ]);
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Shop linked successfully.',
+            'data' => new ShopResource($shop)
+        ], 200);
+    }
+
+    /**
      * Update the specified resource in storage.
      */
     public function update(ShopUpdateRequest $request, string $id)
     {
         $validatedData = $request->validated();
-        $shop = Shop::find($id);
-        $shop->update($validatedData);
+        DB::beginTransaction();
+        try {
+            $shop = Shop::find($id);
+            $shop->update($validatedData);
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
         return response()->json([
             'status' => 'success',
             'message' => 'Shop updated successfully.',

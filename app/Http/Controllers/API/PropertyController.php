@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\PropertyStoreRequest;
 use App\Http\Requests\PropertyUpdateRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\Http\Resources\PropertyResource;
 use App\Models\Property;
 use App\Models\PropertyPicture;
@@ -76,6 +77,7 @@ class PropertyController extends Controller
             $validatedData['approval_status'] = 'approved';
             }
         }
+        DB::beginTransaction();
         try {
             $validatedData['property_id'] = '4' . date('hi') . mt_rand(11111, 99999);
             $property = Property::create($validatedData);
@@ -89,17 +91,81 @@ class PropertyController extends Controller
                     $property_picture->save();
                 }
             }
+            DB::commit();
             return response()->json([
                 'status' => 'success',
                 'message' => 'Property has been successfully enumerated.', 'data' => new PropertyResource($property)
             ]);
         } catch (\Exception $e) {
+            DB::rollBack();
             return response()->json([
                 'status' => 'error',
                 'message' => 'Unable to generate property ID',
                 'error' => $e->getMessage(),
             ], 500);
         }
+    }
+
+    /**
+     * Link Account the specified resource.
+     */
+    public function link_account(Request $request, $property_id)
+    {
+        $validatedData = $request->validate([
+            'individual_id_or_cooperate_id' => 'required|min:10|max:10'
+        ]);
+        $property = Property::find($property_id);
+        if (!$property) {
+            return response()->json([
+                    'status' => 'error',
+                    'message' => 'Property ID not found.'
+                ], 404);
+        }
+        $user_id_prefix = $validatedData['individual_id_or_cooperate_id'][0];
+        if ($user_id_prefix == 2) {
+            $cooperate = Cooperate::where('cooperate_id', $validatedData['individual_id_or_cooperate_id'])->first();
+            if (!$cooperate) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Cooperate ID not found.'
+                ], 404);
+            }
+            $user = User::find($cooperate->user_id);
+        } else if ($user_id_prefix == 1) {
+            $individual = Individual::where('individual_id', $validatedData['individual_id_or_cooperate_id'])->first();
+            //return $individual;
+            if (!$individual) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Individual ID not found.'
+                ], 404);
+            }
+            $user = User::find($individual->user_id);
+        } else {
+            return response()->json([
+                    'status' => 'error',
+                    'message' => 'User ID not found.'
+                ], 404);
+        }
+        //return $user;
+        DB::beginTransaction();
+        try {
+            $property->update([
+                'user_id' => $user->id
+            ]);
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Property linked successfully.',
+            'data' => new PropertyResource($property)
+        ], 200);
     }
 
     /**
@@ -132,6 +198,7 @@ class PropertyController extends Controller
             }
             $validatedData['user_id'] = $user->id;
         }
+        DB::beginTransaction();
         try {
             $property = Property::find($id);
             if (!$property) {
@@ -152,12 +219,14 @@ class PropertyController extends Controller
                     $property_picture->save();
                 }
             }
+            DB::commit();
             return response()->json([
                 'status' => 'success',
                 'message' => 'Property has been successfully enumerated.',
                 'data' => new PropertyResource($property)
             ]);
         } catch (\Exception $e) {
+            DB::rollBack();
             return response()->json([
                 'status' => 'error',
                 'message' => 'Unable to update property.',

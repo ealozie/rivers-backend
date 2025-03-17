@@ -35,7 +35,7 @@ class ShopStoreRequest extends FormRequest
             'business_category_id' => 'required|exists:business_categories,id',
             'business_sub_category_id' => 'required|exists:business_sub_categories,id',
             'classification_id' => 'required|exists:classifications,id',
-            'user_id' => 'required',
+            'user_id' => 'nullable',
             'notes' => 'nullable',
             'street_id' => 'required|exists:streets,id',
             'property_id' => 'nullable|exists:properties,property_id',

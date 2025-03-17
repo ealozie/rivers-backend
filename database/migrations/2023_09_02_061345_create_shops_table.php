@@ -26,7 +26,7 @@ return new class extends Migration
             $table->foreignId('business_category_id');
             $table->foreignId('business_sub_category_id');
             $table->foreignId('classification_id');
-            $table->foreignId('user_id');
+            $table->foreignId('user_id')->nullable();
             $table->string('status')->default('active');
             $table->text('notes')->nullable();
             $table->foreignId('added_by')->nullable();
