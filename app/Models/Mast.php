@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class Mast extends Model
 {
@@ -58,5 +60,15 @@ class Mast extends Model
     public function property()
     {
         return $this->belongsTo(Property::class, "property_id", "property_id");
+    }
+
+    public function assessments(): MorphMany
+    {
+        return $this->morphMany(Assessment::class, 'assessmentable');
+    }
+
+    public function account_manager(): MorphOne
+    {
+        return $this->morphOne(AccountManager::class, 'accountable');
     }
 }

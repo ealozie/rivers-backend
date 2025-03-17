@@ -11,6 +11,7 @@ use App\Models\AccountManager;
 use App\Models\CommercialVehicle;
 use App\Models\Cooperate;
 use App\Models\Individual;
+use App\Models\Mast;
 use App\Models\Property;
 use App\Models\Shop;
 use App\Models\Signage;
@@ -112,6 +113,19 @@ class AccountManagerController extends Controller
                 ], 404);
             }
         }
+        if (isset($validatedData['entity_id']) && $validatedData['entity_type'] == 'mast') {
+            $mast = Mast::where('mast_id', $entity_id)->first();
+            if ($mast) {
+                unset($validatedData['entity_type']);
+                unset($validatedData['entity_id']);
+                $account_manager = $mast->account_manager()->firstOrCreate($validatedData);
+            } else {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Mast not found',
+                ], 404);
+            }
+        }
         if (isset($validatedData['entity_id']) && $validatedData['entity_type'] == 'cooperate') {
             $cooperate = Cooperate::where('cooperate_id', $entity_id)->first();
             if ($cooperate) {
@@ -209,6 +223,17 @@ class AccountManagerController extends Controller
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Individual not found',
+                ], 404);
+            }
+        }
+        if (isset($entity_id) && $validatedData['entity_type'] == 'mast') {
+            $mast = Mast::where('mast_id', $entity_id)->first();
+            if ($mast && $mast->account_manager) {
+                $account_manager = $mast->account_manager;
+            } else {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Mast not found',
                 ], 404);
             }
         }

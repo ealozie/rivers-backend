@@ -22,12 +22,22 @@ class MastController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * Query Params: `search`, `per_page`
+     * Query Params: `search`, `per_page`, `filter=count`
      */
     public function index(Request $request)
     {
         $search = $request->query("search");
         $per_page = $request->query("per_page", 10);
+        if ($request->has('filter') && $request->get('filter') == 'count') {
+            $mast_count = Mast::where('approval_status', 'approved')->count();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Mast retrieved successfully.',
+                'data' => [
+                    'mast_count' => $mast_count
+                ]
+            ]);
+        }
         $masts = Mast::query();
         if ($search) {
             $masts = $masts
@@ -35,6 +45,32 @@ class MastController extends Controller
                 ->orWhere("mast_use", "like", "%$search%");
         }
         return MastListResource::collection($masts->paginate($per_page));
+    }
+
+    /**
+     * Get Mast by User ID or User Unique ID.
+     */
+    public function show_by_user_id(string $user_id_or_unique_id)
+    {
+        $user = User::where('id', $user_id_or_unique_id)->orWhere('unique_id', $user_id_or_unique_id)->first();
+        if (!$user) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User ID not found.',
+            ], 404);
+        }
+        $mast = Mast::where('user_id', $user->id)->get();
+        if (!count($mast)) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Mast not found.',
+            ], 404);
+        }
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Mast retrieved successfully.',
+            'data' => MastListResource::collection($mast)
+        ]);
     }
 
     /**

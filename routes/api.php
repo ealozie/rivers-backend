@@ -308,6 +308,10 @@ Route::prefix("v1")->group(function () {
         SignageController::class,
         "show_by_user_id",
     ])->middleware("auth:sanctum");
+    Route::get("mast-by-user-id/{user_id_or_unique_id}", [
+        MastController::class,
+        "show_by_user_id",
+    ])->middleware("auth:sanctum");
     Route::get("audit-trails", AuditTrailController::class)->middleware(
         "auth:sanctum"
     );

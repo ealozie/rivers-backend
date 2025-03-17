@@ -23,7 +23,7 @@ class AccountManagerStoreRequest extends FormRequest
     {
         return [
             'user_id' => 'required',
-            'entity_type' => 'required|in:vehicle,shop,individual,cooperate,signage,property',
+            'entity_type' => 'required|in:vehicle,shop,individual,cooperate,signage,property,mast',
             'entity_id' => 'required',
         ];
     }
