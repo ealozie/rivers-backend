@@ -97,7 +97,7 @@ class IndividualController extends Controller
         $user->name = $validatedData['first_name'] . ' ' . $validatedData['surname'];
         //Generate a random password
         $password = mt_rand(111111, 999999);
-        $verification_code = mt_rand(111111, 999999);
+        $verification_code = '1'.mt_rand(11111, 99999);
         $user->role = 'individual';
         $user->status = 0;
         $user->password = Hash::make($password);

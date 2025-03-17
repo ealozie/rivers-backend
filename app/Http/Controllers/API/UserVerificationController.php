@@ -45,10 +45,17 @@ class UserVerificationController extends Controller
             'phone_number' => 'required|min:11|max:11',
             'phone_number_verification_code' => 'required|min:6|max:6',
         ]);
-        $cooperate = Cooperate::where('phone_number', $validatedData['phone_number'])->first();
-        if ($cooperate) {
+        $phone_number_verification_code_prefix = $validatedData['phone_number_verification_code'][0];
+        if ($phone_number_verification_code_prefix == 2) {
+            $cooperate = Cooperate::where('phone_number', $validatedData['phone_number'])->first();
+            if (!$cooperate) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Phone number not found.'
+                ], 404);
+            }
             $user = User::find($cooperate->user_id);
-        } else {
+        } else if ($phone_number_verification_code_prefix == 1) {
             $individual = Individual::where('phone_number', $validatedData['phone_number'])->first();
             if (!$individual) {
                 return response()->json([
@@ -57,11 +64,16 @@ class UserVerificationController extends Controller
                 ], 404);
             }
             $user = User::find($individual->user_id);
+        } else {
+            return response()->json([
+                    'status' => 'error',
+                    'message' => 'Invalid verification code.'
+                ], 404);
         }
         if ($user->phone_number_verification_code != $validatedData['phone_number_verification_code']) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Invalid token provided.'
+                'message' => 'Verification code does not match the phone number provided.'
             ], 404);
         }
         $user->update([
@@ -152,10 +164,17 @@ class UserVerificationController extends Controller
             'phone_number' => 'required|min:11|max:11',
             'phone_number_verification_code' => 'required|min:6|max:6',
         ]);
-        $cooperate = Cooperate::where('phone_number', $validatedData['phone_number'])->first();
-        if ($cooperate) {
+        $phone_number_verification_code_prefix = $validatedData['phone_number_verification_code'][0];
+        if ($phone_number_verification_code_prefix == 2) {
+            $cooperate = Cooperate::where('phone_number', $validatedData['phone_number'])->first();
+            if (!$cooperate) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Phone number not found.'
+                ], 404);
+            }
             $user = User::find($cooperate->user_id);
-        } else {
+        } else if ($phone_number_verification_code_prefix == 1) {
             $individual = Individual::where('phone_number', $validatedData['phone_number'])->first();
             if (!$individual) {
                 return response()->json([
@@ -164,13 +183,13 @@ class UserVerificationController extends Controller
                 ], 404);
             }
             $user = User::find($individual->user_id);
-        }
-        if (!$user) {
+        } else {
             return response()->json([
-                'status' => 'error',
-                'message' => 'Phone number not found.'
-            ], 404);
+                    'status' => 'error',
+                    'message' => 'Invalid verification code.'
+                ], 404);
         }
+
         if ($user->phone_number_verification_code != $validatedData['phone_number_verification_code']) {
             return response()->json([
                 'status' => 'error',

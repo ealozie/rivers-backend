@@ -103,7 +103,7 @@ class CooperateController extends Controller
             $password = mt_rand(111111, 999999);
             $user->role = 'cooperate';
             $user->phone_number_verification_code =
-                mt_rand(111111, 999999);
+                '2'.mt_rand(11111, 99999);
             $user->password = Hash::make($password);
             $user->save();
 
