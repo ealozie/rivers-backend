@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\MastStoreRequest;
 use App\Http\Requests\MastUpdateRequest;
 use App\Http\Resources\MastResource;
+use App\Models\Cooperate;
+use App\Models\Individual;
 use App\Models\Mast;
 use App\Models\MastPicture;
 use App\Models\User;
@@ -151,5 +153,67 @@ class MastController extends Controller
             'status' => 'success',
             'message' => 'Mast deleted successfully'
         ]);
+    }
+
+    /**
+     * Link Account the specified resource.
+     */
+    public function link_account(Request $request, $mast_id)
+    {
+        $validatedData = $request->validate([
+            'individual_id_or_cooperate_id' => 'required|min:10|max:10'
+        ]);
+        $mast = Mast::find($mast_id);
+        if (!$mast) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Mast ID not found.'
+            ], 404);
+        }
+        $user_id_prefix = $validatedData['individual_id_or_cooperate_id'][0];
+        if ($user_id_prefix == 2) {
+            $cooperate = Cooperate::where('cooperate_id', $validatedData['individual_id_or_cooperate_id'])->first();
+            if (!$cooperate) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Cooperate ID not found.'
+                ], 404);
+            }
+            $user = User::find($cooperate->user_id);
+        } else if ($user_id_prefix == 1) {
+            $individual = Individual::where('individual_id', $validatedData['individual_id_or_cooperate_id'])->first();
+            //return $individual;
+            if (!$individual) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Individual ID not found.'
+                ], 404);
+            }
+            $user = User::find($individual->user_id);
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User ID not found.'
+            ], 404);
+        }
+        //return $user;
+        DB::beginTransaction();
+        try {
+            $mast->update([
+                'user_id' => $user->id
+            ]);
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Mast linked successfully.',
+            'data' => new MastResource($mast)
+        ], 200);
     }
 }

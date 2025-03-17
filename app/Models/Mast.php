@@ -27,4 +27,31 @@ class Mast extends Model
         'note',
         'created_by'
     ];
+
+    public function local_government_area()
+    {
+        return $this->belongsTo(LocalGovernmentArea::class);
+    }
+
+    public function state()
+    {
+        return $this->belongsTo(State::class);
+    }
+
+    public function owner()
+    {
+        return $this->belongsTo(User::class, 'owner_id');
+    }
+
+    public function pictures()
+    {
+        return $this->hasMany(MastPicture::class);
+    }
+
+    public function created_by()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    
 }
