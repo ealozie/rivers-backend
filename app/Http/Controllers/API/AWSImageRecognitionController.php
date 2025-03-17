@@ -8,9 +8,6 @@ use Illuminate\Http\Request;
 use Aws\Rekognition\RekognitionClient;
 use Aws\S3\S3Client;
 use Illuminate\Support\Facades\Storage;
-use \CloudConvert\Laravel\Facades\CloudConvert;
-use \CloudConvert\Models\Job;
-use \CloudConvert\Models\Task;
 
 /**
  * @tags AWS Faceliveness Servce
@@ -157,6 +154,7 @@ class AWSImageRecognitionController extends Controller
         $individual->facial_biometric_image_url = "/storage/liveness-images/".$sessionId."/audit_3.jpg";
         $individual->facial_biometric_status = 'completed';
         $individual->registration_status = 'completed';
+        $individual->approval_status = 'approved';
         $individual->save();
         return response()->json([
             'status' => 'success',
