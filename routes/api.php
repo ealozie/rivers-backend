@@ -37,6 +37,7 @@ use App\Http\Controllers\API\LogoutController;
 use App\Http\Controllers\API\LogoutTokenValidationController;
 use App\Http\Controllers\API\MaritalStatusController;
 use App\Http\Controllers\API\MarketNameController;
+use App\Http\Controllers\API\MastController;
 use App\Http\Controllers\API\MonifyWebhookController;
 use App\Http\Controllers\API\NationalityController;
 use App\Http\Controllers\API\NoteController;
@@ -146,7 +147,8 @@ Route::prefix('v1')->group(function () {
     //Route::apiResource('residential-address', ResidentialController::class);
     Route::get('entity-search', EntitySearchController::class);
     Route::apiResource('spouse', SpouseController::class);
-    Route::apiResource('shops', ShopController::class);
+    Route::apiResource('shops', ShopController::class)->middleware('auth:sanctum');
+    Route::apiResource('masts', MastController::class)->middleware('auth:sanctum');
     Route::apiResource('streets', StreetController::class);
     Route::apiResource('individual-relatives', IndividualRelativeController::class)->middleware('auth:sanctum');
     Route::get('individual-relatives-search/{individual_id}', [IndividualRelativeController::class, 'get_relatives'])->middleware('auth:sanctum');

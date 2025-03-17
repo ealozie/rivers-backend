@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\SignageStoreRequest;
 use App\Http\Requests\SignageUpdateRequest;
 use App\Http\Resources\SignageResource;
+use App\Models\Cooperate;
+use App\Models\Individual;
 use App\Models\Property;
 use App\Models\Signage;
 use App\Models\User;
@@ -100,7 +102,7 @@ class SignageController extends Controller
         $validatedData = $request->validate([
             'individual_id_or_cooperate_id' => 'required|min:10|max:10'
         ]);
-        $signage = Signage::find($shop_id);
+        $signage = Signage::find($signage_id);
         if (!$signage) {
             return response()->json([
                     'status' => 'error',
