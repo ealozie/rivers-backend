@@ -22,19 +22,21 @@ class SignageStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'height_in_meters' => 'required|numeric',
-            'width_in_meters' => 'required|numeric',
-            'longitude' => 'required|numeric',
-            'latitude' => 'required|numeric',
-            'street_name' => 'nullable|string',
-            'street_number' => 'required|string',
-            'city' => 'required|string',
-            'local_government_area_id' => 'required|exists:local_government_areas,id',
-            'user_id' => 'nullable|exists:users,unique_id',
-            'notes' => 'nullable|string',
-            'signage_location' => 'required|string|in:property,standalone',
-            'property_id' => 'nullable|required_if:signage_location,property|exists:properties,property_id',
-            'street_id' => 'nullable|exists:streets,id',
+            "height_in_meters" => "required|numeric",
+            "width_in_meters" => "required|numeric",
+            "longitude" => "nullable|numeric",
+            "latitude" => "nullable|numeric",
+            "street_name" => "nullable|string",
+            "street_number" => "required|string",
+            "city" => "required|string",
+            "local_government_area_id" =>
+                "required|exists:local_government_areas,id",
+            "user_id" => "nullable|exists:users,unique_id",
+            "notes" => "nullable|string",
+            "signage_location" => "required|string|in:property,standalone",
+            "property_id" =>
+                "nullable|required_if:signage_location,property|exists:properties,property_id",
+            "street_id" => "nullable|exists:streets,id",
         ];
     }
 }
