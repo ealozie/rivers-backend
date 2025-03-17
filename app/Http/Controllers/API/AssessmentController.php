@@ -9,6 +9,7 @@ use App\Http\Resources\AssessmentResource;
 use App\Http\Resources\CommercialVehicleResource;
 use App\Http\Resources\CooperateResource;
 use App\Http\Resources\IndividualResource;
+use App\Http\Resources\MastResource;
 use App\Http\Resources\PropertyResource;
 use App\Http\Resources\ShopResource;
 use App\Http\Resources\SignageResource;
@@ -19,6 +20,7 @@ use App\Models\Assessment;
 use App\Models\CommercialVehicle;
 use App\Models\Cooperate;
 use App\Models\Individual;
+use App\Models\Mast;
 use App\Models\Property;
 use App\Models\Shop;
 use App\Models\Signage;
@@ -231,6 +233,22 @@ class AssessmentController extends Controller
                     'vehicle' => new CommercialVehicleResource($vehicle)
                 ]
             ]);
+        } elseif ($entity_id == 8) {
+            $mast = Mast::where('mast_id', $assessment_entity_id)->first();
+            if (!$mast) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'No record found'
+                ]);
+            }
+            $user = User::find($mast->owner_id);
+            return response()->json([
+                'status' => 'success',
+                'data' => [
+                    'user' => new UserResource($user),
+                    'mast' => new MastResource($mast)
+                ]
+            ]);
         } else {
             return response()->json([
                 'status' => 'error',
@@ -314,6 +332,17 @@ class AssessmentController extends Controller
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Signage not found',
+                ], 404);
+            }
+        }
+        if ($entity_type == 'mast') {
+            $mast = Mast::where('mast_id', $entity_id)->first();
+            if ($mast) {
+                $assessment = $mast->assessments()->create($validatedData);
+            } else {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Mast not found',
                 ], 404);
             }
         }

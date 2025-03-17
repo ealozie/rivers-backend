@@ -105,7 +105,7 @@ class MastController extends Controller
                 }
             }
             $validatedData["mast_id"] =
-                "9" . date("hi") . mt_rand(11111, 99999);
+                "8" . date("hi") . mt_rand(11111, 99999);
             $mast = Mast::create($validatedData);
             if (
                 $request->hasFile("pictures") &&
