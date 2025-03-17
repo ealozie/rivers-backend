@@ -114,6 +114,7 @@ class IndividualController extends Controller
         }
         $validatedData['user_id'] = $user->id;
         $validatedData['demand_notice_category_id'] = 0;
+        $validatedData['email_address'] = $user->email;
         $individual = Individual::create($validatedData);
         $individual->phone_number = $validatedData['phone_number'];
         $individual->save();
