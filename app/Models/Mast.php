@@ -42,6 +42,11 @@ class Mast extends Model
         return $this->belongsTo(State::class);
     }
 
+    public function street()
+    {
+        return $this->belongsTo(Street::class);
+    }
+
     public function owner()
     {
         return $this->belongsTo(User::class, "owner_id");

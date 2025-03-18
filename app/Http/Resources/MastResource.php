@@ -23,6 +23,7 @@ class MastResource extends JsonResource
             'local_government_area' => $this->local_government_area,
             'street_name' => $this->street_name,
             'street_number' => $this->street_number,
+            'street' => $this->street_id && $this->street ? new StreetResource($this->street) : null,
             'city' => $this->city,
             'approval_status' => $this->approval_status,
             'mast_name' => $this->mast_name,
