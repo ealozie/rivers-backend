@@ -315,7 +315,7 @@ class MastController extends Controller
         DB::beginTransaction();
         try {
             $mast->update([
-                "user_id" => $user->id,
+                "owner_id" => $user->id,
             ]);
             DB::commit();
         } catch (Exception $e) {
