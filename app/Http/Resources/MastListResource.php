@@ -16,6 +16,7 @@ class MastListResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'mast_id' => $this->mast_id,
             'mast_location' => $this->mast_location,
             'property_id' => $this->property_id,
             'state' => $this->state,
