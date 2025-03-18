@@ -22,7 +22,7 @@ class MastUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "mast_location" => "required|string|in:standalone,property",
+            "mast_location" => "nullable|string|in:standalone,property",
             "property_id" => "nullable|exists:properties,property_id",
             "state_id" => "nullable|integer|exists:states,id",
             "local_government_area_id" =>
@@ -34,8 +34,8 @@ class MastUpdateRequest extends FormRequest
             "approval_status" => "nullable",
             "mast_use" => "nullable|string",
             "owner_id" => "nullable|exists:users,unique_id",
-            "connected_to_power" => "required|boolean",
-            "connected_to_diesel_solar_power_generator" => "required|boolean",
+            "connected_to_power" => "nullable|boolean",
+            "connected_to_diesel_solar_power_generator" => "nullable|boolean",
             "longitude" => "nullable|numeric",
             "latitude" => "nullable|numeric",
             "note" => "nullable|string",
