@@ -49,6 +49,20 @@ class AccountManagerController extends Controller
     }
 
     /**
+     * Account Manager Total.
+     */
+    public function account_manager_count(Request $request)
+    {
+        $total_account_manager = AccountManager::count();
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'total_account_manager' => $total_account_manager,
+            ]
+        ], 200);
+    }
+
+    /**
      * Get Account Manager entities by Account Manager User ID.
      */
     public function account_manager_entities(Request $request, $user_id)

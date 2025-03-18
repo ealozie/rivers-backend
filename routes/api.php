@@ -337,6 +337,12 @@ Route::prefix("v1")->group(function () {
         AccountManagerController::class,
         "account_manager_entities",
     ])->middleware("auth:sanctum");
+
+    Route::get("account-manager-count", [
+        AccountManagerController::class,
+        "account_manager_count",
+    ])->middleware("auth:sanctum");
+
     Route::apiResource(
         "account-managers",
         AccountManagerController::class
