@@ -245,7 +245,7 @@ class AssessmentController extends Controller
             return response()->json([
                 'status' => 'success',
                 'data' => [
-                    'user' => new UserResource($user),
+                    'user' => $user ? new UserResource($user) : null,
                     'mast' => new MastResource($mast)
                 ]
             ]);
