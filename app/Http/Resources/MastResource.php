@@ -23,6 +23,7 @@ class MastResource extends JsonResource
             'street_name' => $this->street_name,
             'street_number' => $this->street_number,
             'city' => $this->city,
+            'approval_status' => $this->approval_status,
             'mast_name' => $this->mast_name,
             'mast_use' => $this->mast_use,
             'owner' => $this->owner,

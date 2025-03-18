@@ -79,7 +79,7 @@ class MastController extends Controller
     public function store(MastStoreRequest $request)
     {
         $validatedData = $request->validated();
-        $validatedData["created_by"] = $request->user()->id;
+
         if (isset($validatedData["owner_id"])) {
             $owner = User::where(
                 "unique_id",
@@ -102,6 +102,7 @@ class MastController extends Controller
                 Auth::setUser($request->user("sanctum"));
                 if ($request->user() && $request->user()->hasRole("admin")) {
                     $validatedData["approval_status"] = "approved";
+                    $validatedData["created_by"] = $request->user()->id;
                 }
             }
             $validatedData["mast_id"] =
