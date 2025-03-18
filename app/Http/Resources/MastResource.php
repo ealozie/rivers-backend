@@ -33,7 +33,7 @@ class MastResource extends JsonResource
             'longitude' => $this->longitude,
             'latitude' => $this->latitude,
             'note' => $this->note,
-            'created_by' => $this->created_by,
+            'created_by' => $this->created_by ? $this->created_user : null,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'pictures' => $this->pictures->pluck('image_path')

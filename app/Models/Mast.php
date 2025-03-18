@@ -52,7 +52,7 @@ class Mast extends Model
         return $this->hasMany(MastPicture::class);
     }
 
-    public function created_by()
+    public function created_user()
     {
         return $this->belongsTo(User::class, "created_by");
     }
