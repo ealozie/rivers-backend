@@ -26,6 +26,7 @@ class MastStoreRequest extends FormRequest
             "mast_location" => "required|string|in:standalone,property",
             "property_id" => "nullable|exists:properties,property_id",
             "state_id" => "nullable|integer|exists:states,id",
+            "street_id" => "nullable|integer|exists:streets,id",
             "local_government_area_id" =>
                 "nullable|exists:local_government_areas,id",
             "street_name" => "nullable|string",

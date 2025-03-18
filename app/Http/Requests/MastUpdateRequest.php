@@ -29,6 +29,7 @@ class MastUpdateRequest extends FormRequest
                 "nullable|exists:local_government_areas,id",
             "street_name" => "nullable|string",
             "street_number" => "nullable|string",
+            "street_id" => "nullable|integer|exists:streets,id",
             "city" => "nullable|string",
             "mast_name" => "nullable|string",
             "approval_status" => "nullable",
