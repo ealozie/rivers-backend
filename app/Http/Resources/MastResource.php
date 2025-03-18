@@ -18,7 +18,7 @@ class MastResource extends JsonResource
             'id' => $this->id,
             'mast_id' => $this->mast_id,
             'mast_location' => $this->mast_location,
-            'property' => $this->property_id && $this->property ? new PropertyResource($this->property) ? null ,
+            'property' => $this->property_id && $this->property ? new PropertyResource($this->property) : null,
             'state' => $this->state,
             'local_government_area' => $this->local_government_area,
             'street_name' => $this->street_name,
