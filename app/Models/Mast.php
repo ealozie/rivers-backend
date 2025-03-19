@@ -22,6 +22,7 @@ class Mast extends Model
         "mast_name",
         "mast_use",
         "owner_id",
+        "street_id",
         "connected_to_power",
         "connected_to_diesel_solar_power_generator",
         "longitude",
