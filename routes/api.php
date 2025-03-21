@@ -196,9 +196,10 @@ Route::prefix("v1")->group(function () {
     //Route::apiResource('residential-address', ResidentialController::class);
     Route::get("entity-search", EntitySearchController::class);
     Route::apiResource("spouse", SpouseController::class);
-    Route::apiResource("shops", ShopController::class)->middleware(
-        "auth:sanctum"
-    );
+    Route::apiResource("shops", ShopController::class);
+    // ->middleware(
+    //     "auth:sanctum"
+    // );
     Route::apiResource("masts", MastController::class); //->middleware('auth:sanctum');
     Route::apiResource("streets", StreetController::class);
     Route::apiResource(
