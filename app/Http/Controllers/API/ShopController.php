@@ -76,8 +76,6 @@ class ShopController extends Controller
         if (auth()->user()) {
             $validatedData['added_by'] = $request->user()->id;
             $validatedData['approval_status'] = 'approved';
-        } else {
-            $validatedData['added_by'] = $user->id;
         }
         DB::beginTransaction();
         try {
