@@ -70,13 +70,13 @@ class SignageController extends Controller
         $validatedData = $request->validated();
         if (isset($validatedData['user_id'])) {
             $owner = User::where("unique_id", $validatedData["user_id"])->first();
-            $validatedData["user_id"] = $owner->id;
+            if ($owner) {
+                $validatedData["user_id"] = $owner->id;
+            }
         }
         if (auth()->user()) {
             $validatedData["added_by"] = $request->user()->id;
             $validatedData["approval_status"] = "approved";
-        } else {
-            $validatedData["added_by"] = $owner->id;
         }
         $validatedData["signage_id"] = "5" . date("hi") . mt_rand(11111, 99999);
         DB::beginTransaction();
