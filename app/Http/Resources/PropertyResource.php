@@ -42,7 +42,9 @@ class PropertyResource extends JsonResource
             //'notes' => $this->notes,
             "local_government_area" => $this->local_government_area,
             "state" => $this->state,
-            'property_pictures' => PropertyPictureResource::collection($this->propertyPictures)
+            'property_pictures' => PropertyPictureResource::collection($this->propertyPictures),
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
     }
 }
