@@ -18,7 +18,7 @@ class IndividualResource extends JsonResource
             "id" => $this->id,
             "individual_id" => $this->individual_id,
             "bvn" => $this->bvn,
-            "email" => $this->email,
+            "email_address" => $this->email_address,
             "phone_number" => $this->phone_number,
             "approval_status" => $this->approval_status,
             "nin" => $this->nin,
