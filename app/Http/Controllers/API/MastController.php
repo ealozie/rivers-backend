@@ -74,6 +74,32 @@ class MastController extends Controller
     }
 
     /**
+     * Get Mast by Property ID.
+     */
+    public function show_by_property_id(string $property_id)
+    {
+        $property = Property::where('property_id', $property_id)->first();
+        if (!$property) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Property ID not found.',
+            ], 404);
+        }
+        $mast = Mast::where('property_id', $property_id)->get();
+        if (!count($mast)) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Mast not found.',
+            ], 404);
+        }
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Mast retrieved successfully.',
+            'data' => MastListResource::collection($mast)
+        ]);
+    }
+
+    /**
      * Store a newly created resource in storage.
      */
     public function store(MastStoreRequest $request)

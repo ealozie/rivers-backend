@@ -313,6 +313,10 @@ Route::prefix("v1")->group(function () {
         MastController::class,
         "show_by_user_id",
     ])->middleware("auth:sanctum");
+    Route::get("mast-by-property-id/{property_id}", [
+        MastController::class,
+        "show_by_property_id",
+    ])->middleware("auth:sanctum");
     Route::get("audit-trails", AuditTrailController::class)->middleware(
         "auth:sanctum"
     );
