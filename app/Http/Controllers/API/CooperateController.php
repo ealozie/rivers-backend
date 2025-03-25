@@ -14,6 +14,7 @@ use App\Traits\CooperateAuthorizable;
 use App\Traits\SendSMS;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
@@ -23,6 +24,9 @@ use Illuminate\Support\Str;
  */
 class CooperateController extends Controller
 {
+    const SUCCESS_STATUS = 200;
+    const NOT_FOUND_STATUS = 404;
+    const SERVER_ERROR = 500;
     use SendSMS;
     //use CooperateAuthorizable;
 
@@ -53,7 +57,7 @@ class CooperateController extends Controller
             'data' => [
                 'cooperate_count' => $cooperate_registration_count
             ]
-        ], 200);
+        ], self::SUCCESS_STATUS);
         } else {
             $cooperate_registrations = Cooperate::with('user')->paginate($per_page);
             return response()->json([
@@ -62,7 +66,7 @@ class CooperateController extends Controller
             'data' => [
                 'cooperates' => CooperateResource::collection($cooperate_registrations),
             ]
-        ], 200);
+        ], self::SUCCESS_STATUS);
         }
             //return CooperateResource::collection($cooperate_registrations);
         }
@@ -119,7 +123,7 @@ class CooperateController extends Controller
             }
 
             if ($request->bearerToken()) {
-                Auth::setUser($request->user('sanctum'));
+                $auth_user = Auth::setUser($request->user('sanctum'));
                 if ($request->user() && $request->user()->hasRole('admin')) {
                     $validatedData['approval_status'] = 'approved';
                 }
@@ -150,14 +154,14 @@ class CooperateController extends Controller
                     'user' => new UserResource($user),
                     'cooperate' => new CooperateResource($cooperate),
                 ]
-            ]);
+            ], self::SUCCESS_STATUS);
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
                 'status' => 'error',
                 'message' => 'Cooperate registration failed',
                 'error' => $e->getMessage(),
-            ], 500);
+            ], self::SERVER_ERROR);
         }
     }
 
@@ -171,7 +175,7 @@ class CooperateController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'Cooperate not found',
-            ], 404);
+            ], self::NOT_FOUND_STATUS);
         }
         return new CooperateResource($cooperate);
     }
@@ -188,7 +192,7 @@ class CooperateController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'Cooperate not found',
-            ], 404);
+            ], self::NOT_FOUND_STATUS);
         }
         return new CooperateResource($cooperate);
     }
@@ -203,7 +207,7 @@ class CooperateController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'Property ID not found',
-            ], 404);
+            ], self::NOT_FOUND_STATUS);
         }
         $cooperate = Cooperate::where('property_id', $property_id)->get();
         return CooperateResource::collection($cooperate);
@@ -234,16 +238,20 @@ class CooperateController extends Controller
                 'status' => 'error',
                 'message' => 'Cooperate update failed',
                 'error' => $e->getMessage(),
-            ], 500);
+            ], self::SERVER_ERROR);
         }
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Disapprove the specified resource.
      */
     public function destroy(string $id)
     {
-        //
+        Cooperate::destroy($id);
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Cooperate has been successfully disapproved.'
+        ], self::SUCCESS_STATUS);
     }
 
     /**
@@ -308,7 +316,7 @@ class CooperateController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'Invalid request.'
-            ]);
+            ], self::NOT_FOUND_STATUS);
         }
         return CooperateResource::collection($individual_registrations);
     }

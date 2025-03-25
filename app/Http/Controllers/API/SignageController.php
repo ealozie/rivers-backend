@@ -10,6 +10,7 @@ use App\Models\Cooperate;
 use App\Models\Individual;
 use App\Models\Property;
 use App\Models\Signage;
+use App\Models\SignagePicture;
 use App\Models\User;
 use App\Traits\SignageAuthorizable;
 use Illuminate\Http\Request;
@@ -74,7 +75,7 @@ class SignageController extends Controller
                 $validatedData["user_id"] = $owner->id;
             }
         }
-        
+
         if ($request->bearerToken()) {
             Auth::setUser($request->user('sanctum'));
             if ($request->user() && $request->user()->hasRole('admin')) {
@@ -88,6 +89,16 @@ class SignageController extends Controller
         DB::beginTransaction();
         try {
             $signage = Signage::create($validatedData);
+            if ($request->hasFile('signage_pictures') && count($validatedData['signage_pictures'])) {
+                $signage_pictures = $validatedData['signage_pictures'];
+                foreach ($signage_pictures as $signage_picture) {
+                    $path = $signage_picture->store('signage_pictures', 'public');
+                    $picture = new SignagePicture();
+                    $picture->signage_id = $signage->id;
+                    $picture->picture_path = "/storage/" . $path;
+                    $picture->save();
+                }
+            }
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
@@ -210,6 +221,16 @@ class SignageController extends Controller
         try {
             $signage = Signage::find($id);
             $signage->update($validatedData);
+            if ($request->hasFile('signage_pictures') && count($validatedData['signage_pictures'])) {
+                $signage_pictures = $validatedData['signage_pictures'];
+                foreach ($signage_pictures as $signage_picture) {
+                    $path = $signage_picture->store('signage_pictures', 'public');
+                    $picture = new SignagePicture();
+                    $picture->signage_id = $signage->id;
+                    $picture->picture_path = "/storage/" . $path;
+                    $picture->save();
+                }
+            }
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
@@ -231,6 +252,21 @@ class SignageController extends Controller
             [
                 "status" => "success",
                 "message" => "Signage deleted successfully",
+            ],
+            200
+        );
+    }
+
+    /**
+     * Remove Signage picture specified resource.
+     */
+    public function destroy_signage_picture(string $id)
+    {
+        SignagePciture::destroy($id);
+        return response()->json(
+            [
+                "status" => "success",
+                "message" => "Signage picture deleted successfully.",
             ],
             200
         );

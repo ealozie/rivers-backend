@@ -300,6 +300,15 @@ Route::prefix("v1")->group(function () {
         SignageController::class,
         "link_account",
     ])->middleware("auth:sanctum");
+    Route::delete("signage-pictures/{id}", [
+        SignageController::class,
+        "destroy_signage_picture",
+    ])->middleware("auth:sanctum");
+    Route::delete("property-pictures/{id}", [
+        PropertyController::class,
+        "destroy_property_picture",
+    ])->middleware("auth:sanctum");
+    
     Route::apiResource("signage", SignageController::class);
     Route::get("signage-properties/{property_id}", [
         SignageController::class,

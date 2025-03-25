@@ -38,6 +38,7 @@ class SignageUpdateRequest extends FormRequest
             "property_id" =>
                 "nullable|required_if:signage_location,property|exists:properties,property_id",
             "street_id" => "nullable|exists:streets,id",
+            'signage_pictures.*' => 'nullable|mimes:jpeg,png,jpg|max:2048',
         ];
     }
 }

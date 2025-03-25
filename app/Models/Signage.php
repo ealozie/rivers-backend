@@ -60,4 +60,9 @@ class Signage extends Model
     {
         return $this->morphMany(Assessment::class, 'assessmentable');
     }
+
+    public function pictures()
+    {
+        return $this->hasMany(SignagePicture::class);
+    }
 }

@@ -29,6 +29,7 @@ class SignageResource extends JsonResource
             "city" => $this->city,
             "local_government_area" => $this->local_government_area,
             "user" => $this->user,
+            'pictures' => SignagePictureResource::collection($this->pictures),
             //"added_by" => $this->added_by_user,
             "notes" => $this->notes,
             "created_at" => $this->created_at,

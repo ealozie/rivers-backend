@@ -36,6 +36,7 @@ class SignageStoreRequest extends FormRequest
             "signage_location" => "required|string|in:property,standalone",
             "property_id" => "nullable|exists:properties,property_id",
             "street_id" => "nullable|exists:streets,id",
+            'signage_pictures.*' => 'nullable|mimes:jpeg,png,jpg|max:2048',
         ];
     }
 }

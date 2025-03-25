@@ -108,6 +108,21 @@ class PropertyController extends Controller
         }
     }
 
+     /**
+     * Remove Property picture specified resource.
+     */
+    public function destroy_property_picture(string $id)
+    {
+        PropertyPciture::destroy($id);
+        return response()->json(
+            [
+                "status" => "success",
+                "message" => "Property picture deleted successfully.",
+            ],
+            200
+        );
+    }
+
     /**
      * Link Account the specified resource.
      */
