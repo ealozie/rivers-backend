@@ -53,7 +53,7 @@ class AccountManagerController extends Controller
      */
     public function account_manager_count(Request $request)
     {
-        $total_account_manager = AccountManager::pluck('added_by')->unique()->count();
+        $total_account_manager = AccountManager::pluck('user_id')->unique()->count();
         return response()->json([
             'status' => 'success',
             'data' => [
