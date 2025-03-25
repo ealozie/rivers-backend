@@ -14,6 +14,7 @@ use App\Models\User;
 use App\Traits\ShopAuthorizable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * @tags Shop Service
@@ -73,9 +74,12 @@ class ShopController extends Controller
             $validatedData['user_id'] = $user->id;
         }
 
-        if (auth()->user()) {
-            $validatedData['added_by'] = $request->user()->id;
-            $validatedData['approval_status'] = 'approved';
+        if ($request->bearerToken()) {
+            Auth::setUser($request->user('sanctum'));
+            if ($request->user() && $request->user()->hasRole('admin')) {
+                $validatedData['added_by'] = $request->user()->id;
+                $validatedData['approval_status'] = 'approved';
+            }
         }
         DB::beginTransaction();
         try {

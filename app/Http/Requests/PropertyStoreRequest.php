@@ -28,7 +28,7 @@ class PropertyStoreRequest extends FormRequest
             'property_type_id' => 'required|exists:property_types,id',
             'number_of_beds' => 'sometimes|integer',
             'number_of_rooms' => 'sometimes|integer',
-            'plot_size' => 'nullable',
+            'plot_size' => 'nullable|decimal:2,4',
             'property_use_id' => 'required|exists:property_uses,id',
             'demand_notice_category_id' => 'nullable|exists:demand_notice_categories,id',
             'longitude' => 'nullable',

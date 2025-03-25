@@ -117,15 +117,19 @@ class CooperateController extends Controller
                 $path = $request->file('picture_path')->store('cooperates', 'public');
                 $validatedData['picture_path'] = "/storage/" . $path;
             }
-            if (auth()->user()) {
-            //$validatedData['added_by'] = $request->user()->id;
-                $validatedData['approval_status'] = 'approved';
+
+            if ($request->bearerToken()) {
+                Auth::setUser($request->user('sanctum'));
+                if ($request->user() && $request->user()->hasRole('admin')) {
+                    $validatedData['approval_status'] = 'approved';
+                }
             } else {
-                //$validatedData['added_by'] = $owner->id;
+                $validatedData['added_by'] = 0;
             }
             if (!isset($validatedData['number_of_staff'])) {
                 $validatedData['number_of_staff'] = 0;
             }
+            $validatedData['email_address'] = $validatedData['email'];
             $cooperate = Cooperate::create($validatedData);
             $cooperate->phone_number = $validatedData['phone_number'];
             $cooperate->save();

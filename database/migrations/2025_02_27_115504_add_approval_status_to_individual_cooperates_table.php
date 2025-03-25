@@ -19,6 +19,7 @@ return new class extends Migration
         });
         Schema::table('cooperates', function (Blueprint $table) {
             $table->string('approval_status')->after('user_id')->default('pending');
+            $table->string('email_address')->after('phone_number')->nullable();
         });
         Schema::table('commercial_vehicles', function (Blueprint $table) {
             $table->string('approval_status')->after('user_id')->default('pending');

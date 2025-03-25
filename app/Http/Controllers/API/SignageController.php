@@ -74,9 +74,15 @@ class SignageController extends Controller
                 $validatedData["user_id"] = $owner->id;
             }
         }
-        if (auth()->user()) {
-            $validatedData["added_by"] = $request->user()->id;
-            $validatedData["approval_status"] = "approved";
+        
+        if ($request->bearerToken()) {
+            Auth::setUser($request->user('sanctum'));
+            if ($request->user() && $request->user()->hasRole('admin')) {
+                $validatedData['added_by'] = $request->user()->id;
+                $validatedData['approval_status'] = 'approved';
+            }
+        } else {
+            $validatedData["added_by"] = 0;
         }
         $validatedData["signage_id"] = "5" . date("hi") . mt_rand(11111, 99999);
         DB::beginTransaction();

@@ -11,27 +11,29 @@ class Mast extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        "mast_location",
-        "property_id",
-        "state_id",
-        "local_government_area_id",
-        "street_name",
-        "street_number",
-        "city",
-        "mast_name",
-        "mast_use",
-        "owner_id",
-        "street_id",
-        "connected_to_power",
-        "connected_to_diesel_solar_power_generator",
-        "longitude",
-        "latitude",
-        "note",
-        "created_by",
-        "approval_status",
-        "mast_id",
-    ];
+    // protected $fillable = [
+    //     "mast_location",
+    //     "property_id",
+    //     "state_id",
+    //     "local_government_area_id",
+    //     "street_name",
+    //     "street_number",
+    //     "city",
+    //     "mast_name",
+    //     "mast_use",
+    //     "owner_id",
+    //     "street_id",
+    //     "connected_to_power",
+    //     "connected_to_diesel_solar_power_generator",
+    //     "longitude",
+    //     "latitude",
+    //     "note",
+    //     "created_by",
+    //     "approval_status",
+    //     "mast_id",
+    // ];
+    // 
+    protected $guarded = ['id'];
 
     public function local_government_area()
     {
