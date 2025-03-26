@@ -5,9 +5,10 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TicketAgentResource;
 use App\Http\Resources\UserResource;
+use App\Models\AccountManager;
 use App\Models\User;
-use Hash;
 use App\Traits\UserAuthorizable;
+use Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
@@ -50,7 +51,9 @@ class UserController extends Controller
      */
     public function account_officers(Request $request)
     {
-        $account_managers = User::role('account_officer')->get();
+        $total_account_manager = AccountManager::pluck('user_id')->unique()->toArray();
+        //$account_managers = User::role('account_officer')->get();
+        $account_managers = User::whereIn('id', $total_account_manager)->get();
         return response()->json([
             'status' => 'success',
             'data' => [
