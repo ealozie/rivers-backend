@@ -149,7 +149,7 @@ class AssessmentController extends Controller
             return response()->json([
                 'status' => 'success',
                 'data' => [
-                    'user' => new UserResource($user),
+                    'user' => $user ? new UserResource($user) : null,
                     'individual' => new IndividualResource($individual)
                 ]
             ]);
@@ -165,7 +165,7 @@ class AssessmentController extends Controller
             return response()->json([
                 'status' => 'success',
                 'data' => [
-                    'user' => new UserResource($user),
+                    'user' => $user ? new UserResource($user) : null,
                     'cooperate' => new CooperateResource($cooperate)
                 ]
             ]);
@@ -181,7 +181,7 @@ class AssessmentController extends Controller
             return response()->json([
                 'status' => 'success',
                 'data' => [
-                    'user' => new UserResource($user),
+                    'user' => $user ? new UserResource($user) : null,
                     'shop' => new ShopResource($shop)
                 ]
             ]);
@@ -197,7 +197,7 @@ class AssessmentController extends Controller
             return response()->json([
                 'status' => 'success',
                 'data' => [
-                    'user' => new UserResource($user),
+                    'user' => $user ? new UserResource($user) : null,
                     'property' => new PropertyResource($property)
                 ]
             ]);
@@ -213,7 +213,7 @@ class AssessmentController extends Controller
             return response()->json([
                 'status' => 'success',
                 'data' => [
-                    'user' => new UserResource($user),
+                    'user' => $user ? new UserResource($user) : null,
                     'signage' => new SignageResource($signage)
                 ]
             ]);
@@ -229,7 +229,7 @@ class AssessmentController extends Controller
             return response()->json([
                 'status' => 'success',
                 'data' => [
-                    'user' => new UserResource($user),
+                    'user' => $user ? new UserResource($user) : null,
                     'vehicle' => new CommercialVehicleResource($vehicle)
                 ]
             ]);

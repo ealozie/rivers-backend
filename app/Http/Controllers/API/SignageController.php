@@ -36,7 +36,7 @@ class SignageController extends Controller
             $per_page = $request->get("per_page");
         }
         if ($request->has("filter") && $request->get("filter") == "count") {
-            $signage_count = Signage::count();
+            $signage_count = Signage::where('approval_status', 'approved')->count();
             return response()->json(
                 [
                     "status" => "success",

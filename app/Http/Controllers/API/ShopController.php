@@ -34,7 +34,7 @@ class ShopController extends Controller
             $per_page = $request->get('per_page');
         }
         if ($request->has('filter') && $request->get('filter') == 'count') {
-            $shops_count = Shop::count();
+            $shops_count = Shop::where('approval_status', 'approved')->count();
             return response()->json([
             'status' => 'success',
             'message' => 'Shops retrieved successfully.',
@@ -221,7 +221,11 @@ class ShopController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        Shop::destroy($id);
+        return response()->json([
+            "status" => "success",
+            "message" => "Shop deleted successfully",
+        ]);
     }
 
     /**

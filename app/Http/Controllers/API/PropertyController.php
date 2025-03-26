@@ -257,7 +257,11 @@ class PropertyController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        Property::destroy($id);
+        return response()->json([
+            "status" => "success",
+            "message" => "Property deleted successfully",
+        ]);
     }
 
     /**

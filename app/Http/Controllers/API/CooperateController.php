@@ -50,7 +50,7 @@ class CooperateController extends Controller
         }
         if ($user->hasRole('admin')) {
             if ($request->has('filter') && $request->get('filter') == 'count') {
-            $cooperate_registration_count = Cooperate::count();
+            $cooperate_registration_count = Cooperate::where('approval_status', 'approved')->count();
             return response()->json([
             'status' => 'success',
             'message' => 'Cooperate retrieved successfully.',

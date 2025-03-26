@@ -33,7 +33,7 @@ class CommercialVehicleController extends Controller
             $per_page = $request->get("per_page");
         }
         if ($request->has("filter") && $request->get("filter") == "count") {
-            $commercial_vehicles_count = CommercialVehicle::count();
+            $commercial_vehicles_count = CommercialVehicle::where('approval_status', 'approved')->count();
             return response()->json([
                 "status" => "success",
                 "message" => "Vehicle retrieved successfully.",
@@ -210,7 +210,11 @@ class CommercialVehicleController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        CommercialVehicle::destroy($id);
+        return response()->json([
+            "status" => "success",
+            "message" => "Commercial Vehicle deleted successfully",
+        ]);
     }
 
     /**

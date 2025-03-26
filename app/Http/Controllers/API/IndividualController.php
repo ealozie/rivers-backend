@@ -45,7 +45,7 @@ class IndividualController extends Controller
         }
         if ($user->hasRole('admin')) {
             if ($request->has('filter') && $request->get('filter') == 'count') {
-            $individual_registrations_count = Individual::count();
+            $individual_registrations_count = Individual::where('approval_status', 'approved')->count();
             return response()->json([
             'status' => 'success',
             'message' => 'Individuals retrieved successfully.',
