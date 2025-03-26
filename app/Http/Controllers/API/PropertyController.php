@@ -34,7 +34,7 @@ class PropertyController extends Controller
             $per_page = $request->get('per_page');
         }
         if ($request->has('filter') && $request->get('filter') == 'count') {
-            $property_count = Property::count();
+            $property_count = Property::where('approval_status', 'approved')->count();
             return response()->json([
             'status' => 'success',
             'message' => 'Property retrieved successfully.',
