@@ -33,7 +33,7 @@ class LoginController extends Controller
         $request->validate([
             'phone_number' => ['required'],
             'password' => ['required'],
-            'user_type' => 'required|in:agent,admin,individual,cooperate'
+            'user_type' => 'required|in:agent,admin,individual,cooperate,account_officer'
         ]);
 
         $phone_number = $request->phone_number;
@@ -41,7 +41,7 @@ class LoginController extends Controller
         $user_type = $request->user_type;
 
         // Determine lookup based on user type
-        if (in_array($user_type, ['admin', 'agent'])) {
+        if (in_array($user_type, ['admin', 'agent', 'account_officer'])) {
             // Admins & Agents have phone numbers in users table
             $user = User::where('phone_number', $phone_number)->first();
             if (!$user) {
@@ -50,7 +50,7 @@ class LoginController extends Controller
                     'message' => "Your account was not found."
                 ], 401);
             }
-            if (!$user->hasRole(['admin', 'agent'])) {
+            if (!$user->hasRole(['admin', 'agent', 'account_officer'])) {
                 return response()->json([
                     'status' => 'error',
                     'message' => "The account type is not associated with your credentials."
