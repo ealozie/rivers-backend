@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ShopStoreRequest;
 use App\Http\Requests\ShopUpdateRequest;
 use App\Http\Resources\ShopResource;
+use App\Models\AccountManager;
 use App\Models\Cooperate;
 use App\Models\Individual;
 use App\Models\Property;
@@ -30,6 +31,7 @@ class ShopController extends Controller
     public function index(Request $request)
     {
         $per_page = 20;
+        $user = $request->user();
         if ($request->has('per_page')) {
             $per_page = $request->get('per_page');
         }
@@ -43,7 +45,15 @@ class ShopController extends Controller
             ]
         ]);
         } else {
-            $shops = Shop::paginate($per_page);
+            if ($user->hasRole('account_officer')) {
+                $shops_ids = AccountManager::where('user_id', $user->id)
+                    ->where('accountable_type', Shop::class)
+                    ->pluck('accountable_id')
+                    ->toArray();
+                $shops = Shop::whereIn('id', $shops_ids)->paginate($per_page);
+            } else {
+                $shops = Shop::paginate($per_page);
+            }
             return response()->json([
             'status' => 'success',
             'message' => 'Shops retrieved successfully.',
@@ -52,7 +62,7 @@ class ShopController extends Controller
             ]
         ]);
         }
-        
+
     }
 
     /**

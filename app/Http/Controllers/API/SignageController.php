@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\SignageStoreRequest;
 use App\Http\Requests\SignageUpdateRequest;
 use App\Http\Resources\SignageResource;
+use App\Models\AccountManager;
 use App\Models\Cooperate;
 use App\Models\Individual;
 use App\Models\Property;
@@ -32,6 +33,7 @@ class SignageController extends Controller
     public function index(Request $request)
     {
         $per_page = 20;
+        $user = $request->user();
         if ($request->has("per_page")) {
             $per_page = $request->get("per_page");
         }
@@ -48,7 +50,15 @@ class SignageController extends Controller
                 200
             );
         } else {
-            $signage = Signage::latest()->paginate($per_page);
+            if ($user->hasRole('account_officer')) {
+                $signage_ids = AccountManager::where('user_id', $user->id)
+                    ->where('accountable_type', Signage::class)
+                    ->pluck('accountable_id')
+                    ->toArray();
+                $signage = Signage::whereIn('id', $signage_ids)->latest()->paginate($per_page);
+            } else {
+                $signage = Signage::latest()->paginate($per_page);
+            }
             return response()->json(
                 [
                     "status" => "success",

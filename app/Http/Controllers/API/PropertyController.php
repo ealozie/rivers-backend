@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PropertyStoreRequest;
 use App\Http\Requests\PropertyUpdateRequest;
+use App\Models\AccountManager;
 use App\Models\Cooperate;
 use App\Models\Individual;
 use Illuminate\Support\Facades\Auth;
@@ -30,27 +31,36 @@ class PropertyController extends Controller
     public function index(Request $request)
     {
         $per_page = 20;
+        $user = $request->user();
         if ($request->has('per_page')) {
             $per_page = $request->get('per_page');
         }
         if ($request->has('filter') && $request->get('filter') == 'count') {
             $property_count = Property::where('approval_status', 'approved')->count();
             return response()->json([
-            'status' => 'success',
-            'message' => 'Property retrieved successfully.',
-            'data' => [
-                'property_count' => $property_count
-            ]
-        ]);
+                'status' => 'success',
+                'message' => 'Property retrieved successfully.',
+                'data' => [
+                    'property_count' => $property_count
+                ]
+            ]);
         } else {
-            $properties = Property::paginate($per_page);
+            if ($user->hasRole('account_officer')) {
+                $property_ids = AccountManager::where('user_id', $user->id)
+                    ->where('accountable_type', Property::class)
+                    ->pluck('accountable_id')
+                    ->toArray();
+                $properties = Property::whereIn('id', $property_ids)->latest()->paginate($per_page);
+            } else {
+                $properties = Property::paginate($per_page);
+            }
             return response()->json([
-            'status' => 'success',
-            'message' => 'Properties retrieved successfully.',
-            'data' => [
-                'properties' => PropertyResource::collection($properties),
-            ]
-        ]);
+                'status' => 'success',
+                'message' => 'Properties retrieved successfully.',
+                'data' => [
+                    'properties' => PropertyResource::collection($properties),
+                ]
+            ]);
         }
     }
 
@@ -62,7 +72,7 @@ class PropertyController extends Controller
         $validatedData = $request->validated();
         if (isset($validatedData['user_id'])) {
             $user = User::where('unique_id', $validatedData['user_id'])->first();
-            if (!$user) {
+            if ( ! $user) {
                 return response()->json([
                     'status' => 'error',
                     'message' => 'User ID not found.',
@@ -70,18 +80,18 @@ class PropertyController extends Controller
             }
             $validatedData['user_id'] = $user->id;
         }
-        if (!isset($validatedData['demand_notice_category_id'])) {
+        if ( ! isset($validatedData['demand_notice_category_id'])) {
             $validatedData['demand_notice_category_id'] = 0;
         }
         if ($request->bearerToken()) {
             Auth::setUser($request->user('sanctum'));
             if ($request->user() && $request->user()->hasRole('admin')) {
-            $validatedData['approval_status'] = 'approved';
+                $validatedData['approval_status'] = 'approved';
             }
         }
         DB::beginTransaction();
         try {
-            $validatedData['property_id'] = '4' . date('hi') . mt_rand(11111, 99999);
+            $validatedData['property_id'] = '4'.date('hi').mt_rand(11111, 99999);
             $property = Property::create($validatedData);
             if ($request->hasFile('property_pictures') && count($validatedData['property_pictures'])) {
                 $property_images = $validatedData['property_pictures'];
@@ -89,7 +99,7 @@ class PropertyController extends Controller
                     $path = $property_image->store('property_pictures', 'public');
                     $property_picture = new PropertyPicture();
                     $property_picture->property_id = $property->id;
-                    $property_picture->picture_path = "/storage/" . $path;
+                    $property_picture->picture_path = "/storage/".$path;
                     $property_picture->save();
                 }
             }
@@ -108,7 +118,7 @@ class PropertyController extends Controller
         }
     }
 
-     /**
+    /**
      * Remove Property picture specified resource.
      */
     public function destroy_property_picture(string $id)
@@ -132,37 +142,40 @@ class PropertyController extends Controller
             'individual_id_or_cooperate_id' => 'required|min:10|max:10'
         ]);
         $property = Property::find($property_id);
-        if (!$property) {
+        if ( ! $property) {
             return response()->json([
-                    'status' => 'error',
-                    'message' => 'Property ID not found.'
-                ], 404);
+                'status' => 'error',
+                'message' => 'Property ID not found.'
+            ], 404);
         }
         $user_id_prefix = $validatedData['individual_id_or_cooperate_id'][0];
         if ($user_id_prefix == 2) {
             $cooperate = Cooperate::where('cooperate_id', $validatedData['individual_id_or_cooperate_id'])->first();
-            if (!$cooperate) {
+            if ( ! $cooperate) {
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Cooperate ID not found.'
                 ], 404);
             }
             $user = User::find($cooperate->user_id);
-        } else if ($user_id_prefix == 1) {
-            $individual = Individual::where('individual_id', $validatedData['individual_id_or_cooperate_id'])->first();
-            //return $individual;
-            if (!$individual) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Individual ID not found.'
-                ], 404);
-            }
-            $user = User::find($individual->user_id);
         } else {
-            return response()->json([
+            if ($user_id_prefix == 1) {
+                $individual = Individual::where('individual_id',
+                    $validatedData['individual_id_or_cooperate_id'])->first();
+                //return $individual;
+                if ( ! $individual) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Individual ID not found.'
+                    ], 404);
+                }
+                $user = User::find($individual->user_id);
+            } else {
+                return response()->json([
                     'status' => 'error',
                     'message' => 'User ID not found.'
                 ], 404);
+            }
         }
         //return $user;
         DB::beginTransaction();
@@ -191,7 +204,7 @@ class PropertyController extends Controller
     public function show(string $id)
     {
         $property = Property::find($id);
-        if (!$property) {
+        if ( ! $property) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'No property found.',
@@ -199,6 +212,7 @@ class PropertyController extends Controller
         }
         return new PropertyResource($property);
     }
+
     /**
      * Update the specified resource in storage.
      */
@@ -207,7 +221,7 @@ class PropertyController extends Controller
         $validatedData = $request->validated();
         if (isset($validatedData['user_id'])) {
             $user = User::where('unique_id', $validatedData['user_id'])->first();
-            if (!$user) {
+            if ( ! $user) {
                 return response()->json([
                     'status' => 'error',
                     'message' => 'User ID not found.',
@@ -218,7 +232,7 @@ class PropertyController extends Controller
         DB::beginTransaction();
         try {
             $property = Property::find($id);
-            if (!$property) {
+            if ( ! $property) {
                 return response()->json([
                     'status' => 'error',
                     'message' => 'No property found.',
@@ -232,7 +246,7 @@ class PropertyController extends Controller
                     $path = $property_image->store('property_pictures', 'public');
                     $property_picture = new PropertyPicture();
                     $property_picture->property_id = $property->id;
-                    $property_picture->picture_path = "/storage/" . $path;
+                    $property_picture->picture_path = "/storage/".$path;
                     $property_picture->save();
                 }
             }
@@ -270,14 +284,14 @@ class PropertyController extends Controller
     public function show_by_user_id(string $user_id_or_unique_id)
     {
         $user = User::where('id', $user_id_or_unique_id)->orWhere('unique_id', $user_id_or_unique_id)->first();
-        if (!$user) {
+        if ( ! $user) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'User ID not found.',
             ], 404);
         }
         $property = Property::where('user_id', $user->id)->get();
-        if (!count($property)) {
+        if ( ! count($property)) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Property not found.',
@@ -301,44 +315,53 @@ class PropertyController extends Controller
         $per_page = 20;
         if ($request->has('property_category_id')) {
             $query_request = $request->get('property_category_id');
-            $individual_registrations = Property::with('user')->where('property_category_id', $query_request)->paginate($per_page);
+            $individual_registrations = Property::with('user')->where('property_category_id',
+                $query_request)->paginate($per_page);
         }
         if ($request->has('property_type_id')) {
             $query_request = $request->get('property_type_id');
-            $individual_registrations = Property::with('user')->where('property_type_id', $query_request)->paginate($per_page);
+            $individual_registrations = Property::with('user')->where('property_type_id',
+                $query_request)->paginate($per_page);
         }
         if ($request->has('local_government_area_id')) {
             $query_request = $request->get('local_government_area_id');
-            $individual_registrations = Property::with('user')->where('local_government_area_id', $query_request)->paginate($per_page);
+            $individual_registrations = Property::with('user')->where('local_government_area_id',
+                $query_request)->paginate($per_page);
         }
         if ($request->has('property_use_id')) {
             $query_request = $request->get('property_use_id');
-            $individual_registrations = Property::with('user')->where('property_use_id', $query_request)->paginate($per_page);
+            $individual_registrations = Property::with('user')->where('property_use_id',
+                $query_request)->paginate($per_page);
         }
         if ($request->has('demand_notice_category_id')) {
             $query_request = $request->get('demand_notice_category_id');
-            $individual_registrations = Property::with('user')->where('demand_notice_category_id', $query_request)->paginate($per_page);
+            $individual_registrations = Property::with('user')->where('demand_notice_category_id',
+                $query_request)->paginate($per_page);
         }
         if ($request->has('has_borehole')) {
             $query_request = $request->get('has_borehole');
-            $individual_registrations = Property::with('user')->where('has_borehole', $query_request)->paginate($per_page);
+            $individual_registrations = Property::with('user')->where('has_borehole',
+                $query_request)->paginate($per_page);
         }
 
         if ($request->has('is_connected_to_power')) {
             $query_request = $request->get('is_connected_to_power');
-            $individual_registrations = Property::with('user')->where('is_connected_to_power', $query_request)->paginate($per_page);
+            $individual_registrations = Property::with('user')->where('is_connected_to_power',
+                $query_request)->paginate($per_page);
         }
 
         if ($request->has('property_id')) {
             $query_request = $request->get('property_id');
-             $individual_registrations = Property::with('user')->where('property_id', $query_request)->paginate($per_page);
+            $individual_registrations = Property::with('user')->where('property_id',
+                $query_request)->paginate($per_page);
         }
         if ($request->has('date_from') && $request->has('date_to')) {
             $date_from = $request->get('date_from');
             $date_to = $request->get('date_to');
-            $individual_registrations = Property::with('user')->whereBetween('created_at', [$date_from, $date_to])->paginate($per_page);
+            $individual_registrations = Property::with('user')->whereBetween('created_at',
+                [$date_from, $date_to])->paginate($per_page);
         }
-        if (!isset($individual_registrations)){
+        if ( ! isset($individual_registrations)) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Invalid request.'

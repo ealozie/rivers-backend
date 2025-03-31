@@ -7,6 +7,7 @@ use App\Http\Requests\CooperateStoreRequest;
 use App\Http\Requests\CooperateUpdateRequest;
 use App\Http\Resources\CooperateResource;
 use App\Http\Resources\UserResource;
+use App\Models\AccountManager;
 use App\Models\Cooperate;
 use App\Models\Property;
 use App\Models\User;
@@ -28,6 +29,7 @@ class CooperateController extends Controller
     const NOT_FOUND_STATUS = 404;
     const SERVER_ERROR = 500;
     use SendSMS;
+
     //use CooperateAuthorizable;
 
 
@@ -48,26 +50,34 @@ class CooperateController extends Controller
         if ($request->has('per_page')) {
             $per_page = $request->get('per_page');
         }
-        if ($user->hasRole('admin')) {
+        if ($user->hasRole(['admin', 'account_officer'])) {
             if ($request->has('filter') && $request->get('filter') == 'count') {
-            $cooperate_registration_count = Cooperate::where('approval_status', 'approved')->count();
-            return response()->json([
-            'status' => 'success',
-            'message' => 'Cooperate retrieved successfully.',
-            'data' => [
-                'cooperate_count' => $cooperate_registration_count
-            ]
-        ], self::SUCCESS_STATUS);
-        } else {
-            $cooperate_registrations = Cooperate::with('user')->paginate($per_page);
-            return response()->json([
-            'status' => 'success',
-            'message' => 'Cooperate retrieved successfully.',
-            'data' => [
-                'cooperates' => CooperateResource::collection($cooperate_registrations),
-            ]
-        ], self::SUCCESS_STATUS);
-        }
+                $cooperate_registration_count = Cooperate::where('approval_status', 'approved')->count();
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Cooperate retrieved successfully.',
+                    'data' => [
+                        'cooperate_count' => $cooperate_registration_count
+                    ]
+                ], self::SUCCESS_STATUS);
+            } else {
+                if ($user->hasRole('account_officer')) {
+                    $cooperate_ids = AccountManager::where('user_id', $user->id)
+                        ->where('accountable_type', Cooperate::class)
+                        ->pluck('accountable_id')
+                        ->toArray();
+                    $cooperate_registrations = Cooperate::with('user')->whereIn('id', $cooperate_ids)->latest()->paginate($per_page);
+                } else {
+                    $cooperate_registrations = Cooperate::with('user')->paginate($per_page);
+                }
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Cooperate retrieved successfully.',
+                    'data' => [
+                        'cooperates' => CooperateResource::collection($cooperate_registrations),
+                    ]
+                ], self::SUCCESS_STATUS);
+            }
             //return CooperateResource::collection($cooperate_registrations);
         }
     }
@@ -111,7 +121,7 @@ class CooperateController extends Controller
             $user->password = Hash::make($password);
             $user->save();
 
-            $validatedData['cooperate_id'] = '2' . date('hi') . mt_rand(11111, 99999);
+            $validatedData['cooperate_id'] = '2'.date('hi').mt_rand(11111, 99999);
             $user->unique_id = $validatedData['cooperate_id'];
             $user->save();
             //Send Phone Number Verification Code
@@ -119,7 +129,7 @@ class CooperateController extends Controller
             $validatedData['demand_notice_category_id'] = 0;
             if (isset($validatedData['picture_path']) && $request->hasFile('picture_path')) {
                 $path = $request->file('picture_path')->store('cooperates', 'public');
-                $validatedData['picture_path'] = "/storage/" . $path;
+                $validatedData['picture_path'] = "/storage/".$path;
             }
 
             if ($request->bearerToken()) {
@@ -130,7 +140,7 @@ class CooperateController extends Controller
             } else {
                 $validatedData['added_by'] = 0;
             }
-            if (!isset($validatedData['number_of_staff'])) {
+            if ( ! isset($validatedData['number_of_staff'])) {
                 $validatedData['number_of_staff'] = 0;
             }
             $validatedData['email_address'] = $validatedData['email'];
@@ -145,8 +155,8 @@ class CooperateController extends Controller
                 $phone_number = $cooperate->phone_number;
                 $mobile_number = ltrim($phone_number, "0");
                 $name = $validatedData['business_name'];
-                $message = "Hello {$name}, your phone number verification code is " . $user->phone_number_verification_code;
-                $this->send_sms_process_message("+234" . $mobile_number, $message);
+                $message = "Hello {$name}, your phone number verification code is ".$user->phone_number_verification_code;
+                $this->send_sms_process_message("+234".$mobile_number, $message);
             }
             return response()->json([
                 'status' => 'success',
@@ -171,7 +181,7 @@ class CooperateController extends Controller
     public function show(string $id)
     {
         $cooperate = Cooperate::find($id);
-        if (!$cooperate) {
+        if ( ! $cooperate) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Cooperate not found',
@@ -188,7 +198,7 @@ class CooperateController extends Controller
     public function show_entity_id(string $entity_id)
     {
         $cooperate = Cooperate::where('cooperate_id', $entity_id)->first();
-        if (!$cooperate) {
+        if ( ! $cooperate) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Cooperate not found',
@@ -203,7 +213,7 @@ class CooperateController extends Controller
     public function get_by_property_id(Request $request, string $property_id)
     {
         $property = Property::where('property_id', $property_id)->first();
-        if (!$property) {
+        if ( ! $property) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Property ID not found',
@@ -222,7 +232,7 @@ class CooperateController extends Controller
             $validatedData = $request->validated();
             if (isset($validatedData['picture_path']) && $request->hasFile('picture_path')) {
                 $path = $request->file('picture_path')->store('cooperates', 'public');
-                $validatedData['picture_path'] = "/storage/" . $path;
+                $validatedData['picture_path'] = "/storage/".$path;
             }
             $cooperate = Cooperate::findOrFail($id);
             $cooperate->update($validatedData);
@@ -265,54 +275,63 @@ class CooperateController extends Controller
         $per_page = 20;
         if ($request->has('business_name')) {
             $query_request = $request->get('business_name');
-            $individual_registrations = Cooperate::with('user')->where('business_name', 'like', "%{$query_request}%")->paginate($per_page);
+            $individual_registrations = Cooperate::with('user')->where('business_name', 'like',
+                "%{$query_request}%")->paginate($per_page);
         }
         if ($request->has('rc_number')) {
             $query_request = $request->get('rc_number');
-            $individual_registrations = Cooperate::with('user')->where('rc_number', $query_request)->paginate($per_page);
+            $individual_registrations = Cooperate::with('user')->where('rc_number',
+                $query_request)->paginate($per_page);
         }
         if ($request->has('business_type_id')) {
             $query_request = $request->get('business_type_id');
-            $individual_registrations = Cooperate::with('user')->where('business_type_id', $query_request)->paginate($per_page);
+            $individual_registrations = Cooperate::with('user')->where('business_type_id',
+                $query_request)->paginate($per_page);
         }
         if ($request->has('email')) {
             $query_request = $request->get('email');
-            $individual_registrations = Cooperate::whereHas('user', function($query) use ($query_request) {
+            $individual_registrations = Cooperate::whereHas('user', function ($query) use ($query_request) {
                 $query->where('email', $query_request);
             })->paginate($per_page);
         }
         if ($request->has('phone_number')) {
             $query_request = $request->get('phone_number');
-            $individual_registrations = Cooperate::whereHas('user', function($query) use ($query_request) {
+            $individual_registrations = Cooperate::whereHas('user', function ($query) use ($query_request) {
                 $query->where('phone_number', $query_request);
             })->paginate($per_page);
         }
         if ($request->has('cooperate_id')) {
             $query_request = $request->get('cooperate_id');
-             $individual_registrations = Cooperate::with('user')->where('cooperate_id', $query_request)->paginate($per_page);
+            $individual_registrations = Cooperate::with('user')->where('cooperate_id',
+                $query_request)->paginate($per_page);
         }
         if ($request->has('business_sub_category_id')) {
             $query_request = $request->get('business_sub_category_id');
-            $individual_registrations = Cooperate::with('user')->where('business_sub_category_id', $query_request)->paginate($per_page);
+            $individual_registrations = Cooperate::with('user')->where('business_sub_category_id',
+                $query_request)->paginate($per_page);
         }
         if ($request->has('business_level_id')) {
             $query_request = $request->get('business_level_id');
-            $individual_registrations = Cooperate::with('user')->where('business_level_id', $query_request)->paginate($per_page);
+            $individual_registrations = Cooperate::with('user')->where('business_level_id',
+                $query_request)->paginate($per_page);
         }
         if ($request->has('business_category_id')) {
             $query_request = $request->get('business_category_id');
-            $individual_registrations = Cooperate::with('user')->where('business_category_id', $query_request)->paginate($per_page);
+            $individual_registrations = Cooperate::with('user')->where('business_category_id',
+                $query_request)->paginate($per_page);
         }
         if ($request->has('demand_notice_category_id')) {
             $query_request = $request->get('demand_notice_category_id');
-            $individual_registrations = Cooperate::with('user')->where('demand_notice_category_id', $query_request)->paginate($per_page);
+            $individual_registrations = Cooperate::with('user')->where('demand_notice_category_id',
+                $query_request)->paginate($per_page);
         }
         if ($request->has('date_from') && $request->has('date_to')) {
             $date_from = $request->get('date_from');
             $date_to = $request->get('date_to');
-            $individual_registrations = Cooperate::with('user')->whereBetween('created_at', [$date_from, $date_to])->paginate($per_page);
+            $individual_registrations = Cooperate::with('user')->whereBetween('created_at',
+                [$date_from, $date_to])->paginate($per_page);
         }
-        if (!isset($individual_registrations)){
+        if ( ! isset($individual_registrations)) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Invalid request.'

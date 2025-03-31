@@ -7,6 +7,7 @@ use App\Http\Requests\MastStoreRequest;
 use App\Http\Requests\MastUpdateRequest;
 use App\Http\Resources\MastListResource;
 use App\Http\Resources\MastResource;
+use App\Models\AccountManager;
 use App\Models\Cooperate;
 use App\Models\Individual;
 use App\Models\Mast;
@@ -27,6 +28,7 @@ class MastController extends Controller
     public function index(Request $request)
     {
         $search = $request->query("search");
+        $user = $request->user();
         $per_page = $request->query("per_page", 10);
         if ($request->has('filter') && $request->get('filter') == 'count') {
             $mast_count = Mast::where('approval_status', 'approved')->count();
@@ -43,6 +45,13 @@ class MastController extends Controller
             $masts = $masts
                 ->where("mast_name", "like", "%$search%")
                 ->orWhere("mast_use", "like", "%$search%");
+        }
+        if ($user->hasRole('account_officer')) {
+            $mast_ids = AccountManager::where('user_id', $user->id)
+                ->where('accountable_type', Mast::class)
+                ->pluck('accountable_id')
+                ->toArray();
+            $masts->whereIn('id', $mast_ids);
         }
         return MastListResource::collection($masts->paginate($per_page));
     }

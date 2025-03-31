@@ -7,6 +7,7 @@ use App\Http\Requests\IndividualStoreRequest;
 use App\Http\Requests\IndividualUpdateRequest;
 use App\Http\Resources\IndividualResource;
 use App\Http\Resources\UserResource;
+use App\Models\AccountManager;
 use App\Models\Individual;
 use App\Models\Property;
 use App\Models\User;
@@ -24,6 +25,7 @@ use Illuminate\Support\Str;
 class IndividualController extends Controller
 {
     use SendSMS;
+
     //use IndividualAuthorizable;
 
     public function __construct()
@@ -43,26 +45,35 @@ class IndividualController extends Controller
         if ($request->has('per_page')) {
             $per_page = $request->get('per_page');
         }
-        if ($user->hasRole('admin')) {
-            if ($request->has('filter') && $request->get('filter') == 'count') {
-            $individual_registrations_count = Individual::where('approval_status', 'approved')->count();
-            return response()->json([
-            'status' => 'success',
-            'message' => 'Individuals retrieved successfully.',
-            'data' => [
-                'individual_count' => $individual_registrations_count
-            ]
-        ], 200);
-        } else {
-            $individual_registrations = Individual::with('user')->paginate($per_page);
-            return response()->json([
-            'status' => 'success',
-            'message' => 'Individuals retrieved successfully.',
-            'data' => [
-                'individual' => IndividualResource::collection($individual_registrations),
-            ]
-        ], 200);
-        }
+        if ($user->hasRole(['admin', 'account_officer'])) {
+            if ($request->has('filter') && $request->get('filter') === 'count') {
+                $individual_registrations_count = Individual::where('approval_status', 'approved')->count();
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Individuals retrieved successfully.',
+                    'data' => [
+                        'individual_count' => $individual_registrations_count
+                    ]
+                ], 200);
+            } else {
+                //user has role account_officer
+                if ($user->hasRole('account_officer')) {
+                    $individual_ids = AccountManager::where('user_id', $user->id)
+                        ->where('accountable_type', Individual::class)
+                        ->pluck('accountable_id')
+                        ->toArray();
+                    $individual_registrations = Individual::with('user')->whereIn('id', $individual_ids)->paginate($per_page);
+                } else {
+                    $individual_registrations = Individual::with('user')->paginate($per_page);
+                }
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Individuals retrieved successfully.',
+                    'data' => [
+                        'individual' => IndividualResource::collection($individual_registrations),
+                    ]
+                ], 200);
+            }
         }
     }
 
@@ -94,7 +105,7 @@ class IndividualController extends Controller
         $user = new User();
         $user->email = $validatedData['email'];
         $user->email_verified_at = now();
-        $user->name = $validatedData['first_name'] . ' ' . $validatedData['surname'];
+        $user->name = $validatedData['first_name'].' '.$validatedData['surname'];
         //Generate a random password
         $password = mt_rand(111111, 999999);
         $verification_code = '1'.mt_rand(11111, 99999);
@@ -121,12 +132,12 @@ class IndividualController extends Controller
         $user->assignRole('individual');
         DB::commit();
         if ($user && $individual) {
-        $phone_number = $individual->phone_number;
-        $mobile_number = ltrim($phone_number, "0");
-        $name = $validatedData['first_name'];
-        $message = "Hello {$name}, your phone number verification code is " . $user->phone_number_verification_code;
-        $this->send_sms_process_message("+234" . $mobile_number, $message);
-        $token = $user->createToken('igr_system_auth_token')->plainTextToken;
+            $phone_number = $individual->phone_number;
+            $mobile_number = ltrim($phone_number, "0");
+            $name = $validatedData['first_name'];
+            $message = "Hello {$name}, your phone number verification code is ".$user->phone_number_verification_code;
+            $this->send_sms_process_message("+234".$mobile_number, $message);
+            $token = $user->createToken('igr_system_auth_token')->plainTextToken;
         }
         return response()->json([
             'status' => 'success',
@@ -145,7 +156,7 @@ class IndividualController extends Controller
     public function show(string $id)
     {
         $individual = Individual::find($id);
-        if (!$individual) {
+        if ( ! $individual) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Individual not found',
@@ -177,7 +188,7 @@ class IndividualController extends Controller
     public function get_by_property_id(Request $request, string $property_id)
     {
         $property = Property::where('property_id', $property_id)->first();
-        if (!$property) {
+        if ( ! $property) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Property ID not found',
@@ -190,13 +201,14 @@ class IndividualController extends Controller
     /**
      * Send Birthday message to the specified resource.
      */
-    public function send_birthday_message(Request $request, $individual_id) {
+    public function send_birthday_message(Request $request, $individual_id)
+    {
         $requestData = $request->validate([
             'message' => 'nullable|string'
         ]);
         try {
-            $individual = Individual::where('individual_id',$individual_id)->first();
-            if (!$individual) {
+            $individual = Individual::where('individual_id', $individual_id)->first();
+            if ( ! $individual) {
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Individual not found',
@@ -208,9 +220,9 @@ class IndividualController extends Controller
             $name = $user->name;
             $message = "Hello {$name}, Happy Birthday! May your birthday be filled with sunshine and smiles, laughter, love, and cheer. Enjoy your day!";
             if (isset($requestData['message'])) {
-                $message = "Hello {$name}, ". $requestData['message'];
+                $message = "Hello {$name}, ".$requestData['message'];
             }
-            $this->send_sms_process_message("+234" . $mobile_number, $message);
+            $this->send_sms_process_message("+234".$mobile_number, $message);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -228,7 +240,7 @@ class IndividualController extends Controller
     public function show_entity_id(string $entity_id)
     {
         $individual = Individual::where('individual_id', $entity_id)->first();
-        if (!$individual) {
+        if ( ! $individual) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Individual not found',
@@ -276,15 +288,18 @@ class IndividualController extends Controller
         $per_page = 20;
         if ($request->has('first_name')) {
             $query_request = $request->get('first_name');
-            $individual_registrations = Individual::with('user')->where('first_name', 'like', "%{$query_request}%")->paginate($per_page);
+            $individual_registrations = Individual::with('user')->where('first_name', 'like',
+                "%{$query_request}%")->paginate($per_page);
         }
         if ($request->has('middle_name')) {
             $query_request = $request->get('middle_name');
-            $individual_registrations = Individual::with('user')->where('middle_name', 'like', "%{$query_request}%")->paginate($per_page);
+            $individual_registrations = Individual::with('user')->where('middle_name', 'like',
+                "%{$query_request}%")->paginate($per_page);
         }
         if ($request->has('surname')) {
             $query_request = $request->get('surname');
-            $individual_registrations = Individual::with('user')->where('surname', 'like', "%{$query_request}%")->paginate($per_page);
+            $individual_registrations = Individual::with('user')->where('surname', 'like',
+                "%{$query_request}%")->paginate($per_page);
         }
         if ($request->has('gender')) {
             $query_request = $request->get('gender');
@@ -292,36 +307,40 @@ class IndividualController extends Controller
         }
         if ($request->has('date_of_birth')) {
             $query_request = $request->get('date_of_birth');
-            $individual_registrations = Individual::with('user')->where('date_of_birth', $query_request)->paginate($per_page);
+            $individual_registrations = Individual::with('user')->where('date_of_birth',
+                $query_request)->paginate($per_page);
         }
         if ($request->has('state_id')) {
             $query_request = $request->get('state_id');
-            $individual_registrations = Individual::with('user')->where('state_id', $query_request)->paginate($per_page);
+            $individual_registrations = Individual::with('user')->where('state_id',
+                $query_request)->paginate($per_page);
         }
         if ($request->has('local_government_area_id')) {
             $query_request = $request->get('local_government_area_id');
-            $individual_registrations = Individual::with('user')->where('local_government_area_id', $query_request)->paginate($per_page);
+            $individual_registrations = Individual::with('user')->where('local_government_area_id',
+                $query_request)->paginate($per_page);
         }
         if ($request->has('income_range')) {
             $query_request = $request->get('income_range');
-            $individual_registrations = Individual::with('user')->where('income_range', $query_request)->paginate($per_page);
+            $individual_registrations = Individual::with('user')->where('income_range',
+                $query_request)->paginate($per_page);
         }
         if ($request->has('email')) {
             $query_request = $request->get('email');
-            $individual_registrations = Individual::whereHas('user', function($query) use ($query_request) {
+            $individual_registrations = Individual::whereHas('user', function ($query) use ($query_request) {
                 $query->where('email', $query_request);
             })->paginate($per_page);
         }
         if ($request->has('phone_number')) {
             $query_request = $request->get('phone_number');
-            $individual_registrations = Individual::whereHas('user', function($query) use ($query_request) {
+            $individual_registrations = Individual::whereHas('user', function ($query) use ($query_request) {
                 $query->where('phone_number', $query_request);
             })->paginate($per_page);
         }
 
         if ($request->has('individual_id')) {
             $query_request = $request->get('individual_id');
-            $individual_registrations = Individual::whereHas('user', function($query) use ($query_request) {
+            $individual_registrations = Individual::whereHas('user', function ($query) use ($query_request) {
                 $query->where('individual_id', $query_request);
             })->paginate($per_page);
         }
@@ -329,9 +348,10 @@ class IndividualController extends Controller
         if ($request->has('date_from') && $request->has('date_to')) {
             $date_from = $request->get('date_from');
             $date_to = $request->get('date_to');
-            $individual_registrations = Individual::with('user')->whereBetween('created_at', [$date_from, $date_to])->paginate($per_page);
+            $individual_registrations = Individual::with('user')->whereBetween('created_at',
+                [$date_from, $date_to])->paginate($per_page);
         }
-        if (!isset($individual_registrations)){
+        if ( ! isset($individual_registrations)) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Invalid request.'
