@@ -23,6 +23,10 @@ use Illuminate\Support\Facades\DB;
  */
 class SignageController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum')->only('index');
+    }
     //use SignageAuthorizable;
 
     /**

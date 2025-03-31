@@ -22,6 +22,10 @@ use Illuminate\Support\Facades\Auth;
  */
 class ShopController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum')->only('index');
+    }
     //use ShopAuthorizable;
     /**
      * Display a listing of the resource.

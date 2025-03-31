@@ -20,6 +20,11 @@ use Illuminate\Support\Facades\DB;
 
 class MastController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum')->only('index');
+    }
+    
     /**
      * Display a listing of the resource.
      *

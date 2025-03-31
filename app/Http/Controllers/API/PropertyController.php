@@ -22,6 +22,10 @@ use Illuminate\Http\Request;
  */
 class PropertyController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum')->only('index');
+    }
     //use PropertyAuthorizable;
     /**
      * Display a listing of the resource.
