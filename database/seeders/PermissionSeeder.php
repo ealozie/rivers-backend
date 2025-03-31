@@ -124,15 +124,25 @@ class PermissionSeeder extends Seeder
         // Permission::create(['name' => 'delete audittrail', 'label'=> 'Audit Trail']);
         // Permission::create(['name' => 'view audittrail', 'label'=> 'Audit Trail']);
 
-        Permission::create(['name' => 'create accountmanager', 'label' => 'Account Manager']);
-        Permission::create(['name' => 'edit accountmanager', 'label'=> 'Account Manager']);
-        Permission::create(['name' => 'delete accountmanager', 'label'=> 'Account Manager']);
-        Permission::create(['name' => 'view accountmanager', 'label'=> 'Account Manager']);
+        // Permission::create(['name' => 'create accountmanager', 'label' => 'Account Manager']);
+        // Permission::create(['name' => 'edit accountmanager', 'label'=> 'Account Manager']);
+        // Permission::create(['name' => 'delete accountmanager', 'label'=> 'Account Manager']);
+        // Permission::create(['name' => 'view accountmanager', 'label'=> 'Account Manager']);
 
-        Permission::create(['name' => 'create note', 'label' => 'Note']);
-        Permission::create(['name' => 'edit note', 'label'=> 'Note']);
-        Permission::create(['name' => 'delete note', 'label'=> 'Note']);
-        Permission::create(['name' => 'view note', 'label'=> 'Note']);
+        // Permission::create(['name' => 'create note', 'label' => 'Note']);
+        // Permission::create(['name' => 'edit note', 'label'=> 'Note']);
+        // Permission::create(['name' => 'delete note', 'label'=> 'Note']);
+        // Permission::create(['name' => 'view note', 'label'=> 'Note']);
+
+        Permission::create(['name' => 'create street', 'label' => 'Street']);
+        Permission::create(['name' => 'edit street', 'label'=> 'Street']);
+        Permission::create(['name' => 'delete street', 'label'=> 'Street']);
+        Permission::create(['name' => 'view street', 'label'=> 'Street']);
+
+        Permission::create(['name' => 'create service', 'label' => 'Service']);
+        Permission::create(['name' => 'edit service', 'label'=> 'Service']);
+        Permission::create(['name' => 'delete service', 'label'=> 'Service']);
+        Permission::create(['name' => 'view service', 'label'=> 'Service']);
 
         //Permission::create(['name' => 'view dashboard', 'label' => 'Dashboard']);
         //Permission::create(['name' => 'view settings', 'label' => 'Settings']);
