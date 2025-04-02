@@ -134,15 +134,20 @@ class PermissionSeeder extends Seeder
         // Permission::create(['name' => 'delete note', 'label'=> 'Note']);
         // Permission::create(['name' => 'view note', 'label'=> 'Note']);
 
-        Permission::create(['name' => 'create street', 'label' => 'Street']);
-        Permission::create(['name' => 'edit street', 'label'=> 'Street']);
-        Permission::create(['name' => 'delete street', 'label'=> 'Street']);
-        Permission::create(['name' => 'view street', 'label'=> 'Street']);
+        // Permission::create(['name' => 'create street', 'label' => 'Street']);
+        // Permission::create(['name' => 'edit street', 'label'=> 'Street']);
+        // Permission::create(['name' => 'delete street', 'label'=> 'Street']);
+        // Permission::create(['name' => 'view street', 'label'=> 'Street']);
 
-        Permission::create(['name' => 'create service', 'label' => 'Service']);
-        Permission::create(['name' => 'edit service', 'label'=> 'Service']);
-        Permission::create(['name' => 'delete service', 'label'=> 'Service']);
-        Permission::create(['name' => 'view service', 'label'=> 'Service']);
+        // Permission::create(['name' => 'create service', 'label' => 'Service']);
+        // Permission::create(['name' => 'edit service', 'label'=> 'Service']);
+        // Permission::create(['name' => 'delete service', 'label'=> 'Service']);
+        // Permission::create(['name' => 'view service', 'label'=> 'Service']);
+
+        Permission::create(['name' => 'create mask', 'label' => 'Mask']);
+        Permission::create(['name' => 'edit mask', 'label'=> 'Mask']);
+        Permission::create(['name' => 'delete mask', 'label'=> 'Mask']);
+        Permission::create(['name' => 'view mask', 'label'=> 'Mask']);
 
         //Permission::create(['name' => 'view dashboard', 'label' => 'Dashboard']);
         //Permission::create(['name' => 'view settings', 'label' => 'Settings']);

@@ -24,7 +24,7 @@ class MastController extends Controller
     {
         $this->middleware('auth:sanctum')->only('index');
     }
-    
+
     /**
      * Display a listing of the resource.
      *
