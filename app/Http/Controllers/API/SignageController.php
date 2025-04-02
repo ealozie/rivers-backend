@@ -32,7 +32,9 @@ class SignageController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * Query Parameter `filter=count` and `per_page=20`
+     * Query Parameter `filter=count|lga|street` and `per_page=20`
+     *
+     * Additional query param: `local_government_area_id` & `street_id`
      */
     public function index(Request $request)
     {
@@ -63,6 +65,16 @@ class SignageController extends Controller
             } else {
                 $signage = Signage::latest()->paginate($per_page);
             }
+            if ($request->has('filter') && in_array($request->get('filter'), ['lga', 'street'])) {
+                    if ($request->get('filter') == 'street') {
+                        $street_id = $request->get('street_id');
+                        $shops = Signage::where('street_id', $street_id)->paginate($per_page);
+                    }
+                    if ($request->get('filter') == 'lga') {
+                        $local_government_area_id = $request->get('local_government_area_id');
+                        $shops = Signage::where('local_government_area_id', $local_government_area_id)->paginate($per_page);
+                    }
+                }
             return response()->json(
                 [
                     "status" => "success",

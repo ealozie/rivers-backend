@@ -28,7 +28,8 @@ class MastController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * Query Params: `search`, `per_page`, `filter=count`
+     * Query Params: `search`, `per_page`, `filter=count|lga|street`
+     * Additional query param: `local_government_area_id` & `street_id`
      */
     public function index(Request $request)
     {
@@ -50,6 +51,16 @@ class MastController extends Controller
             $masts = $masts
                 ->where("mast_name", "like", "%$search%")
                 ->orWhere("mast_use", "like", "%$search%");
+        }
+        if ($request->has('filter') && in_array($request->get('filter'), ['lga', 'street'])) {
+            if ($request->get('filter') == 'street') {
+                $street_id = $request->get('street_id');
+                $masts->where('street_id', $street_id);
+            }
+            if ($request->get('filter') == 'lga') {
+                $local_government_area_id = $request->get('local_government_area_id');
+                $masts->where('local_government_area_id', $local_government_area_id);
+            }
         }
         if ($user->hasRole('account_officer')) {
             $mast_ids = AccountManager::where('user_id', $user->id)

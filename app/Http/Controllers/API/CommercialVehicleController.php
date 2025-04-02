@@ -24,13 +24,34 @@ class CommercialVehicleController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * Query Parameter `filter=count` and `per_page=20`
+     * Query Parameter `filter=count|lga|street` and `per_page=20`
+     *
+     * Additional query param: `local_government_area_id` & `street_id`
      */
     public function index(Request $request)
     {
         $per_page = 20;
         if ($request->has("per_page")) {
             $per_page = $request->get("per_page");
+        }
+        if ($request->has('filter') && in_array($request->get('filter'), ['lga', 'street'])) {
+                    if ($request->get('filter') == 'street') {
+                        $street_id = $request->get('street_id');
+                        $commercial_vehicles = CommercialVehicle::where('street_id', $street_id)->paginate($per_page);
+                    }
+                    if ($request->get('filter') == 'lga') {
+                        $local_government_area_id = $request->get('local_government_area_id');
+                        $commercial_vehicles = CommercialVehicle::where('local_government_area_id', $local_government_area_id)->paginate($per_page);
+                    }
+            return response()->json([
+                "status" => "success",
+                "message" => "Vehicle retrieved successfully.",
+                "data" => [
+                    "vehicles" => CommercialVehicleResource::collection(
+                        $commercial_vehicles
+                    ),
+                ],
+            ]);
         }
         if ($request->has("filter") && $request->get("filter") == "count") {
             $commercial_vehicles_count = CommercialVehicle::where('approval_status', 'approved')->count();
