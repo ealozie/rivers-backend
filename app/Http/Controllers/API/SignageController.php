@@ -68,11 +68,11 @@ class SignageController extends Controller
             if ($request->has('filter') && in_array($request->get('filter'), ['lga', 'street'])) {
                     if ($request->get('filter') == 'street') {
                         $street_id = $request->get('street_id');
-                        $shops = Signage::where('street_id', $street_id)->paginate($per_page);
+                        $signage = Signage::where('street_id', $street_id)->paginate($per_page);
                     }
                     if ($request->get('filter') == 'lga') {
                         $local_government_area_id = $request->get('local_government_area_id');
-                        $shops = Signage::where('local_government_area_id', $local_government_area_id)->paginate($per_page);
+                        $signage = Signage::where('local_government_area_id', $local_government_area_id)->paginate($per_page);
                     }
                 }
             return response()->json(
