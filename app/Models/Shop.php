@@ -72,4 +72,9 @@ class Shop extends Model
     {
         return $this->morphMany(Assessment::class, 'assessmentable');
     }
+
+    public function shop_occupants()
+    {
+        return $this->hasMany(ShopOccupant::class, 'shop_id', 'shop_id');
+    }
 }

@@ -60,6 +60,7 @@ use App\Http\Controllers\API\ServiceRequestController;
 use App\Http\Controllers\API\ServiceSubCategoryController;
 use App\Http\Controllers\API\SettlementTypeController;
 use App\Http\Controllers\API\ShopController;
+use App\Http\Controllers\API\ShopOccupantController;
 use App\Http\Controllers\API\SignageController;
 use App\Http\Controllers\API\SpouseController;
 use App\Http\Controllers\API\StateController;
@@ -261,6 +262,11 @@ Route::prefix("v1")->group(function () {
     )
         ->middleware("auth:sanctum")
         ->only(["index"]);
+    Route::apiResource(
+        "shop-occupants",
+        ShopOccupantController::class
+    )
+        ->middleware("auth:sanctum");
     Route::apiResource("demand-notice-items", DemandNoticeItemController::class)
         ->middleware("auth:sanctum")
         ->only(["index"]);

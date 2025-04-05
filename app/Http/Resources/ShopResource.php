@@ -36,9 +36,11 @@ class ShopResource extends JsonResource
             "status" => $this->status,
             "notes" => $this->notes,
             "approval_status" => $this->approval_status,
+            "shop_occupants" => ShopOccupantListResource::collection($this->shop_occupants),
             //"added_by" => $this->added_by,
             "created_at" => $this->created_at,
             "updated_at" => $this->updated_at,
+
         ];
     }
 }
