@@ -31,7 +31,7 @@ class ShopStoreRequest extends FormRequest
             'street_name' => 'nullable',
             'street_number' => 'nullable',
             'city' => 'nullable',
-            'local_government_area_id' => 'required|exists:local_government_areas,id',
+            'local_government_area_id' => 'nullable|exists:local_government_areas,id',
             'business_category_id' => 'required|exists:business_categories,id',
             'business_sub_category_id' => 'required|exists:business_sub_categories,id',
             'classification_id' => 'required|exists:classifications,id',
