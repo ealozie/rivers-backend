@@ -22,9 +22,9 @@ return new class extends Migration
             $table->string('street_name')->nullable();
             $table->string('street_number')->nullable();
             $table->string('city')->nullable();
-            $table->foreignId('local_government_area_id');
-            $table->foreignId('business_category_id');
-            $table->foreignId('business_sub_category_id');
+            $table->foreignId('local_government_area_id')->nullable();
+            $table->foreignId('business_category_id')->nullable();
+            $table->foreignId('business_sub_category_id')->nullable();
             $table->foreignId('classification_id');
             $table->foreignId('user_id')->nullable();
             $table->string('status')->default('active');
