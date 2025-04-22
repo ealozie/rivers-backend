@@ -56,18 +56,18 @@ class ShopController extends Controller
                     ->where('accountable_type', Shop::class)
                     ->pluck('accountable_id')
                     ->toArray();
-                $shops = Shop::whereIn('id', $shops_ids)->paginate($per_page);
+                $shops = Shop::whereIn('id', $shops_ids)->latest()->paginate($per_page);
             } else {
-                $shops = Shop::paginate($per_page);
+                $shops = Shop::latest()->paginate($per_page);
             }
             if ($request->has('filter') && in_array($request->get('filter'), ['lga', 'street'])) {
                     if ($request->get('filter') == 'street') {
                         $street_id = $request->get('street_id');
-                        $shops = Shop::where('street_id', $street_id)->paginate($per_page);
+                        $shops = Shop::where('street_id', $street_id)->latest()->paginate($per_page);
                     }
                     if ($request->get('filter') == 'lga') {
                         $local_government_area_id = $request->get('local_government_area_id');
-                        $shops = Shop::where('local_government_area_id', $local_government_area_id)->paginate($per_page);
+                        $shops = Shop::where('local_government_area_id', $local_government_area_id)->latest()->paginate($per_page);
                     }
                 }
             return response()->json([
