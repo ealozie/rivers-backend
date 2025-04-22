@@ -36,7 +36,7 @@ class ShopController extends Controller
      */
     public function index(Request $request)
     {
-        $per_page = 20;
+        $per_page = 100;
         $user = $request->user();
         if ($request->has('per_page')) {
             $per_page = $request->get('per_page');
