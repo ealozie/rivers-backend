@@ -225,6 +225,10 @@ class ShopController extends Controller
         $validatedData = $request->validated();
         DB::beginTransaction();
         try {
+            if (isset($validatedData['user_id'])) {
+                $user = User::where('unique_id', $validatedData['user_id'])->first();
+                $validatedData['user_id'] = $user->id;
+            }
             $shop = Shop::find($id);
             $shop->update($validatedData);
             DB::commit();

@@ -38,7 +38,7 @@ class ShopUpdateRequest extends FormRequest
             "business_sub_category_id" =>
                 "nullable|exists:business_sub_categories,id",
             "classification_id" => "nullable|exists:classifications,id",
-            "user_id" => "nullable",
+            "user_id" => "nullable|exists:users,unique_id",
             "notes" => "nullable",
             "street_id" => "nullable|exists:streets,id",
             "property_id" => "nullable|exists:properties,property_id",
