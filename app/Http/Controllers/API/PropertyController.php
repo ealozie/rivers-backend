@@ -294,6 +294,30 @@ class PropertyController extends Controller
         ]);
     }
 
+     /**
+     * Remove the Owner from Property.
+     */
+    public function remove_owner(string $id)
+    {
+        try {
+            $property = Property::findOrFail($id);
+            if ($property) {
+                $property->user_id = null;
+                $property->save();
+            }
+        } catch (Exception $e) {
+            return response()->json([
+            "status" => "error",
+            "message" => $e->getMessage(),
+        ], 500);
+        }
+        return response()->json([
+            "status" => "success",
+            "message" => "Property owner removed successfully",
+            'data' => new PropertyResource($property),
+        ]);
+    }
+
     /**
      * Get Properties by User ID or User Unique ID.
      */

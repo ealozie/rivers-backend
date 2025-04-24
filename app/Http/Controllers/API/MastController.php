@@ -187,6 +187,54 @@ class MastController extends Controller
     }
 
     /**
+     * Remove mast from the property.
+     */
+    public function remove_property(string $id)
+    {
+        try {
+            $mast = Mast::findOrFail($id);
+            if ($mast) {
+                $mast->property_id = null;
+                $mast->save();
+            }
+        } catch (Exception $e) {
+            return response()->json([
+            "status" => "error",
+            "message" => $e->getMessage(),
+        ], 500);
+        }
+        return response()->json([
+            "status" => "success",
+            "message" => "Property has been removed successfully",
+            'data' => new MastResource($mast),
+        ]);
+    }
+
+    /**
+     * Remove the owner from the shop.
+     */
+    public function remove_owner(string $id)
+    {
+        try {
+            $mast = Mast::findOrFail($id);
+            if ($mast) {
+                $mast->user_id = null;
+                $mast->save();
+            }
+        } catch (Exception $e) {
+            return response()->json([
+            "status" => "error",
+            "message" => $e->getMessage(),
+        ], 500);
+        }
+        return response()->json([
+            "status" => "success",
+            "message" => "Mast owner removed successfully",
+            'data' => new MastResource($mast),
+        ]);
+    }
+
+    /**
      * Display the specified resource.
      */
     public function show(string $id)

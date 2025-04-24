@@ -314,7 +314,36 @@ Route::prefix("v1")->group(function () {
         PropertyController::class,
         "destroy_property_picture",
     ])->middleware("auth:sanctum");
+    Route::delete("property-remove-owner/{id}", [
+        PropertyController::class,
+        "remove_owner",
+    ])->middleware("auth:sanctum");
+    Route::delete("shop-remove-property/{id}", [
+        ShopController::class,
+        "remove_property",
+    ])->middleware("auth:sanctum");
+    Route::delete("shop-remove-owner/{id}", [
+        ShopController::class,
+        "remove_owner",
+    ])->middleware("auth:sanctum");
+    Route::delete("signage-remove-owner/{id}", [
+        SignageController::class,
+        "remove_owner",
+    ])->middleware("auth:sanctum");
+    Route::delete("signage-remove-property/{id}", [
+        SignageController::class,
+        "remove_property",
+    ])->middleware("auth:sanctum");
     
+    Route::delete("mast-remove-owner/{id}", [
+        MastController::class,
+        "remove_owner",
+    ])->middleware("auth:sanctum");
+    Route::delete("mast-remove-property/{id}", [
+        MastController::class,
+        "remove_property",
+    ])->middleware("auth:sanctum");
+
     Route::apiResource("signage", SignageController::class);
     Route::get("signage-properties/{property_id}", [
         SignageController::class,

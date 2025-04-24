@@ -259,6 +259,54 @@ class ShopController extends Controller
     }
 
     /**
+     * Remove shop from the property.
+     */
+    public function remove_property(string $id)
+    {
+        try {
+            $shop = Shop::findOrFail($id);
+            if ($shop) {
+                $shop->property_id = null;
+                $shop->save();
+            }
+        } catch (Exception $e) {
+            return response()->json([
+            "status" => "error",
+            "message" => $e->getMessage(),
+        ], 500);
+        }
+        return response()->json([
+            "status" => "success",
+            "message" => "Property has been removed successfully",
+            'data' => new ShopResource($shop),
+        ]);
+    }
+
+    /**
+     * Remove the owner from the shop.
+     */
+    public function remove_owner(string $id)
+    {
+        try {
+            $shop = Shop::findOrFail($id);
+            if ($shop) {
+                $shop->user_id = null;
+                $shop->save();
+            }
+        } catch (Exception $e) {
+            return response()->json([
+            "status" => "error",
+            "message" => $e->getMessage(),
+        ], 500);
+        }
+        return response()->json([
+            "status" => "success",
+            "message" => "Shop owner removed successfully",
+            'data' => new ShopResource($shop),
+        ]);
+    }
+
+    /**
      * Get Shop by User ID or User Unique ID.
      */
     public function show_by_user_id(string $user_id_or_unique_id)

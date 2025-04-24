@@ -136,6 +136,54 @@ class SignageController extends Controller
         return new SignageResource($signage);
     }
 
+    /**
+     * Remove the Owner from signage.
+     */
+    public function remove_owner(string $id)
+    {
+        try {
+            $signage = Signage::findOrFail($id);
+            if ($signage) {
+                $signage->user_id = null;
+                $signage->save();
+            }
+        } catch (Exception $e) {
+            return response()->json([
+            "status" => "error",
+            "message" => $e->getMessage(),
+        ], 500);
+        }
+        return response()->json([
+            "status" => "success",
+            "message" => "Signage owner removed successfully",
+            'data' => new SignageResource($signage),
+        ]);
+    }
+
+    /**
+     * Remove signage from the property.
+     */
+    public function remove_property(string $id)
+    {
+        try {
+            $signage = Signage::findOrFail($id);
+            if ($signage) {
+                $signage->property_id = null;
+                $signage->save();
+            }
+        } catch (Exception $e) {
+            return response()->json([
+            "status" => "error",
+            "message" => $e->getMessage(),
+        ], 500);
+        }
+        return response()->json([
+            "status" => "success",
+            "message" => "Property has been removed successfully",
+            'data' => new SignageResource($signage),
+        ]);
+    }
+
 
     /**
      * Link Account the specified resource.
