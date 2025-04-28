@@ -26,6 +26,7 @@ class MastListResource extends JsonResource
             'city' => $this->city,
             'mast_name' => $this->mast_name,
             'mast_use' => $this->mast_use,
+            'owner' => $this->owner,
             'approval_status' => $this->approval_status,
             'connected_to_power' => $this->connected_to_power ? true : false,
             'connected_to_diesel_solar_power_generator' => $this->connected_to_diesel_solar_power_generator ? true : false,
