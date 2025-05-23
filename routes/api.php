@@ -488,7 +488,7 @@ Route::prefix("v1")->group(function () {
     ]);
     Route::apiResource("payments", PaymentController::class)
         ->middleware("auth:sanctum")
-        ->only(["index", "store"]);
+        ->only(["index", "store", "show"]);
     Route::get("payments-search", [
         PaymentController::class,
         "search",

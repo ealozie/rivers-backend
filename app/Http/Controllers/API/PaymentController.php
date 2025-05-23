@@ -45,7 +45,8 @@ class PaymentController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $payment = Payment::find($id);
+        return new PaymentResource($payment);
     }
 
     /**
