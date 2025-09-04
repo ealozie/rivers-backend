@@ -16,9 +16,9 @@ class DemandNoticeItem extends Model
     }
 
     //belongs to revenue
-    public function revenue()
+    public function revenueItem()
     {
-        return $this->belongsTo(RevenueItem::class, 'revenue_code', 'revenue_code');
+        return $this->belongsTo(RevenueItem::class,'revenue_item_id');
     }
     
 

@@ -17,7 +17,6 @@ class DemandNoticeCategoryItemResource extends JsonResource
         return [
             "id" => $this->id,
             "demand_notice_category_id" => $this->demand_notice_category,
-            "agency" => new AgencyResource($this->agency),
             "revenue_item" => new RevenueItemResource($this->revenue_item),
             "amount" => $this->amount,
             "added_by" => $this->added_by_user,

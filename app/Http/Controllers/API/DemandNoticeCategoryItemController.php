@@ -5,9 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DemandNoticeCategoryItemStoreRequest;
 use App\Http\Resources\DemandNoticeCategoryItemResource;
-use App\Models\Agency;
 use App\Models\DemandNoticeCategoryItem;
-use App\Traits\DemandNoticeCategoryItemAuthorizable;
 use App\Models\RevenueItem;
 use Illuminate\Http\Request;
 
@@ -34,14 +32,10 @@ class DemandNoticeCategoryItemController extends Controller
 
         //Prevent duplicate
         $requestData = $request->validated();
-        $agency = Agency::find($requestData['agency_id'])->first();
-        $revenue_item = RevenueItem::find($requestData['revenue_item_id'])->first();
-        $requestData['agency_code'] = $agency->agency_code;
-        $requestData['revenue_code'] = $revenue_item->revenue_code;
         //$requestData['amount'] = $revenue_item->fixed_fee;
         $requestData['added_by'] = $request->user()->id;
         $requestData['status'] = 'active';
-        $demand_notice_category_item = DemandNoticeCategoryItem::where('revenue_code', $requestData['revenue_code'])->where('demand_notice_category_id', $requestData['demand_notice_category_id'])->first();
+        $demand_notice_category_item = DemandNoticeCategoryItem::where('revenue_item_id', $requestData['revenue_item_id'])->where('demand_notice_category_id', $requestData['demand_notice_category_id'])->first();
         if (!$demand_notice_category_item) {
             $demand_notice_category_item = DemandNoticeCategoryItem::create($requestData);
         }
@@ -63,12 +57,8 @@ class DemandNoticeCategoryItemController extends Controller
     public function update(Request $request, string $id)
     {
         $requestData = $request->validated();
-        $agency = Agency::find($requestData['agency_id'])->first();
         $revenue_item = RevenueItem::find($requestData['revenue_item_id'])->first();
-        $requestData['agency_code'] = $agency->agency_code;
-        $requestData['revenue_code'] = $revenue_item->revenue_code;
         $requestData['amount'] = $revenue_item->fixed_fee;
-        $requestData['added_by'] = $request->user()->id;
         $requestData['status'] = 'active';
         $demand_notice_category_item = DemandNoticeCategoryItem::find($id);
         $demand_notice_category_item->update($requestData);

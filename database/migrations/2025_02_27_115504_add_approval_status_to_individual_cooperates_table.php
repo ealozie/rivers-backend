@@ -11,25 +11,25 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('individuals', function (Blueprint $table) {
-            $table->string('approval_status')->after('user_id')->default('pending');
-        });
-        Schema::table('shops', function (Blueprint $table) {
-            $table->string('approval_status')->after('user_id')->default('pending');
-        });
-        Schema::table('cooperates', function (Blueprint $table) {
-            $table->string('approval_status')->after('user_id')->default('pending');
-            $table->string('email_address')->after('phone_number')->nullable();
-        });
-        Schema::table('commercial_vehicles', function (Blueprint $table) {
-            $table->string('approval_status')->after('user_id')->default('pending');
-        });
-        Schema::table('signages', function (Blueprint $table) {
-            $table->string('approval_status')->after('user_id')->default('pending');
-        });
-        Schema::table('properties', function (Blueprint $table) {
-            $table->string('approval_status')->after('user_id')->default('pending');
-        });
+        // Schema::table('individuals', function (Blueprint $table) {
+        //     $table->string('approval_status')->after('user_id')->default('pending');
+        // });
+        // Schema::table('shops', function (Blueprint $table) {
+        //     $table->string('approval_status')->after('user_id')->default('pending');
+        // });
+        // Schema::table('cooperates', function (Blueprint $table) {
+        //     $table->string('approval_status')->after('user_id')->default('pending');
+        //     //$table->string('email_address')->after('phone_number')->nullable();
+        // });
+        // Schema::table('commercial_vehicles', function (Blueprint $table) {
+        //     $table->string('approval_status')->after('user_id')->default('pending');
+        // });
+        // Schema::table('signages', function (Blueprint $table) {
+        //     $table->string('approval_status')->after('user_id')->default('pending');
+        // });
+        // Schema::table('properties', function (Blueprint $table) {
+        //     $table->string('approval_status')->after('user_id')->default('pending');
+        // });
     }
 
     /**

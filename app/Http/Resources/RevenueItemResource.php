@@ -16,11 +16,11 @@ class RevenueItemResource extends JsonResource
     {
         return [
            // 'revenue_item_id' => $this->id,
-            //'agency' => new AgencyResource($this->agency),
             'revenue_name' => $this->revenue_name,
             'revenue_code' => $this->revenue_code,
             'fixed_fee' => $this->fixed_fee,
             'revenue_type' => $this->revenue_type->name,
+            'agency' => new AgencyResource($this->agency),
         ];
     }
 }

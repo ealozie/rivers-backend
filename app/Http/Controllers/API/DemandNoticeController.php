@@ -119,8 +119,7 @@ class DemandNoticeController extends Controller
             $demand_notice_item = new DemandNoticeItem();
             $demand_notice_item->demand_notice_id = $demand_notice->id;
             $demand_notice_item->year_id = $requestData['year_id'];
-            $demand_notice_item->agency_code = $demand_notice_category_item->agency_code;
-            $demand_notice_item->revenue_code = $demand_notice_category_item->revenue_code;
+            $demand_notice_item->revenue_item_id = $demand_notice_category_item->revenue_item_id;
             $demand_notice_item->amount = $demand_notice_category_item->amount;
             $demand_notice_item->payment_status = 'pending';
             $demand_notice_item->save();

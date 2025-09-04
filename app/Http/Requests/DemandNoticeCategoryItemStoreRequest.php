@@ -24,7 +24,6 @@ class DemandNoticeCategoryItemStoreRequest extends FormRequest
         return [
             'demand_notice_category_id' => 'required|exists:demand_notice_categories,id',
             'revenue_item_id' => 'required|exists:revenue_items,id',
-            'agency_id' => 'required|exists:agencies,id',
             'amount' => 'required',
         ];
     }

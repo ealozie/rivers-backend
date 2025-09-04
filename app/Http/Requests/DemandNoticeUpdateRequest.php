@@ -24,8 +24,8 @@ class DemandNoticeUpdateRequest extends FormRequest
         return [
             'served_by' => 'required|exists:users,id',
             'date_served' => 'required|date',
-            'longitude' => 'required|numeric',
-            'latitude' => 'required|numeric',
+            'longitude' => 'nullable|numeric',
+            'latitude' => 'nullable|numeric',
         ];
     }
 }

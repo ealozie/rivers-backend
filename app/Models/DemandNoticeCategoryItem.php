@@ -17,14 +17,9 @@ class DemandNoticeCategoryItem extends Model
         return $this->belongsTo(DemandNoticeCategory::class);
     }
 
-    public function agency()
-    {
-        return $this->belongsTo(Agency::class, 'agency_code', 'agency_code');
-    }
-
     public function revenue_item()
     {
-        return $this->belongsTo(RevenueItem::class, 'revenue_code', 'revenue_code');
+        return $this->belongsTo(RevenueItem::class, 'revenue_item_id');
     }
 
     public function added_by_user()

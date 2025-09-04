@@ -9,14 +9,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Cog\Contracts\Ban\Bannable as BannableInterface;
+use Cog\Laravel\Ban\Traits\Bannable;
 use Spatie\Permission\Traits\HasRoles;
 use OwenIt\Auditing\Contracts\Auditable;
 
 
-class User extends Authenticatable implements Auditable
+class User extends Authenticatable implements Auditable, BannableInterface
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
     use \OwenIt\Auditing\Auditable;
+    use Bannable;
 
     /**
      * The attributes that are mass assignable.
