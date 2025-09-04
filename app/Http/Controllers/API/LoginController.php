@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\TicketAgentResource;
 use App\Http\Resources\UserResource;
 use App\Models\Cooperate;
 use App\Models\Individual;
@@ -132,6 +133,7 @@ class LoginController extends Controller
                     'token_type' => 'Bearer',
                     'user' => new UserResource($user),
                     'role' => $user->getRoleNames(),
+                    'agent' => $user->agent ? new TicketAgentResource($user->agent) : '',
                     'formatted_permissions' => array_map(function($item){
                         return $item['name'];
                    }, $user->getPermissionsViaRoles()->toArray()),
