@@ -27,7 +27,7 @@ class UserController extends Controller
     {
         $user = $request->user();
         if ($user->hasRole('admin')) {
-            $users = User::all();
+            $users = User::withBanned()->get();
             return response()->json([
                 'status' => 'success',
                 'data' => [
@@ -39,14 +39,31 @@ class UserController extends Controller
             'status' => 'success',
             'data' => [
                 'user' => new UserResource($user),
-                'permissions' => array_map(function($item){
-                    return $item['name'];
-                }, $user->getPermissionsViaRoles()->toArray())
+                'agent' => $user->agent ? new TicketAgentResource($user->agent) : ''
             ],
         ]);
+        // $user = $request->user();
+        // if ($user->hasRole('admin')) {
+        //     $users = User::all();
+        //     return response()->json([
+        //         'status' => 'success',
+        //         'data' => [
+        //             'users' => UserResource::collection($users),
+        //         ],
+        //     ]);
+        // }
+        // return response()->json([
+        //     'status' => 'success',
+        //     'data' => [
+        //         'user' => new UserResource($user),
+        //         'permissions' => array_map(function($item){
+        //             return $item['name'];
+        //         }, $user->getPermissionsViaRoles()->toArray())
+        //     ],
+        // ]);
     }
 
-     /**
+    /**
      * Display a List of Account Officers resource.
      */
     public function account_officers(Request $request)
@@ -62,9 +79,9 @@ class UserController extends Controller
         ], 200);
     }
 
-    
 
-     /**
+
+    /**
      * Advanced Search in resource.
      *
      * Query paramters `phone_number` or `email`.<br>
@@ -75,11 +92,11 @@ class UserController extends Controller
         $user_query = User::query();
         $user_query->when($request->has('email'), function ($query) use ($request) {
             $email = $request->get('email');
-            return $query->where('email', 'like' ,"%{$email}%");
+            return $query->where('email', 'like', "%{$email}%");
         });
         $user_query->when($request->has('phone_number'), function ($query) use ($request) {
             $phone_number = $request->get('phone_number');
-            return $query->where('phone_number', 'like' ,"%{$phone_number}%");
+            return $query->where('phone_number', 'like', "%{$phone_number}%");
         });
         $user_query->when($request->has('local_government_id'), function ($query) use ($request) {
             return $query->where('local_government_area_id', $request->get('local_government_id'));
@@ -129,7 +146,7 @@ class UserController extends Controller
         $user->password = Hash::make($password);
         $user->phone_number_verification_code =
             mt_rand(111111, 999999);
-        $user_unique_id  = '9' . date('hi') . mt_rand(11111, 99999);
+        $user_unique_id = '9' . date('hi') . mt_rand(11111, 99999);
         $user->unique_id = $user_unique_id;
         $user->save();
         $user->assignRole($validatedData['role']);
@@ -167,10 +184,10 @@ class UserController extends Controller
         $user = User::where('unique_id', $user_id)->first();
         if (!$user) {
             return response()->json([
-            'status' => 'error',
-            'message' => 'User not found.',
-            'data' => [],
-        ], 404);
+                'status' => 'error',
+                'message' => 'User not found.',
+                'data' => [],
+            ], 404);
         }
         $user->syncPermissions($validatedData['permissions']);
         return response()->json([
@@ -193,10 +210,10 @@ class UserController extends Controller
         $user = User::where('unique_id', $user_id)->first();
         if (!$user) {
             return response()->json([
-            'status' => 'error',
-            'message' => 'User not found.',
-            'data' => [],
-        ], 404);
+                'status' => 'error',
+                'message' => 'User not found.',
+                'data' => [],
+            ], 404);
         }
         $user->syncRoles($validatedData['role']);
         return response()->json([
@@ -217,10 +234,10 @@ class UserController extends Controller
         $user = User::where('unique_id', $user_id)->first();
         if (!$user) {
             return response()->json([
-            'status' => 'error',
-            'message' => 'User not found.',
-            'data' => [],
-        ], 404);
+                'status' => 'error',
+                'message' => 'User not found.',
+                'data' => [],
+            ], 404);
         }
         $user->syncPermissions([]);
 
