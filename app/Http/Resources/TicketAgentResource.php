@@ -22,6 +22,13 @@ class TicketAgentResource extends JsonResource
             'can_transfer_wallet_fund' => $this->can_tranfer_status($this->can_transfer_wallet_fund),
             'can_fund_wallet' => $this->can_fund_wallet_status($this->can_fund_wallet),
             'status' => $this->agent_status,
+            'savings_balance' => $this->savings_balance,
+            'account_type' => $this->account_type,
+            'account_name' => $this->account_name,
+            'can_validate_plate_number' => $this->can_validate_plate_number,
+            'wema_reserve_account' => $this->wema_reserve_account,
+            'moniepoint_reserve_account' => $this->moniepoint_reserve_account,
+            'allow_reserved_account' => (bool) $this->allow_reserved_account ? true : false,
         ];
     }
 
