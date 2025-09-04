@@ -474,17 +474,17 @@ class TicketVendingController extends Controller
         $current_time = Carbon::now();
         $init_6am_morning = Carbon::createFromTime(8, 0, 0);
         $init_11_59am_morning = Carbon::createFromTime(11, 59, 59);
-        if ($current_time->between($init_6am_morning, $init_11_59am_morning)) {
-            return response()->json([
-                'status' => 'success',
-                'data' => [
-                    'tickets_today' => [
-                        'total_tickets' => (string) 'NA',
-                        'total_amount' => (string) 'NA'
-                    ],
-                ]
-            ], 200);
-        }
+        // if ($current_time->between($init_6am_morning, $init_11_59am_morning)) {
+        //     return response()->json([
+        //         'status' => 'success',
+        //         'data' => [
+        //             'tickets_today' => [
+        //                 'total_tickets' => (string) 'NA',
+        //                 'total_amount' => (string) 'NA'
+        //             ],
+        //         ]
+        //     ], 200);
+        // }
         $user = $request->user();
         Carbon::setWeekStartsAt(Carbon::MONDAY);
         Carbon::setWeekEndsAt(Carbon::SATURDAY);
