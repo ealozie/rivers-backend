@@ -32,7 +32,7 @@ class DemandNoticeResource extends JsonResource
             'has_been_served' => $this->has_been_served,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'demand_notice_items' => $this->demand_notice_items,
+            'demand_notice_items' => DemandNoticeItemResource::collection($this->demand_notice_items),
         ];
     }
 }

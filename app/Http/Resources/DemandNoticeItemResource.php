@@ -14,6 +14,14 @@ class DemandNoticeItemResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'year_id' => $this->year_id,
+            'demand_notice_id' => $this->demand_notice_id,
+            'agency' => new AgencyResource($this->agency),
+            'revenue' => new RevenueItemResource($this->revenue),
+            'amount' => $this->amount,
+            'payment_status' => $this->payment_status,
+        ];
     }
 }
