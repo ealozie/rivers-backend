@@ -33,7 +33,7 @@ class DemandNoticeController extends Controller
      */
     public function index(Request $request)
     {
-        $per_page = $request->per_page ? $request->per_page :50;
+        $per_page = $request->per_page ? $request->per_page : 50;
         if ($request->has("demand_notice_type") && $request->get("demand_notice_type") == 'blank') {
             $demand_notices = DemandNotice::where('demand_notice_type', 'blank')->paginate($per_page);
         } else {
@@ -63,14 +63,21 @@ class DemandNoticeController extends Controller
         if (isset($requestData['entity_id'])) {
             $entity_prefix = $requestData['entity_id'][0];
         }
-        
+
         if ($entity_prefix == 3 && $requestData['demand_notice_type'] == 'linked') {
             $shop = Shop::where('shop_id', $requestData['entity_id'])->first();
             if (!$shop) {
                 return response()->json([
                     'status' => 'error',
-                    'message'=> 'Shop not found',
+                    'message' => 'Shop not found',
                 ], 404);
+            }
+            $demand_notice = DemandNotice::where('demand_noticeable_type', Shop::class)->where('demand_noticeable_id', $shop->id)->where('year_id', $requestData['year_id'])->first();
+            if ($demand_notice) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Demand Notice already exist for this year',
+                ]);
             }
             $demand_notice = $shop->demand_notices()->create($requestData);
         }
@@ -79,9 +86,18 @@ class DemandNoticeController extends Controller
             if (!$vehicle) {
                 return response()->json([
                     'status' => 'error',
-                    'message'=> 'Commercial Vehicle not found.',
+                    'message' => 'Commercial Vehicle not found.',
                 ], 404);
             }
+
+            $demand_notice = DemandNotice::where('demand_noticeable_type', CommercialVehicle::class)->where('demand_noticeable_id', $vehicle->id)->where('year_id', $requestData['year_id'])->first();
+            if ($demand_notice) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Demand Notice already exist for this year',
+                ]);
+            }
+
             $demand_notice = $vehicle->demand_notices()->create($requestData);
         }
         if ($entity_prefix == 4 && $requestData['demand_notice_type'] == 'linked') {
@@ -89,8 +105,16 @@ class DemandNoticeController extends Controller
             if (!$property) {
                 return response()->json([
                     'status' => 'error',
-                    'message'=> 'Property not found.',
+                    'message' => 'Property not found.',
                 ], 404);
+            }
+
+            $demand_notice = DemandNotice::where('demand_noticeable_type', Property::class)->where('demand_noticeable_id', $property->id)->where('year_id', $requestData['year_id'])->first();
+            if ($demand_notice) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Demand Notice already exist for this year',
+                ]);
             }
             $demand_notice = $property->demand_notices()->create($requestData);
         }
@@ -99,8 +123,15 @@ class DemandNoticeController extends Controller
             if (!$signage) {
                 return response()->json([
                     'status' => 'error',
-                    'message'=> 'Signage not found.',
+                    'message' => 'Signage not found.',
                 ], 404);
+            }
+            $demand_notice = DemandNotice::where('demand_noticeable_type', Signage::class)->where('demand_noticeable_id', $signage->id)->where('year_id', $requestData['year_id'])->first();
+            if ($demand_notice) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Demand Notice already exist for this year',
+                ]);
             }
             $demand_notice = $signage->demand_notices()->create($requestData);
         }
@@ -109,8 +140,16 @@ class DemandNoticeController extends Controller
             if (!$individual) {
                 return response()->json([
                     'status' => 'error',
-                    'message'=> 'Individual not found.',
+                    'message' => 'Individual not found.',
                 ], 404);
+            }
+
+            $demand_notice = DemandNotice::where('demand_noticeable_type', Individual::class)->where('demand_noticeable_id', $individual->id)->where('year_id', $requestData['year_id'])->first();
+            if ($demand_notice) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Demand Notice already exist for this year',
+                ]);
             }
             $demand_notice = $individual->demand_notices()->create($requestData);
         }
@@ -120,8 +159,15 @@ class DemandNoticeController extends Controller
             if (!$cooperate) {
                 return response()->json([
                     'status' => 'error',
-                    'message'=> 'Cooperate not found.',
+                    'message' => 'Cooperate not found.',
                 ], 404);
+            }
+            $demand_notice = DemandNotice::where('demand_noticeable_type', Cooperate::class)->where('demand_noticeable_id', $cooperate->id)->where('year_id', $requestData['year_id'])->first();
+            if ($demand_notice) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Demand Notice already exist for this year',
+                ]);
             }
             $demand_notice = $cooperate->demand_notices()->create($requestData);
         }
@@ -134,6 +180,13 @@ class DemandNoticeController extends Controller
                     'message' => 'Mast not found.',
                 ], 404);
             }
+            $demand_notice = DemandNotice::where('demand_noticeable_type', Mast::class)->where('demand_noticeable_id', $mast->id)->where('year_id', $requestData['year_id'])->first();
+            if ($demand_notice) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Demand Notice already exist for this year',
+                ]);
+            }
             $demand_notice = $mast->demand_notices()->create($requestData);
         }
         if (isset($requestData['quantity']) && $requestData['demand_notice_type'] == 'blank' && $requestData['quantity']) {
@@ -141,7 +194,7 @@ class DemandNoticeController extends Controller
                 for ($i = 0; $i < $requestData['quantity']; $i++) {
                     $requestData['demand_notice_number'] = 'DN-' . date('Y') . '-' . date('md') . '-' . rand(1000, 9999);
                     $demand_notice = DemandNotice::create($requestData);
-                    $demand_notice->demand_notice_number = $requestData['demand_notice_number'].$demand_notice->id;
+                    $demand_notice->demand_notice_number = $requestData['demand_notice_number'] . $demand_notice->id;
                     $demand_notice->save();
                     $demand_notice_category_items = DemandNoticeCategoryItem::where('demand_notice_category_id', $requestData['demand_notice_category_id'])->get();
                     foreach ($demand_notice_category_items as $demand_notice_category_item) {
