@@ -23,6 +23,7 @@ class TicketCategoryResource extends JsonResource
             'allow_multiple_quantity' => $this->check_status($this->allow_multiple_quantity),
             'duration_in_days' => $this->duration,
             'expired_at' => $this->expired_at,
+            'revenue_item_id' => $this->revenue_item_id,
             'created_at' => (string) $this->created_at,
         ];
     }
