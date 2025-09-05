@@ -77,7 +77,7 @@ class DemandNoticeController extends Controller
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Demand Notice already exist for this year',
-                ]);
+                ], 500);
             }
             $demand_notice = $shop->demand_notices()->create($requestData);
         }
@@ -95,7 +95,7 @@ class DemandNoticeController extends Controller
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Demand Notice already exist for this year',
-                ]);
+                ], 500);
             }
 
             $demand_notice = $vehicle->demand_notices()->create($requestData);
@@ -114,7 +114,7 @@ class DemandNoticeController extends Controller
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Demand Notice already exist for this year',
-                ]);
+                ], 500);
             }
             $demand_notice = $property->demand_notices()->create($requestData);
         }
@@ -131,7 +131,7 @@ class DemandNoticeController extends Controller
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Demand Notice already exist for this year',
-                ]);
+                ], 500);
             }
             $demand_notice = $signage->demand_notices()->create($requestData);
         }
@@ -149,7 +149,7 @@ class DemandNoticeController extends Controller
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Demand Notice already exist for this year',
-                ]);
+                ], 500);
             }
             $demand_notice = $individual->demand_notices()->create($requestData);
         }
@@ -167,7 +167,7 @@ class DemandNoticeController extends Controller
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Demand Notice already exist for this year',
-                ]);
+                ], 500);
             }
             $demand_notice = $cooperate->demand_notices()->create($requestData);
         }
@@ -185,7 +185,7 @@ class DemandNoticeController extends Controller
                 return response()->json([
                     'status' => 'error',
                     'message' => 'Demand Notice already exist for this year',
-                ]);
+                ], 500);
             }
             $demand_notice = $mast->demand_notices()->create($requestData);
         }
