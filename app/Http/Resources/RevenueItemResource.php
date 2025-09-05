@@ -15,7 +15,7 @@ class RevenueItemResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-           // 'revenue_item_id' => $this->id,
+            'revenue_item_id' => $this->id,
             'revenue_name' => $this->revenue_name,
             'revenue_code' => $this->revenue_code,
             'fixed_fee' => $this->fixed_fee,
