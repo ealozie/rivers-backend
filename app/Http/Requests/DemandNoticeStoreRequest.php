@@ -25,7 +25,7 @@ class DemandNoticeStoreRequest extends FormRequest
             'demand_notice_category_id' => 'required|integer',
             'entity_id' => 'requiredIf:demand_notice_type,linked',
             'year_id' => 'required|integer',
-            'entity_type' => 'requiredIf:demand_notice_type,linked|in:individual,property,cooperate,signage,vehicle,shop',
+            //'entity_type' => 'requiredIf:demand_notice_type,linked|in:individual,property,cooperate,signage,vehicle,shop',
             'quantity' => 'required|integer|min:1|max:200',
             'demand_notice_type' => 'required|in:blank,linked'
         ];

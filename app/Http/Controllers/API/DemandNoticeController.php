@@ -13,6 +13,7 @@ use App\Models\DemandNoticeCategory;
 use App\Models\DemandNoticeCategoryItem;
 use App\Models\DemandNoticeItem;
 use App\Models\Individual;
+use App\Models\Mast;
 use App\Models\Property;
 use App\Models\Shop;
 use App\Models\Signage;
@@ -58,7 +59,12 @@ class DemandNoticeController extends Controller
         // }
         //check that demand notice hasn't been geneated before
         $requestData['user_id'] = $request->user()->id;
-        if (isset($requestData['entity_id']) && isset($requestData['entity_type']) && $requestData['entity_type'] == 'shop' && $requestData['demand_notice_type'] == 'linked') {
+        $entity_prefix = 0;
+        if (isset($requestData['entity_id'])) {
+            $entity_prefix = $requestData['entity_id'][0];
+        }
+        
+        if ($entity_prefix == 3 && $requestData['demand_notice_type'] == 'linked') {
             $shop = Shop::where('shop_id', $requestData['entity_id'])->first();
             if (!$shop) {
                 return response()->json([
@@ -68,7 +74,7 @@ class DemandNoticeController extends Controller
             }
             $demand_notice = $shop->demand_notices()->create($requestData);
         }
-        if (isset($requestData['entity_id']) && isset($requestData['entity_type']) && $requestData['entity_type'] == 'vehicle' && $requestData['demand_notice_type'] == 'linked') {
+        if ($entity_prefix == 6 && $requestData['demand_notice_type'] == 'linked') {
             $vehicle = CommercialVehicle::where('vehicle_id', $requestData['entity_id'])->first();
             if (!$vehicle) {
                 return response()->json([
@@ -78,7 +84,7 @@ class DemandNoticeController extends Controller
             }
             $demand_notice = $vehicle->demand_notices()->create($requestData);
         }
-        if (isset($requestData['entity_id']) && isset($requestData['entity_type']) && $requestData['entity_type'] == 'property' && $requestData['demand_notice_type'] == 'linked') {
+        if ($entity_prefix == 4 && $requestData['demand_notice_type'] == 'linked') {
             $property = Property::where('property_id', $requestData['entity_id'])->first();
             if (!$property) {
                 return response()->json([
@@ -88,7 +94,7 @@ class DemandNoticeController extends Controller
             }
             $demand_notice = $property->demand_notices()->create($requestData);
         }
-        if (isset($requestData['entity_id']) && isset($requestData['entity_type']) && $requestData['entity_type'] == 'signage' && $requestData['demand_notice_type'] == 'linked') {
+        if ($entity_prefix == 5 && $requestData['demand_notice_type'] == 'linked') {
             $signage = Signage::where('signage_id', $requestData['entity_id'])->first();
             if (!$signage) {
                 return response()->json([
@@ -98,7 +104,7 @@ class DemandNoticeController extends Controller
             }
             $demand_notice = $signage->demand_notices()->create($requestData);
         }
-        if (isset($requestData['entity_id']) && isset($requestData['entity_type']) && $requestData['entity_type'] == 'individual' && $requestData['demand_notice_type'] == 'linked') {
+        if ($entity_prefix == 1 && $requestData['demand_notice_type'] == 'linked') {
             $individual = Individual::where('individual_id', $requestData['entity_id'])->first();
             if (!$individual) {
                 return response()->json([
@@ -109,7 +115,7 @@ class DemandNoticeController extends Controller
             $demand_notice = $individual->demand_notices()->create($requestData);
         }
 
-        if (isset($requestData['entity_id']) && isset($requestData['entity_type']) && $requestData['entity_type'] == 'cooperate' && $requestData['demand_notice_type'] == 'linked') {
+        if ($entity_prefix == 2 && $requestData['demand_notice_type'] == 'linked') {
             $cooperate = Cooperate::where('cooperate_id', $requestData['entity_id'])->first();
             if (!$cooperate) {
                 return response()->json([
@@ -118,6 +124,17 @@ class DemandNoticeController extends Controller
                 ], 404);
             }
             $demand_notice = $cooperate->demand_notices()->create($requestData);
+        }
+
+        if ($entity_prefix == 8 && $requestData['demand_notice_type'] == 'linked') {
+            $mast = Mast::where('mast_id', $requestData['entity_id'])->first();
+            if (!$mast) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Mast not found.',
+                ], 404);
+            }
+            $demand_notice = $mast->demand_notices()->create($requestData);
         }
         if (isset($requestData['quantity']) && $requestData['demand_notice_type'] == 'blank' && $requestData['quantity']) {
             try {
@@ -183,7 +200,13 @@ class DemandNoticeController extends Controller
         $demand_notice_enforcement_duration = DemandNoticeCategory::findOrFail($demand_notice->demand_notice_category_id)->enforcement_duration;
         $requestData['enforcement_begins_at'] = date('Y-m-d', strtotime($requestData['date_served'] . ' + ' . $demand_notice_enforcement_duration . ' days'));
         $demand_notice->update($requestData);
-        if (isset($requestData['entity_id']) && isset($requestData['entity_type']) && $requestData['entity_type'] == 'shop' && $requestData['demand_notice_type'] == 'linked') {
+
+        $entity_prefix = 0;
+        if (isset($requestData['entity_id'])) {
+            $entity_prefix = $requestData['entity_id'][0];
+        }
+
+        if ($entity_prefix == 3 && $requestData['demand_notice_type'] == 'linked') {
             $shop = Shop::where('shop_id', $requestData['entity_id'])->first();
             if (!$shop) {
                 return response()->json([
@@ -196,7 +219,7 @@ class DemandNoticeController extends Controller
                 'demand_noticeable_id' => $shop->id
             ]);
         }
-        if (isset($requestData['entity_id']) && isset($requestData['entity_type']) && $requestData['entity_type'] == 'vehicle' && $requestData['demand_notice_type'] == 'linked') {
+        if ($entity_prefix == 6 && $requestData['demand_notice_type'] == 'linked') {
             $vehicle = CommercialVehicle::where('vehicle_id', $requestData['entity_id'])->first();
             if (!$vehicle) {
                 return response()->json([
@@ -209,7 +232,7 @@ class DemandNoticeController extends Controller
                 'demand_noticeable_id' => $vehicle->id
             ]);
         }
-        if (isset($requestData['entity_id']) && isset($requestData['entity_type']) && $requestData['entity_type'] == 'property' && $requestData['demand_notice_type'] == 'linked') {
+        if ($entity_prefix == 4 && $requestData['demand_notice_type'] == 'linked') {
             $property = Property::where('property_id', $requestData['entity_id'])->first();
             if (!$property) {
                 return response()->json([
@@ -222,7 +245,7 @@ class DemandNoticeController extends Controller
                 'demand_noticeable_id' => $property->id
             ]);
         }
-        if (isset($requestData['entity_id']) && isset($requestData['entity_type']) && $requestData['entity_type'] == 'signage' && $requestData['demand_notice_type'] == 'linked') {
+        if ($entity_prefix == 5 && $requestData['demand_notice_type'] == 'linked') {
             $signage = Signage::where('signage_id', $requestData['entity_id'])->first();
             if (!$signage) {
                 return response()->json([
@@ -235,7 +258,7 @@ class DemandNoticeController extends Controller
                 'demand_noticeable_id' => $signage->id
             ]);
         }
-        if (isset($requestData['entity_id']) && isset($requestData['entity_type']) && $requestData['entity_type'] == 'individual' && $requestData['demand_notice_type'] == 'linked') {
+        if ($entity_prefix == 1 && $requestData['demand_notice_type'] == 'linked') {
             $individual = Individual::where('individual_id', $requestData['entity_id'])->first();
             if (!$individual) {
                 return response()->json([
@@ -249,7 +272,7 @@ class DemandNoticeController extends Controller
             ]);
         }
 
-        if (isset($requestData['entity_id']) && isset($requestData['entity_type']) && $requestData['entity_type'] == 'cooperate' && $requestData['demand_notice_type'] == 'linked') {
+        if ($entity_prefix == 2 && $requestData['demand_notice_type'] == 'linked') {
             $cooperate = Cooperate::where('cooperate_id', $requestData['entity_id'])->first();
             if (!$cooperate) {
                 return response()->json([
@@ -260,6 +283,19 @@ class DemandNoticeController extends Controller
             $demand_notice->update([
                 'demand_noticeable_type' => Cooperate::class,
                 'demand_noticeable_id' => $cooperate->id
+            ]);
+        }
+        if ($entity_prefix == 8 && $requestData['demand_notice_type'] == 'linked') {
+            $mast = Mast::where('mast_id', $requestData['entity_id'])->first();
+            if (!$mast) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Mast not found.',
+                ], 404);
+            }
+            $demand_notice->update([
+                'demand_noticeable_type' => Mast::class,
+                'demand_noticeable_id' => $mast->id
             ]);
         }
         return new DemandNoticeResource($demand_notice);
