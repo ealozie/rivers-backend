@@ -15,11 +15,11 @@ use Spatie\Permission\Traits\HasRoles;
 use OwenIt\Auditing\Contracts\Auditable;
 
 
-class User extends Authenticatable implements Auditable
+class User extends Authenticatable implements Auditable,BannableInterface
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
     use \OwenIt\Auditing\Auditable;
-    //use Bannable;
+    use Bannable;
 
     /**
      * The attributes that are mass assignable.

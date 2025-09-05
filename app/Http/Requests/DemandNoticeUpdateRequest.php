@@ -26,6 +26,9 @@ class DemandNoticeUpdateRequest extends FormRequest
             'date_served' => 'required|date',
             'longitude' => 'nullable|numeric',
             'latitude' => 'nullable|numeric',
+            'demand_notice_type' => 'required|in:blank,linked',
+            'entity_id' => 'required_if:demand_notice_type,linked',
+            'entity_type' => 'required_if:demand_notice_type,linked|in:individual,property,cooperate,signage,vehicle,shop',
         ];
     }
 }
