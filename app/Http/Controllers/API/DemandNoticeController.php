@@ -28,11 +28,16 @@ class DemandNoticeController extends Controller
     //use DemandNoticeAuthorizable;
 
     /**
-     * Display a listing of the resource.
+     * Display a listing of the resource. Query parameter ?demand_notice_type=blank|linked & per_page=10
      */
     public function index(Request $request)
     {
-        $demand_notices = DemandNotice::all();
+        $per_page = $request->per_page ? $request->per_page :50;
+        if ($request->has("demand_notice_type") && $request->get("demand_notice_type") == 'blank') {
+            $demand_notices = DemandNotice::where('demand_notice_type', 'blank')->paginate($per_page);
+        } else {
+            $demand_notices = DemandNotice::where('demand_notice_type', 'linked')->paginate($per_page);
+        }
         return DemandNoticeResource::collection($demand_notices);
     }
 
