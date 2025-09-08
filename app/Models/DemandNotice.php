@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class DemandNotice extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
 
     protected $guarded = ['id'];
@@ -45,7 +46,8 @@ class DemandNotice extends Model
     }
 
     //morph
-    public function demand_noticeable(): MorphTo {
+    public function demand_noticeable(): MorphTo
+    {
         return $this->morphTo();
     }
 }
