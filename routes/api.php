@@ -198,6 +198,12 @@ Route::prefix("v1")->group(function () {
     Route::get("entity-search", EntitySearchController::class);
     Route::apiResource("spouse", SpouseController::class);
     Route::apiResource("shops", ShopController::class);
+    Route::get('shops-counts', [ShopController::class, 'item_count'])->middleware('auth:sanctum');
+    Route::post('shops-payment-validation', [ShopController::class, 'payment_validation'])->middleware('auth:sanctum');
+    Route::post('shops-payment', [ShopController::class, 'payment'])->middleware('auth:sanctum');
+    Route::get('shop-payment-items/{shop_id}/{year_id}', [ShopController::class, 'shop_payments'])->middleware('auth:sanctum');
+    Route::get('shops-payment-receipt/verify/{receipt_number}', [ShopController::class, 'payment_by_receipt_number'])->middleware('auth:sanctum');
+    Route::get('shops-payment-receipt/{shop_id}', [ShopController::class, 'payment_receipt'])->middleware('auth:sanctum');
     // ->middleware(
     //     "auth:sanctum"
     // );

@@ -42,16 +42,16 @@ class DatabaseSeeder extends Seeder
             // RoleSeeder::class,
         ]);
         $this->call([
-            // PropertyUseSeeder::class,
-            // PropertyTypeSeeder::class,
-            // AgencySeeder::class,
-            // UserUniqueIdSeeder::class,
-            // RevenueItemSeeder::class,
-            //AppSettingSeeder::class,
+                // PropertyUseSeeder::class,
+                // PropertyTypeSeeder::class,
+                // AgencySeeder::class,
+                // UserUniqueIdSeeder::class,
+                // RevenueItemSeeder::class,
+            AppSettingSeeder::class,
             //RoleSeeder::class,
             // DocumentLifeSpanSeeder::class,
             // TollGateCategorySeeder::class,
-            PermissionSeeder::class,
+            //PermissionSeeder::class,
             //UserSeeder::class,
         ]);
     }

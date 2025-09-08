@@ -19,6 +19,7 @@ class TicketAgentResource extends JsonResource
             'agent_type' => $this->agent_type,
             'discount' => (int) $this->discount,
             'wallet_balance' => (float) $this->wallet_balance,
+            'enable_shop' => (bool) $this->enable_shop ? true : false,
             'can_transfer_wallet_fund' => $this->can_tranfer_status($this->can_transfer_wallet_fund),
             'can_fund_wallet' => $this->can_fund_wallet_status($this->can_fund_wallet),
             'status' => $this->agent_status,

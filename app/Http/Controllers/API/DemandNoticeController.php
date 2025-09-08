@@ -351,6 +351,7 @@ class DemandNoticeController extends Controller
                 'demand_noticeable_id' => $mast->id
             ]);
         }
+        
         return new DemandNoticeResource($demand_notice);
     }
 
@@ -359,7 +360,7 @@ class DemandNoticeController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+    
     }
 
     /**
