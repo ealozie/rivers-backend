@@ -42,6 +42,8 @@ class ShopUpdateRequest extends FormRequest
             "notes" => "nullable",
             "street_id" => "nullable|exists:streets,id",
             "property_id" => "nullable|exists:properties,property_id",
+            "demand_notice_category_id" =>
+                "nullable|exists:demand_notice_categories,id",
         ];
     }
 }

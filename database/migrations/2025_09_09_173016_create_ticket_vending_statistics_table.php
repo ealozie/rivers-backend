@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ticket_vending_statistics', function (Blueprint $table) {
-            $table->id();
-            $table->double('ticket_amount', 15, 2);
-            $table->double('ticket_discounted_amount', 15, 2);
-            $table->integer('total_tickets');
-            $table->date('ticket_date');
-            $table->timestamps();
-        });
+        // Schema::create('ticket_vending_statistics', function (Blueprint $table) {
+        //     $table->id();
+        //     $table->double('ticket_amount', 15, 2);
+        //     $table->double('ticket_discounted_amount', 15, 2);
+        //     $table->integer('total_tickets');
+        //     $table->date('ticket_date');
+        //     $table->timestamps();
+        // });
     }
 
     /**
