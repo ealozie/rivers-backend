@@ -197,7 +197,7 @@ Route::prefix("v1")->group(function () {
     //Route::apiResource('residential-address', ResidentialController::class);
     Route::get("entity-search", EntitySearchController::class);
     Route::apiResource("spouse", SpouseController::class);
-    Route::apiResource("shops", ShopController::class);
+    Route::apiResource("shops", ShopController::class)->middleware('auth:sanctum');
     Route::get('shops-counts', [ShopController::class, 'item_count'])->middleware('auth:sanctum');
     Route::post('shops-payment-validation', [ShopController::class, 'payment_validation'])->middleware('auth:sanctum');
     Route::post('shops-payment', [ShopController::class, 'payment'])->middleware('auth:sanctum');
@@ -492,6 +492,7 @@ Route::prefix("v1")->group(function () {
     Route::apiResource("property-types", PropertyTypeController::class)->only([
         "index",
     ]);
+    Route::get('payments-statistics', [PaymentController::class, 'payment_statistics'])->middleware('auth:sanctum');
     Route::apiResource("payments", PaymentController::class)
         ->middleware("auth:sanctum")
         ->only(["index", "store", "show"]);
