@@ -557,6 +557,7 @@ Route::prefix("v1")->group(function () {
     Route::apiResource("ticket-vending", TicketVendingController::class)
         ->middleware("auth:sanctum")
         ->only(["index", "store", "show"]);
+    Route::get('ticket-daily-statistics-search', [TicketVendingController::class, 'ticket_daily_statistics'])->middleware('auth:sanctum');
     Route::apiResource("permissions", PermissionController::class)
         ->middleware("auth:sanctum")
         ->only(["index"]);

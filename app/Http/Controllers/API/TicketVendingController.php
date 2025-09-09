@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TicketVendingCollection;
 use App\Http\Resources\TicketVendingResource;
+use App\Http\Resources\TicketVendingStatisticResource;
 use App\Models\CentralSystemLGA;
 use App\Models\CommercialVehicle;
 use App\Models\TicketAgent;
@@ -12,6 +13,7 @@ use App\Models\TicketAgentCategory;
 use App\Models\TicketAgentWallet;
 use App\Models\TicketCategory;
 use App\Models\TicketVending;
+use App\Models\TicketVendingStatistic;
 use App\Models\User;
 use App\Traits\SendSMS;
 use Axiom\Rules\LocationCoordinates;
@@ -389,6 +391,18 @@ class TicketVendingController extends Controller
             'data' => new TicketVendingResource($ticket_vending),
         ], 200);
     }
+
+    /**
+     *Daily ticket vending statistics resource.
+     *
+     *Query parameters `date_from and date_to`
+     */
+    public function ticket_daily_statistics(Request $request)
+    {
+        $response = TicketVendingStatistic::whereBetween('ticket_date', [$request->get('date_from'), $request->get('date_to')])->get();
+        return TicketVendingStatisticResource::collection($response);
+    }
+
 
     /**
      * Ticket Vending Statistics for Agent.
