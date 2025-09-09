@@ -272,9 +272,9 @@ class AssessmentController extends Controller
         $validatedData['assessment_reference'] = time() . rand(1000, 9999);
         $validatedData['entity_id'] = $validatedData['assessment_entity_id'];
         $entity_id = $validatedData['assessment_entity_id'];
-        $entity_type = $validatedData['entity_type'];
+        $entity_prefix = $validatedData['assessment_entity_id'][0];
 
-        if ($entity_type == 'property') {
+        if ($entity_prefix == 4) {
             $property = Property::where('property_id', $entity_id)->first();
             if ($property) {
                 $assessment = $property->assessments()->create($validatedData);
@@ -287,7 +287,7 @@ class AssessmentController extends Controller
 
         }
 
-        if ($entity_type == 'shop') {
+        if ($entity_prefix == 3) {
             $shop = Shop::where('shop_id', $entity_id)->first();
             if ($shop) {
                 $assessment = $shop->assessments()->create($validatedData);
@@ -300,7 +300,7 @@ class AssessmentController extends Controller
 
         }
 
-        if ($entity_type == 'individual') {
+        if ($entity_prefix == 1) {
             $individual = Individual::where('individual_id', $entity_id)->first();
             if ($individual) {
                 $assessment = $individual->assessments()->create($validatedData);
@@ -312,7 +312,7 @@ class AssessmentController extends Controller
             }
         }
 
-        if ($entity_type == 'cooperate') {
+        if ($entity_prefix == 2) {
             $cooperate = Cooperate::where('cooperate_id', $entity_id)->first();
             if ($cooperate) {
                 $assessment = $cooperate->assessments()->create($validatedData);
@@ -324,7 +324,7 @@ class AssessmentController extends Controller
             }
         }
 
-        if ($entity_type == 'signage') {
+        if ($entity_prefix == 5) {
             $signage = Signage::where('signage_id', $entity_id)->first();
             if ($signage) {
                 $assessment = $signage->assessments()->create($validatedData);
@@ -335,7 +335,7 @@ class AssessmentController extends Controller
                 ], 404);
             }
         }
-        if ($entity_type == 'mast') {
+        if ($entity_prefix == 8) {
             $mast = Mast::where('mast_id', $entity_id)->first();
             if ($mast) {
                 $assessment = $mast->assessments()->create($validatedData);
@@ -347,7 +347,7 @@ class AssessmentController extends Controller
             }
         }
 
-        if ($entity_type == 'vehicle') {
+        if ($entity_prefix == 6) {
             $vehicle = CommercialVehicle::where('vehicle_id', $entity_id)->first();
             if ($vehicle) {
                 $assessment = $vehicle->assessments()->create($validatedData);
