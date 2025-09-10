@@ -19,7 +19,7 @@ class DemandNoticeItemResource extends JsonResource
             'demand_notice_id' => $this->demand_notice_id,
             //'year_id' => $this->year_id,
             //'revenue_item_id' => $this->revenue_item_id,
-            'revenue_item' => new RevenueItemResource($this->revenueItem),
+            'revenue' => new RevenueItemResource($this->revenueItem),
             //'demand_notice' => new DemandNoticeResource($this->whenLoaded('demandNotice')),
             'year' => new AssessmentYearResource($this->year),
             'amount' => $this->amount,
