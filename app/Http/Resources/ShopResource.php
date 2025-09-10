@@ -32,6 +32,7 @@ class ShopResource extends JsonResource
             "business_category" => $this->business_category,
             "business_sub_category" => $this->business_sub_category,
             "classification" => $this->classification,
+            "demand_notice_category" => new DemandNoticeCategoryResource($this->demand_notice_category),
             "user" => $this->user,
             "status" => $this->status,
             "notes" => $this->notes,

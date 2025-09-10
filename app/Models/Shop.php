@@ -18,6 +18,11 @@ class Shop extends Model
         return $this->belongsTo(BusinessCategory::class);
     }
 
+    public function demand_notice_category()
+    {
+        return $this->belongsTo(DemandNoticeCategory::class, 'demand_notice_category_id');
+    }
+
     public function street()
     {
         return $this->belongsTo(Street::class);
