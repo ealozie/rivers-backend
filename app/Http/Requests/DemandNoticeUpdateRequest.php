@@ -24,7 +24,7 @@ class DemandNoticeUpdateRequest extends FormRequest
         return [
             'served_by' => 'required|exists:users,id',
             'date_served' => 'required|date',
-            'comments' => 'required|string|max:1000',
+            'comments' => 'nullable|string|max:1000',
             'longitude' => 'required|numeric|between:-180,180',
             'latitude' => 'required|numeric|between:-90,90',
             'demand_notice_type' => 'required|in:blank,linked',
