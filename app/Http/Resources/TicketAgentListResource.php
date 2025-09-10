@@ -21,6 +21,8 @@ class TicketAgentListResource extends JsonResource
             'wallet_balance' => (double) $this->wallet_balance,
             'can_transfer_wallet_fund' => $this->can_tranfer_status($this->can_transfer_wallet_fund),
             'can_fund_wallet' => $this->can_fund_wallet_status($this->can_fund_wallet),
+            'can_serve_notice' => (bool) $this->can_serve_notice,
+            'ticket_activity' => (bool) $this->ticket_activity,
             'agent_status' => $this->agent_status,
             'user' => new UserResource($this->user),
             'agent_ticket_categories' => TicketAgentCategoryResource::collection($this->ticket_categories),
@@ -31,7 +33,7 @@ class TicketAgentListResource extends JsonResource
         ];
     }
 
-    public function can_tranfer_status($status):bool
+    public function can_tranfer_status($status): bool
     {
         if ($status) {
             return true;
@@ -39,7 +41,7 @@ class TicketAgentListResource extends JsonResource
             return false;
         }
     }
-    public function can_fund_wallet_status($status):bool
+    public function can_fund_wallet_status($status): bool
     {
         if ($status) {
             return true;

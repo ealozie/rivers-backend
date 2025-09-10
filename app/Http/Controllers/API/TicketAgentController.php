@@ -45,6 +45,8 @@ class TicketAgentController extends Controller
             'agent_status' => 'required',
             'can_transfer_wallet_fund' => 'required|boolean',
             'can_fund_wallet' => 'required|boolean',
+            'can_serve_notice' => 'sometimes|boolean',
+            'ticket_activity' => 'sometimes|boolean',
             'agent_ticket_categories' => 'required|array|min:1',
             //'role' => 'required|in:agent'
         ]);
@@ -59,9 +61,9 @@ class TicketAgentController extends Controller
         if (isset($validatedData['super_agent_id'])) {
             $super_user = User::where('unique_id', $validatedData['super_agent_id']);
             if (!$super_user->hasRole('super_agent')) {
-                    return response()->json([
-                        'status' => 'error',
-                        'message' => 'Agent is not a super agent.',
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Agent is not a super agent.',
                 ], 500);
             }
             $super_agent = TicketAgent::where('user_id', $super_user->id)->first();
@@ -71,7 +73,7 @@ class TicketAgentController extends Controller
             $validatedData['super_agent_id'] = $super_user->id;
             $validatedData['added_by'] = $request->user()->id;
         }
-        
+
         try {
             $agent = TicketAgent::create($validatedData);
             $user = User::where('unique_id', $validatedData['user_id'])->first();
@@ -133,10 +135,11 @@ class TicketAgentController extends Controller
             'super_agent_id' => 'sometimes|exists:users,unique_id',
             'agent_type' => 'required',
             'discount' => 'required',
-            'discount' => 'required',
             'agent_status' => 'required',
-            'can_transfer_wallet_fund' => 'required',
-            'can_fund_wallet' => 'required',
+            'can_transfer_wallet_fund' => 'required|boolean',
+            'can_fund_wallet' => 'required|boolean',
+            'can_serve_notice' => 'sometimes|boolean',
+            'ticket_activity' => 'sometimes|boolean',
             'agent_ticket_categories' => 'sometimes|array|min:1',
         ]);
         $agent = TicketAgent::find($id);
@@ -145,15 +148,15 @@ class TicketAgentController extends Controller
         }
         $agent->update($validatedData);
         $super_user = User::where('unique_id', $validatedData['super_agent_id'])->first();
-            if (!$super_user->hasRole('super_agent')) {
-                    return response()->json([
-                        'status' => 'error',
-                        'message' => 'Agent is not a super agent.',
-                ], 500);
-            }
+        if (!$super_user->hasRole('super_agent')) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Agent is not a super agent.',
+            ], 500);
+        }
         // $super_agent = TicketAgent::where('user_id', $super_user->id)->first();
         TicketAgentCategory::where('ticket_agent_id', $agent->id)
-                ->delete();
+            ->delete();
         if (isset($validatedData['super_agent_id'])) {
             $super_user = User::where('unique_id', $validatedData['super_agent_id'])->first();
             $super_agent = TicketAgent::where('user_id', $super_user->id)->first();
@@ -191,7 +194,7 @@ class TicketAgentController extends Controller
      */
     public function destroy(string $id)
     {
-        
+
     }
 
     /**
@@ -225,21 +228,21 @@ class TicketAgentController extends Controller
             return response()->json(['status' => 'error', 'message' => 'Super agent ID not found.']);
         }
         TicketAgentCategory::where('ticket_agent_id', $agent->id)
-                ->delete();
+            ->delete();
         $agent->super_agent_id = $super_agent->user_id;
         $agent->discount = $super_agent->discount;
         $agent->save();
         $super_agent_categories = TicketAgentCategory::where('ticket_agent_id', $super_agent->id)->get();
-            foreach ($super_agent_categories as $category) {
-                $ticket_agent_category = new TicketAgentCategory();
-                $ticket_agent_category->ticket_agent_id = $agent->id;
-                $ticket_agent_category->ticket_category_id = $category->ticket_category_id;
-                $ticket_agent_category->discount = 0;
-                //$ticket_agent_category->super_agent_id = $super_agent->user_id;
-                $ticket_agent_category->added_by = $request->user()->id;
-                $ticket_agent_category->status = 'active';
-                $ticket_agent_category->save();
-            }
+        foreach ($super_agent_categories as $category) {
+            $ticket_agent_category = new TicketAgentCategory();
+            $ticket_agent_category->ticket_agent_id = $agent->id;
+            $ticket_agent_category->ticket_category_id = $category->ticket_category_id;
+            $ticket_agent_category->discount = 0;
+            //$ticket_agent_category->super_agent_id = $super_agent->user_id;
+            $ticket_agent_category->added_by = $request->user()->id;
+            $ticket_agent_category->status = 'active';
+            $ticket_agent_category->save();
+        }
         return response()->json(['status' => 'success', 'message' => "Agent's super agent has been successfully changed."]);
     }
 
@@ -253,7 +256,7 @@ class TicketAgentController extends Controller
             return response()->json(['status' => 'error', 'message' => 'Agent ID not found.']);
         }
         TicketAgentCategory::where('ticket_agent_id', $agent->id)
-                ->delete();
+            ->delete();
         $agent->super_agent_id = null;
         $agent->discount = 0;
         $agent->save();

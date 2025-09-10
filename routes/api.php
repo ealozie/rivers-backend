@@ -274,11 +274,10 @@ Route::prefix("v1")->group(function () {
     )
         ->middleware("auth:sanctum");
     Route::apiResource("demand-notice-items", DemandNoticeItemController::class)
-        ->middleware("auth:sanctum")
-        ->only(["index"]);
+        ->middleware("auth:sanctum");
     Route::apiResource("demand-notices", DemandNoticeController::class)
         ->middleware("auth:sanctum")
-        ->only(["index", "store", "update", "show"]);
+        ->only(["index", "store", "update", "show", "destroy"]);
     Route::get(
         "demand-notices-by-demand-notice-number/{demand_notice_number}",
         [DemandNoticeController::class, "show_by_demand_notice_number"]
@@ -340,7 +339,7 @@ Route::prefix("v1")->group(function () {
         SignageController::class,
         "remove_property",
     ])->middleware("auth:sanctum");
-    
+
     Route::delete("mast-remove-owner/{id}", [
         MastController::class,
         "remove_owner",

@@ -16,12 +16,17 @@ class DemandNoticeItemResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'year_id' => $this->year_id,
             'demand_notice_id' => $this->demand_notice_id,
-            //'agency' => new AgencyResource($this->agency),
-            'revenue' => new RevenueItemResource($this->revenueItem),
+            'year_id' => $this->year_id,
+            'revenue_item_id' => $this->revenue_item_id,
+            'revenue_item' => new RevenueItemResource($this->whenLoaded('revenueItem')),
+            'demand_notice' => new DemandNoticeResource($this->whenLoaded('demandNotice')),
+            'year' => new AssessmentYearResource($this->whenLoaded('year')),
             'amount' => $this->amount,
             'payment_status' => $this->payment_status,
+            'payment_receipt_number' => $this->payment_receipt_number,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
     }
 }

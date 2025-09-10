@@ -351,7 +351,7 @@ class DemandNoticeController extends Controller
                 'demand_noticeable_id' => $mast->id
             ]);
         }
-        
+
         return new DemandNoticeResource($demand_notice);
     }
 
@@ -360,7 +360,29 @@ class DemandNoticeController extends Controller
      */
     public function destroy(string $id)
     {
-    
+        try {
+            $demand_notice = DemandNotice::findOrFail($id);
+
+            // Soft delete the demand notice
+            $demand_notice->delete();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Demand notice has been successfully deleted.',
+            ], 200);
+
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Demand notice not found.',
+            ], 404);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'An error occurred while deleting the demand notice: ' . $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**

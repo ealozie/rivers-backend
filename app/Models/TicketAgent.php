@@ -20,6 +20,8 @@ class TicketAgent extends Model implements Auditable
         'discount',
         'can_fund_wallet',
         'can_transfer_wallet_fund',
+        'can_serve_notice',
+        'ticket_activity',
         'super_agent_id',
     ];
 
