@@ -276,7 +276,7 @@ Route::prefix("v1")->group(function () {
     Route::apiResource("demand-notice-items", DemandNoticeItemController::class)
         ->middleware("auth:sanctum");
     Route::apiResource("demand-notices", DemandNoticeController::class)
-        ->middleware("auth:sanctum")
+        //->middleware("auth:sanctum")
         ->only(["index", "store", "update", "show", "destroy"]);
     Route::get(
         "demand-notices-by-demand-notice-number/{demand_notice_number}",

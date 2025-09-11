@@ -26,6 +26,10 @@ use Illuminate\Http\Request;
  */
 class DemandNoticeController extends Controller
 {
+
+    public function __construct() {
+        $this->middleware("auth:sanctum")->except(['show']);
+    }
     //use DemandNoticeAuthorizable;
 
     /**
