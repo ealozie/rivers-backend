@@ -22,11 +22,11 @@ class DemandNoticeItemResource extends JsonResource
             'revenue' => new RevenueItemResource($this->revenueItem),
             //'demand_notice' => new DemandNoticeResource($this->whenLoaded('demandNotice')),
             'year' => new AssessmentYearResource($this->year),
-            'amount' => $this->amount,
-            'payment_status' => $this->payment_status,
-            'payment_receipt_number' => $this->payment_receipt_number,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'amount' => (float) $this->amount,
+            'payment_status' => (string) $this->payment_status,
+            'payment_receipt_number' => (string) $this->payment_receipt_number,
+            'created_at' => (string) $this->created_at,
+            'updated_at' => (string) $this->updated_at,
         ];
     }
 }
