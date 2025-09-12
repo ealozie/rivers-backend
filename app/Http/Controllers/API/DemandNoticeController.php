@@ -254,10 +254,17 @@ class DemandNoticeController extends Controller
         $requestData = $request->validated();
         $demand_notice = DemandNotice::findOrFail($id);
         $requestData['has_been_served'] = true;
+        $requestData['status'] = 'served';
         $demand_notice_enforcement_duration = DemandNoticeCategory::findOrFail($demand_notice->demand_notice_category_id)->enforcement_duration;
         $requestData['enforcement_begins_at'] = date('Y-m-d', strtotime($requestData['date_served'] . ' + ' . $demand_notice_enforcement_duration . ' days'));
-        $demand_notice->update($requestData);
-
+        if ($demand_notice->status == 'pending') {
+            $demand_notice->update($requestData);
+        } else {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Demand notice has already been served.',
+            ], 400);
+        }
         $entity_prefix = 0;
         //if demand notice type is not set set it to none
         if (!isset($requestData['demand_notice_type'])) {
