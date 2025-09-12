@@ -379,6 +379,8 @@ class DemandNoticeController extends Controller
             $demand_notice = DemandNotice::findOrFail($id);
 
             // Soft delete the demand notice
+            $demand_notice->status = 'cancelled';
+            $demand_notice->save();
             $demand_notice->delete();
 
             return response()->json([
