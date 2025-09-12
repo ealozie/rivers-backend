@@ -259,6 +259,10 @@ class DemandNoticeController extends Controller
         $demand_notice->update($requestData);
 
         $entity_prefix = 0;
+        //if demand notice type is not set set it to none
+        if (!isset($requestData['demand_notice_type'])) {
+            $requestData['demand_notice_type'] = 'none';
+        }
         if (isset($requestData['entity_id'])) {
             $entity_prefix = $requestData['entity_id'][0];
         }
