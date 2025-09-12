@@ -27,7 +27,7 @@ class DemandNoticeUpdateRequest extends FormRequest
             'comments' => 'nullable|string|max:1000',
             'longitude' => 'required|numeric|between:-180,180',
             'latitude' => 'required|numeric|between:-90,90',
-            'demand_notice_type' => 'required|in:blank,linked',
+            'demand_notice_type' => 'nullable|in:blank,linked',
             'entity_id' => 'required_if:demand_notice_type,linked',
             //'entity_type' => 'required_if:demand_notice_type,linked|in:individual,property,cooperate,signage,vehicle,shop',
         ];
