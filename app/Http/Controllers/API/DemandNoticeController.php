@@ -414,7 +414,8 @@ class DemandNoticeController extends Controller
                 'message' => 'Demand notice not found.'
             ], 404);
         }
-        $demand_notices = DemandNotice::where('user_id', $demand_notice->user_id)->where('status', 'pending')->oldest()->get();
-        return DemandNoticeResource::collection($demand_notices);
+        return new DemandNoticeResource($demand_notice);
+        // $demand_notices = DemandNotice::where('user_id', $demand_notice->user_id)->where('status', 'pending')->oldest()->get();
+        // return DemandNoticeResource::collection($demand_notices);
     }
 }
